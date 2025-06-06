@@ -104,25 +104,14 @@ $("#sendbutton").on("click", function() {
   if ($("#textinput").val() == "") {
     Swal.fire({
       icon: "error",
-      title: "Cannot calculate",
-      text: "Please put your message to calculate."
+      title: "Cannot send empty message",
+      text: "Please put your message to send."
     });
     return;
   }
   processing = true;
 
-  $("#chat").show(200);
-  $("#chat").append(`
-    <div class="message processing">Thinking and typing...</div>
-  `)
-
   socket.emit("SendMessage", $("#textinput").val(), uuid != "" ? uuid : $("#chatname").val());
-
-  $("#newchatarea").hide(200);
-  $("#textinput").val("");
-  $("#textinput").css("height", "");
-  $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
-
 });
 
 $("#costbutton").on("click", function() {
@@ -209,7 +198,21 @@ socket.on("connect", () => {
     processing = false;
     uuid = uuidReceiving;
   });
-  socket.on("Problem", function(title, message) {
+  socket.on("ChatInProgress", function() {
+    $("#chat").show(200);
+    $("#chat").append(`
+      <div class="message processing">Thinking and typing...</div>
+    `)
+
+    $("#newchatarea").hide(200);
+    $("#textinput").val("");
+    $("#textinput").css("height", "");
+    $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+  });
+  socket.on("Problem", function(title, message, clean) {
+    if (clean) {
+      openNewChat();
+    }
     Swal.fire({
       icon: "error",
       title: title,

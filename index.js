@@ -17,9 +17,6 @@ import {fileURLToPath} from "url";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 
 const server = http.Server(app);
@@ -43,10 +40,9 @@ process.on("uncaughtException", function(exception) {
 app.use(express.static("public", {
   extensions: ["html"]
 }));
-// app.use(express.static("node_modules/@chrisoakman/chessboardjs/dist"));
 
 app.get("*", function(request, response) {
-  response.sendFile(path.join(__dirname, "/public/404.html"));
+  response.sendFile(path.join(process.cwd(), "public", "404.html"));
 });
 
 marked.use({
@@ -59,7 +55,7 @@ io.on("connection", function(socket) {
   });
   socket.on("SaveSetting", function(key, data) {
     settingsData[key] = data;
-    fs.writeFileSync(path.join(__dirname, "data", "settings.json"), JSON.stringify(settingsData, null, 2));
+    fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
   socket.on("LoadChatData", function() {
     const now = new Date();
@@ -72,7 +68,7 @@ io.on("connection", function(socket) {
     };
     for (const chat of chatOrder) {
 
-      chat["title"] = JSON.parse(fs.readFileSync(path.join(__dirname, "data", `${chat.uuid}.json`))).title;
+      chat["title"] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${chat.uuid}.json`))).title;
 
       const chatTime = new Date(chat.time);
       if (date.isToday(chatTime)) {
@@ -105,7 +101,7 @@ io.on("connection", function(socket) {
     socket.emit("LoadChatData", grouped);
   });
   socket.on("LoadMessages", function(uuid) {
-    let chat = JSON.parse(fs.readFileSync(path.join(__dirname, "data", `${uuid}.json`)));
+    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
 
     chat.messages = chat.messages.map(message => ({
       ...message,
@@ -116,7 +112,7 @@ io.on("connection", function(socket) {
   });
   socket.on("SendMessage", function(message, identifier) {
     if (settingsData.apikey == "") {
-      socket.emit("Problem", "No API key", "Please go to settings and put it in.");
+      socket.emit("Problem", "No API key", "Please go to settings and put it in.", false);
       return;
     }
     const client = new OpenAI({apiKey: settingsData.apikey});
@@ -131,7 +127,7 @@ io.on("connection", function(socket) {
       uuid = uuidv4();
     }
     else {
-      chat = JSON.parse(fs.readFileSync(path.join(__dirname, "data", `${identifier}.json`)));
+      chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${identifier}.json`)));
       uuid = identifier;
     }
     chat.messages.push({
@@ -139,34 +135,38 @@ io.on("connection", function(socket) {
       "content": message
     });
 
-    client.responses.create({
+    socket.emit("ChatInProgress");
+    const responseSettings = {
       model: settingsData.model,
       input: chat.messages,
-      instructions: "You are ChatGPT, a helpful and honest AI assistant.",
-      temperature: 0.7,
-      top_p: 1.0
-    }).then(response => {
+      instructions: "You are ChatGPT, a helpful and honest AI assistant."
+    };
+    if (MODEL_DATA[settingsData.model].temperature) {
+      responseSettings.temperature = 0.7;
+      responseSettings.top_p = 1.0;
+    }
+    client.responses.create(responseSettings).then(response => {
       chat.messages.push({
         "role": "assistant",
         "content": response.output_text
       });
-      fs.writeFileSync(path.join(__dirname, "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
+      fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
 
       chatOrder = chatOrder.filter(chat => chat.uuid != uuid);
       chatOrder.push({
         uuid: uuid,
-        time: fs.statSync(path.join(__dirname, "data", `${uuid}.json`)).mtime
+        time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
       });
       chatOrder.sort((a, b) => b.time - a.time);
 
-      socket.emit("NewMessage", message.content.replace(/\n/g, "<br>"), marked.parse(response.output_text), uuid);
+      socket.emit("NewMessage", message.replace(/\n/g, "<br>"), marked.parse(response.output_text), uuid);
     }).catch(error => {
       if (error.status === 401) {
-        socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.");
+        socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.", false);
         return;
       }
       else {
-        socket.emit("Problem", "A problem occured", error.message);
+        socket.emit("Problem", "A problem occured", error.message, true);
         console.log(error);
       }
     });
@@ -175,7 +175,7 @@ io.on("connection", function(socket) {
   socket.on("CalculateCost", function(message, uuid) {
     let messages = [];
     if (uuidValidate(uuid)) {
-      messages = JSON.parse(fs.readFileSync(path.join(__dirname, "data", `${uuid}.json`))).messages;
+      messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`))).messages;
     }
     messages.push({
       "role": "user",
@@ -206,24 +206,24 @@ server.listen(PORT, function() {
   console.log(`If the app has not opened, go to ${chalk.cyanBright(`http://localhost:${PORT}`)} to use the app.`);
 });
 
-if (!fs.existsSync(path.join(__dirname, "data"))){
-  fs.mkdirSync(path.join(__dirname, "data"));
+if (!fs.existsSync(path.join(process.cwd(), "data"))){
+  fs.mkdirSync(path.join(process.cwd(), "data"));
 }
-if (!fs.existsSync(path.join(__dirname, "data", "settings.json"))) {
-  fs.writeFileSync(path.join(__dirname, "data", "settings.json"), JSON.stringify(settingsData, null, 2));
+if (!fs.existsSync(path.join(process.cwd(), "data", "settings.json"))) {
+  fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
 }
-fs.readdir(path.join(__dirname, "data"), (error, files) => {
+fs.readdir(path.join(process.cwd(), "data"), (error, files) => {
   for (let i = 0; i < files.length; i++) {
     if (files[i] == "settings.json") {
       continue;
     }
     chatOrder.push({
       uuid: path.basename(files[i], ".json"),
-      time: fs.statSync(path.join(__dirname, "data", files[i])).mtime
+      time: fs.statSync(path.join(process.cwd(), "data", files[i])).mtime
     });
   }
 
   chatOrder.sort((a, b) => b.time - a.time);
 });
 
-settingsData = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "settings.json")));
+settingsData = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "settings.json")));
