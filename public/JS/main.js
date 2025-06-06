@@ -167,6 +167,7 @@ socket.on("connect", () => {
         `);
       }
     }
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
   });
   socket.on("LoadSettings", function(models, settings) {
     $("#apikey").val(settings.apikey);
@@ -197,6 +198,8 @@ socket.on("connect", () => {
     socket.emit("LoadChatData");
     processing = false;
     uuid = uuidReceiving;
+
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
   });
   socket.on("ChatInProgress", function() {
     $("#chat").show(200);
@@ -208,6 +211,8 @@ socket.on("connect", () => {
     $("#textinput").val("");
     $("#textinput").css("height", "");
     $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
   });
   socket.on("Problem", function(title, message, clean) {
     if (clean) {
