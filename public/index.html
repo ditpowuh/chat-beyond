@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ChatBeyond</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/CSS/dark.css">
+    <link rel="stylesheet" type="text/css" href="/CSS/main.css">
+    <link id="favicon" rel="icon" type="image/x-icon" href="/Assets/Favicon.png">
+  </head>
+  <body>
+    <div id="sidebar">
+      <img id="logo" class="undragable" src="/Assets/LogoWhite.png" width="36">
+      <ul class="list">
+        <li id="newchat">New chat</li>
+      </ul>
+      <br>
+      <div id="pastchats">
+        <div class="category">Today</div>
+        <ul class="list">
+          <li data-uuid="test">CHAT</li>
+        </ul>
+      </div>
+    </div>
+    <div id="topbar" class="undragable">
+      <div>ChatBeyond</div>
+      <div class="seperator">|</div>
+      <img id="settingsicon" class="undragable" src="/Assets/SettingsWhite.svg" width="32" title="Settings">
+    </div>
+    <div id="settings" class="content wrapper" style="display: none;">
+      <h2>API KEY</h2>
+      <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
+      <input id="apikey" type="text" placeholder="OpenAI API Key">
+      <br><br>
+      <h2>Theme [W.I.P]</h2>
+      <p>Change between themes.</p>
+      <select id="themeselection" name="Theme">
+        <option value="light">Light</option>
+        <option value="dark" selected>Dark</option>
+      </select>
+      <br><br>
+      <h2>Model</h2>
+      <p>Choose one of the different models. Note that 100 tokens is around 75 words.</p>
+      <div id="models"></div>
+    </div>
+    <div id="newchatarea" class="content wrapper">
+      <h1>Let's start. How can I help?</h1>
+      <input id="chatname" type="text" placeholder="Chat Name">
+      <h4 class="message" style="display: none;">Great! Start your chat below!</h4>
+    </div>
+    <div id="chat" class="content wrapper" style="display: none;"></div>
+    <div id="bottomarea" class="wrapper">
+      <button id="costbutton">Estimate Cost</button>
+      <textarea id="textinput" maxlength="40960" placeholder="Type here"></textarea>
+      <button id="sendbutton">Send</button>
+      <div id="warning">As always, AI can make mistakes. Make sure you check important info provided.</div>
+    </div>
+    <div id="bottombar" class="undragable">
+      <div id="cost">Estimated Input Cost: Uncalculated</div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+    <script src="/JS/utility.js"></script>
+    <script src="/JS/main.js"></script>
+  </body>
+</html>
