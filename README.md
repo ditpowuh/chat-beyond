@@ -17,3 +17,5 @@ This app is recommended if you:
 
 ### Settings
 The default model that is set is `gpt-4o`.
+<br>
+Note that you do not need to edit `settings.json` as all settings are configurable in the app itself.

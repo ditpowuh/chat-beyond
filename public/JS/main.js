@@ -21,8 +21,8 @@ function openNewChat() {
 
   $("#textinput").val("");
   $("#textinput").css("height", "");
-  $("#textinput").css("height", (this.scrollHeight - 32) + "px");
-  
+  $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+
   $("#chatname").val("");
 
   $("#chat").empty();
@@ -46,6 +46,8 @@ function openExistingChat(uuidChat) {
   $("#chat").show(200);
 
   $("#textinput").val("");
+  $("#textinput").css("height", "");
+  $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
   uuid = uuidChat;
 
   socket.emit("LoadMessages", uuid);
@@ -74,7 +76,8 @@ $(document).on("change", "#apikey", function() {
 $("#newchatarea #chatname").on("keyup keydown", function() {
   if ($(this).val() == "") {
     $("#newchatarea .message").hide(200);
-  } else {
+  }
+  else {
     $("#newchatarea .message").show(200);
   }
 });
@@ -117,6 +120,9 @@ $("#sendbutton").on("click", function() {
 
   $("#newchatarea").hide(200);
   $("#textinput").val("");
+  $("#textinput").css("height", "");
+  $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+
 });
 
 $("#costbutton").on("click", function() {
@@ -190,7 +196,7 @@ socket.on("connect", () => {
       }
     }
   });
-  socket.on("NewMessage", function(originalMessage, output) {
+  socket.on("NewMessage", function(originalMessage, output, uuidReceiving) {
     $("#chat .message.processing").remove();
     $("#chat").append(`
       <div class="message user">${originalMessage}</div>
@@ -201,6 +207,7 @@ socket.on("connect", () => {
 
     socket.emit("LoadChatData");
     processing = false;
+    uuid = uuidReceiving;
   });
   socket.on("Problem", function(title, message) {
     Swal.fire({

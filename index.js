@@ -49,6 +49,10 @@ app.get("*", function(request, response) {
   response.sendFile(path.join(__dirname, "/public/404.html"));
 });
 
+marked.use({
+  breaks: true
+});
+
 io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
     socket.emit("LoadSettings", MODEL_DATA, settingsData);
@@ -105,7 +109,7 @@ io.on("connection", function(socket) {
 
     chat.messages = chat.messages.map(message => ({
       ...message,
-      content: marked.parse(message.content)
+      content: message.role == "assistant" ? marked.parse(message.content) : message.content.replace(/\n/g, "<br>")
     }));
 
     socket.emit("LoadMessages", chat.messages);
@@ -155,7 +159,7 @@ io.on("connection", function(socket) {
       });
       chatOrder.sort((a, b) => b.time - a.time);
 
-      socket.emit("NewMessage", message, marked.parse(response.output_text), uuid);
+      socket.emit("NewMessage", message.content.replace(/\n/g, "<br>"), marked.parse(response.output_text), uuid);
     }).catch(error => {
       if (error.status === 401) {
         socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.");
