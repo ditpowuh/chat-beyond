@@ -223,6 +223,7 @@ socket.on("connect", () => {
       title: title,
       text: message
     });
+    processing = false;
   });
   socket.on("TokenCost", function(tokenCount, cost) {
     if (cost < 0.01) {

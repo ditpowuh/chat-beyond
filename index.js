@@ -162,7 +162,7 @@ io.on("connection", function(socket) {
       socket.emit("NewMessage", message.replace(/\n/g, "<br>"), marked.parse(response.output_text), uuid);
     }).catch(error => {
       if (error.status === 401) {
-        socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.", false);
+        socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.", true);
         return;
       }
       else {
