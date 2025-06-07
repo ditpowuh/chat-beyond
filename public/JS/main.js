@@ -23,6 +23,7 @@ function openNewChat() {
   $("#textinput").css("height", "");
   $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
 
+  $("#newchatarea .message").hide(200);
   $("#chatname").val("");
 
   $("#chat").empty();
@@ -83,9 +84,15 @@ $("#newchatarea #chatname").on("keyup keydown", function() {
 });
 
 $("#settingsicon").on("click", function() {
+  if (processing) {
+    return;
+  }
   openSettings();
 });
 $("#newchat, #logo").on("click", function() {
+  if (processing) {
+    return;
+  }
   openNewChat();
 });
 
@@ -149,6 +156,9 @@ socket.on("connect", () => {
       }
     }
     $("#pastchats .list li").on("click", function() {
+      if (processing) {
+        return;
+      }
       document.title = "ChatBeyond: " + $(this).html();
       openExistingChat($(this).data("uuid"));
     });

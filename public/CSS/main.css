@@ -25,6 +25,10 @@ body {
   outline: none;
 }
 
+#chat {
+  line-height: 1.8;
+}
+
 #chat .message {
   text-align: left;
   margin-top: 40px;
@@ -200,6 +204,15 @@ body {
 #cost {
   font-size: 12px;
   padding-right: 30px;
+}
+
+#settings br, #sidebar br {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 #settingsicon {
