@@ -3,7 +3,7 @@
   <head>
     <title>ChatBeyond</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/CSS/dark.css">
+    <link id="theme" rel="stylesheet" type="text/css" href="/CSS/dark.css">
     <link rel="stylesheet" type="text/css" href="/CSS/main.css">
     <link id="favicon" rel="icon" type="image/x-icon" href="/Assets/Favicon.png">
   </head>
@@ -26,7 +26,7 @@
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
       <input id="apikey" type="text" placeholder="OpenAI API Key">
       <br><br>
-      <h2>Theme [W.I.P]</h2>
+      <h2>Theme</h2>
       <p>Change between themes.</p>
       <select id="themeselection" name="Theme">
         <option value="light">Light</option>
@@ -52,7 +52,7 @@
     <div id="bottombar" class="undragable">
       <div id="cost">Estimated Input Cost: Uncalculated</div>
     </div>
-    <div id="version">v0.1.0</div>
+    <div id="version">v0.2.0</div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

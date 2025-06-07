@@ -57,6 +57,11 @@ io.on("connection", function(socket) {
     settingsData[key] = data;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
+  socket.on("ChangeTheme", function(theme) {
+    settingsData.theme = theme;
+    fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
+    socket.emit("LoadSettings", MODEL_DATA, settingsData);
+  });
   socket.on("LoadChatData", function() {
     const now = new Date();
 

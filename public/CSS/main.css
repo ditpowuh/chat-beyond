@@ -236,6 +236,14 @@ body {
   text-align: center;
 }
 
+#themeselection {
+  background-color: var(--user);
+  color: var(--text);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+}
+
 #models {
   display: inline-block;
   width: 740px;

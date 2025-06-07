@@ -74,6 +74,9 @@ $(document).on("change", "#apikey", function() {
   socket.emit("SaveSetting", "apikey", $(this).val());
 });
 
+$("#themeselection").on("change", function() {
+  socket.emit("ChangeTheme", $("#themeselection").val().toUpperCase());
+});
 $("#newchatarea #chatname").on("keyup keydown", function() {
   if ($(this).val() == "") {
     $("#newchatarea .message").hide(200);
@@ -194,6 +197,17 @@ socket.on("connect", () => {
       if (model == settings.model) {
         $(latestModelAdded).addClass("selected");
       }
+    }
+    $("#themeselection").val(settings.theme.toLowerCase());
+    if (settings.theme == "LIGHT") {
+      $("#theme").attr("href", "/CSS/light.css");
+      $("#settingsicon").attr("src", "/Assets/SettingsBlack.svg");
+      $("#logo").attr("src", "/Assets/LogoBlack.png");
+    }
+    else if (settings.theme == "DARK") {
+      $("#theme").attr("href", "/CSS/dark.css");
+      $("#settingsicon").attr("src", "/Assets/SettingsWhite.svg");
+      $("#logo").attr("src", "/Assets/LogoWhite.png");
     }
   });
   socket.on("NewMessage", function(originalMessage, output, uuidReceiving) {
