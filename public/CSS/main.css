@@ -66,7 +66,7 @@ body {
 #bottomarea button {
   background-color: var(--button);
   color: var(--text);
-  font-weight : bold;
+  font-weight: bold;
   padding: 15px;
   width: 160px;
   border: none;
@@ -92,6 +92,26 @@ body {
   font-size: 16px;
   max-height: 360px;
   resize: none;
+}
+
+#bottomarea #otherinput {
+  position: absolute;
+  bottom: 100%;
+  width: 680px;
+  left: 35%;
+  background-color: var(--utility);
+  color: var(--text);
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  text-align: left;
+  z-index: -1;
+  transform: translateY(50%);
+}
+
+#bottomarea #otherinput button {
+  padding: 10px;
+  font-size: 10px;
+  font-weight: bold;
 }
 
 #bottomarea #warning {
@@ -302,7 +322,7 @@ body {
   margin: 150px auto 0 auto;
   width: 800px;
   text-align: left;
-  padding-bottom: 150px;
+  padding-bottom: 175px;
 }
 
 .undragable {

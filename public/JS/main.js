@@ -3,11 +3,12 @@ const socket = io();
 let uuid = "";
 let processing = false;
 
-$("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+$("#textinput").css("height", `${$("#textinput")[0].scrollHeight - 32}px`);
 $("#bottomarea").css("opacity", "1");
 $("#textinput").on("input", function() {
   $(this).css("height", "");
-  $(this).css("height", (this.scrollHeight - 32) + "px");
+  $(this).css("height", `${this.scrollHeight - 32}px`);
+  $("#chat").css("padding-bottom", `${175 + (this.offsetHeight - 84)}px`);
 });
 
 socket.emit("LoadSettings");
@@ -21,7 +22,8 @@ function openNewChat() {
 
   $("#textinput").val("");
   $("#textinput").css("height", "");
-  $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+  $("#textinput").css("height", `${$("#textinput")[0].scrollHeight - 32}px`);
+  $("#chat").css("padding-bottom", "175px");
 
   $("#newchatarea .message").hide(200);
   $("#chatname").val("");
@@ -49,6 +51,7 @@ function openExistingChat(uuidChat) {
   $("#textinput").val("");
   $("#textinput").css("height", "");
   $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+  $("#chat").css("padding-bottom", "175px");
   uuid = uuidChat;
 
   socket.emit("LoadMessages", uuid);
@@ -234,7 +237,8 @@ socket.on("connect", () => {
     $("#newchatarea").hide(200);
     $("#textinput").val("");
     $("#textinput").css("height", "");
-    $("#textinput").css("height", ($("#textinput")[0].scrollHeight - 32) + "px");
+    $("#textinput").css("height", `${$("#textinput")[0].scrollHeight - 32}px`);
+    $("#chat").css("padding-bottom", "175px");
 
     window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
   });
