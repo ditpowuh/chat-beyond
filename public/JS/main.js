@@ -183,6 +183,7 @@ socket.on("connect", () => {
         `);
       }
     }
+    hljs.highlightAll();
     window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
   });
   socket.on("LoadSettings", function(models, settings) {
@@ -206,11 +207,13 @@ socket.on("connect", () => {
       $("#theme").attr("href", "/CSS/light.css");
       $("#settingsicon").attr("src", "/Assets/SettingsBlack.svg");
       $("#logo").attr("src", "/Assets/LogoBlack.png");
+      $("#codestyling").attr("href", "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-light.min.css");
     }
     else if (settings.theme == "DARK") {
       $("#theme").attr("href", "/CSS/dark.css");
       $("#settingsicon").attr("src", "/Assets/SettingsWhite.svg");
       $("#logo").attr("src", "/Assets/LogoWhite.png");
+      $("#codestyling").attr("href", "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-dark.min.css");
     }
   });
   socket.on("NewMessage", function(originalMessage, output, uuidReceiving) {
@@ -226,6 +229,7 @@ socket.on("connect", () => {
     processing = false;
     uuid = uuidReceiving;
 
+    hljs.highlightAll();
     window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
   });
   socket.on("ChatInProgress", function() {

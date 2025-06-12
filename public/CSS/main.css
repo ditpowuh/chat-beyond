@@ -48,6 +48,14 @@ body {
   animation: textglow 3s ease-in-out infinite;
 }
 
+#chat .message pre {
+  overflow-x: scroll;
+}
+
+#chat .message pre code {
+  border-radius: 15px;
+}
+
 #bottomarea {
   background-image: linear-gradient(rgba(0, 0, 0, 0), var(--background), var(--background));
   position: fixed;
@@ -339,6 +347,7 @@ body {
 }
 
 ::-webkit-scrollbar {
+  height: 5px;
   width: 5px;
   transition: all 1s;
 }
