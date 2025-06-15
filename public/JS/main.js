@@ -40,6 +40,8 @@ function openSettings() {
   $("#newchatarea").hide(200);
   $("#chat").hide(200);
   socket.emit("LoadSettings");
+
+  window.scrollTo({top: 0, behavior: "instant"});
 }
 
 function openExistingChat(uuidChat) {
@@ -81,7 +83,7 @@ $("#themeselection").on("change", function() {
   socket.emit("ChangeTheme", $("#themeselection").val().toUpperCase());
 });
 $("#newchatarea #chatname").on("keyup keydown", function() {
-  if ($(this).val() == "") {
+  if ($(this).val() === "") {
     $("#newchatarea .message").hide(200);
   }
   else {
@@ -106,7 +108,7 @@ $("#sendbutton").on("click", function() {
   if (processing) {
     return;
   }
-  if ($("#chatname").val() == "" && uuid == "") {
+  if ($("#chatname").val() === "" && uuid === "") {
     Swal.fire({
       icon: "error",
       title: "No chat name",
@@ -114,7 +116,7 @@ $("#sendbutton").on("click", function() {
     });
     return;
   }
-  if ($("#textinput").val() == "") {
+  if ($("#textinput").val() === "") {
     Swal.fire({
       icon: "error",
       title: "Cannot send empty message",
@@ -124,14 +126,14 @@ $("#sendbutton").on("click", function() {
   }
   processing = true;
 
-  socket.emit("SendMessage", $("#textinput").val(), uuid != "" ? uuid : $("#chatname").val());
+  socket.emit("SendMessage", $("#textinput").val(), uuid !== "" ? uuid : $("#chatname").val());
 });
 
 $("#costbutton").on("click", function() {
   if (processing) {
     return;
   }
-  if ($("#textinput").val() == "") {
+  if ($("#textinput").val() === "") {
     Swal.fire({
       icon: "error",
       title: "Cannot calculate",
@@ -172,9 +174,9 @@ socket.on("connect", () => {
   socket.on("LoadMessages", function(messages) {
     $("#chat").empty();
     for (let i = 0; i < messages.length; i++) {
-      if (messages[i].role == "user") {
+      if (messages[i].role === "user") {
         $("#chat").append(`
-          <div class="message user">${messages[i].content}</div>
+          <div class="message user">${$("<div>").text(messages[i].content).html()}</div>
         `);
       }
       else {
@@ -198,18 +200,18 @@ socket.on("connect", () => {
         </div>
       `);
       const latestModelAdded = $("#models div").last();
-      if (model == settings.model) {
+      if (model === settings.model) {
         $(latestModelAdded).addClass("selected");
       }
     }
     $("#themeselection").val(settings.theme.toLowerCase());
-    if (settings.theme == "LIGHT") {
+    if (settings.theme === "LIGHT") {
       $("#theme").attr("href", "/CSS/light.css");
       $("#settingsicon").attr("src", "/Assets/SettingsBlack.svg");
       $("#logo").attr("src", "/Assets/LogoBlack.png");
       $("#codestyling").attr("href", "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-light.min.css");
     }
-    else if (settings.theme == "DARK") {
+    else if (settings.theme === "DARK") {
       $("#theme").attr("href", "/CSS/dark.css");
       $("#settingsicon").attr("src", "/Assets/SettingsWhite.svg");
       $("#logo").attr("src", "/Assets/LogoWhite.png");
@@ -230,7 +232,7 @@ socket.on("connect", () => {
     uuid = uuidReceiving;
 
     hljs.highlightAll();
-    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
   });
   socket.on("ChatInProgress", function() {
     $("#chat").show(200);
@@ -244,7 +246,7 @@ socket.on("connect", () => {
     $("#textinput").css("height", `${$("#textinput")[0].scrollHeight - 32}px`);
     $("#chat").css("padding-bottom", "175px");
 
-    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"})
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
   });
   socket.on("Problem", function(title, message, clean) {
     if (clean) {

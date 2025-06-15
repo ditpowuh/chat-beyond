@@ -41,6 +41,7 @@ body {
   padding: 20px;
   width: 500px;
   border-radius: 25px;
+  white-space: pre-line;
 }
 
 #chat .message.processing {

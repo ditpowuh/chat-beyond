@@ -73,7 +73,7 @@ io.on("connection", function(socket) {
     };
     for (const chat of chatOrder) {
 
-      chat["title"] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${chat.uuid}.json`))).title;
+      chat["title"] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", chat.uuid, "chat.json"))).title;
 
       const chatTime = new Date(chat.time);
       if (date.isToday(chatTime)) {
@@ -106,17 +106,17 @@ io.on("connection", function(socket) {
     socket.emit("LoadChatData", grouped);
   });
   socket.on("LoadMessages", function(uuid) {
-    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
+    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", uuid, "chat.json")));
 
     chat.messages = chat.messages.map(message => ({
       ...message,
-      content: message.role == "assistant" ? marked.parse(message.content) : message.content.replace(/\n/g, "<br>")
+      content: message.role === "assistant" ? marked.parse(message.content) : message.content
     }));
 
     socket.emit("LoadMessages", chat.messages);
   });
   socket.on("SendMessage", function(message, identifier) {
-    if (settingsData.apikey == "") {
+    if (settingsData.apikey === "") {
       socket.emit("Problem", "No API key", "Please go to settings and put it in.", false);
       return;
     }
@@ -132,7 +132,7 @@ io.on("connection", function(socket) {
       uuid = uuidv4();
     }
     else {
-      chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${identifier}.json`)));
+      chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", identifier, "chat.json")));
       uuid = identifier;
     }
     chat.messages.push({
@@ -155,16 +155,19 @@ io.on("connection", function(socket) {
         "role": "assistant",
         "content": response.output_text
       });
-      fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
+      if (!fs.existsSync(path.join(process.cwd(), "data", uuid))) {
+        fs.mkdirSync(path.join(process.cwd(), "data", uuid));
+      }
+      fs.writeFileSync(path.join(process.cwd(), "data", uuid, "chat.json"), JSON.stringify(chat, null, 2));
 
-      chatOrder = chatOrder.filter(chat => chat.uuid != uuid);
+      chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
       chatOrder.push({
         uuid: uuid,
-        time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
+        time: fs.statSync(path.join(process.cwd(), "data", uuid, "chat.json")).mtime
       });
       chatOrder.sort((a, b) => b.time - a.time);
 
-      socket.emit("NewMessage", message.replace(/\n/g, "<br>"), marked.parse(response.output_text), uuid);
+      socket.emit("NewMessage", message, marked.parse(response.output_text), uuid);
     }).catch(error => {
       if (error.status === 401) {
         socket.emit("Problem", "Incorrect API key", "Please go to settings and fix your API key.", true);
@@ -180,7 +183,7 @@ io.on("connection", function(socket) {
   socket.on("CalculateCost", function(message, uuid) {
     let messages = [];
     if (uuidValidate(uuid)) {
-      messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`))).messages;
+      messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", uuid, "chat.json"))).messages;
     }
     messages.push({
       "role": "user",
@@ -193,7 +196,7 @@ io.on("connection", function(socket) {
       tokenCount += 3;
       for (const key in message) {
         tokenCount += encoder.encode(message[key]).length;
-        if (key == "name") {
+        if (key === "name") {
           tokenCount++;
         }
       }
@@ -219,12 +222,24 @@ if (!fs.existsSync(path.join(process.cwd(), "data", "settings.json"))) {
 }
 fs.readdir(path.join(process.cwd(), "data"), (error, files) => {
   for (let i = 0; i < files.length; i++) {
-    if (files[i] == "settings.json") {
+    if (files[i] === "settings.json") {
+      continue;
+    }
+    if (files[i].endsWith(".json")) {
+      const uuid = path.basename(files[i], ".json");
+      if (uuidValidate(uuid)) {
+        fs.mkdirSync(path.join(process.cwd(), "data", uuid));
+        fs.renameSync(path.join(process.cwd(), "data", files[i]), path.join(process.cwd(), "data", uuid, "chat.json"));
+        chatOrder.push({
+          uuid: uuid,
+          time: fs.statSync(path.join(process.cwd(), "data", uuid, "chat.json")).mtime
+        });
+      }
       continue;
     }
     chatOrder.push({
-      uuid: path.basename(files[i], ".json"),
-      time: fs.statSync(path.join(process.cwd(), "data", files[i])).mtime
+      uuid: files[i],
+      time: fs.statSync(path.join(process.cwd(), "data", files[i], "chat.json")).mtime
     });
   }
 
