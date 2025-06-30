@@ -367,7 +367,7 @@ io.on("connection", function(socket) {
 
     encoder.free();
 
-    socket.emit("TokenCost", tokenCount, tokenCount * MODEL_DATA[settingsData.model].cost.input / 1000000);
+    socket.emit("TokenCost", tokenCount, tokenCount * MODEL_DATA[settingsData.model].cost.input / 1e6);
   });
   socket.on("FileUpload", function(file, index) {
     if (utility.videoTypes.some(ending => file.name.endsWith(`.${ending}`))) {
@@ -383,6 +383,14 @@ io.on("connection", function(socket) {
       return;
     }
     if (utility.presentationTypes.some(ending => file.name.endsWith(`.${ending}`))) {
+      socket.emit("UnsupportedType", index);
+      return;
+    }
+    if (utility.archiveTypes.some(ending => file.name.endsWith(`.${ending}`))) {
+      socket.emit("UnsupportedType", index);
+      return;
+    }
+    if (utility.executableTypes.some(ending => file.name.endsWith(`.${ending}`))) {
       socket.emit("UnsupportedType", index);
       return;
     }

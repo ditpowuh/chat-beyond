@@ -85,7 +85,7 @@ function uploadFile(file) {
   if (file.size > 1e8) {
     Swal.fire({
       icon: "error",
-      title: "Unsupported Type",
+      title: "File size exceeded limit",
       text: "That file is too big!",
       confirmButtonColor: "#666666",
       confirmButtonText: "Okay"

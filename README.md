@@ -47,6 +47,8 @@ Project was run and tested with both `Node` and `Bun`. The executable produced i
 
 ### File Input
 Images and PDF files are passed directly to OpenAI's API, whereas text files (`.txt`, `.docx`, `.js`, `.cs`, etc.) are extracted and passed as a text input.
+<br>
+A file size limit of 100 MB is imposed currently.
 
 |     File Format    | Supported |
 | ------------------ | :-------: |
@@ -59,6 +61,8 @@ Images and PDF files are passed directly to OpenAI's API, whereas text files (`.
 | Spreadsheets          | ⚠️ |
 | PDF files             | ✅ |
 | Presentation files    | ❌ |
+| Archive files         | ❌ |
+| Executables           | ❌ |
 
 ⚠️ Spreadsheets - Excel spreadsheets are not supported, but `.csv` files are completely fine.
 
