@@ -4,6 +4,7 @@ let uuid = "";
 let processing = false;
 
 let fileUpload = [];
+let dragCounter = 0;
 
 $("#textinput").css("height", `${$("#textinput")[0].scrollHeight}px`);
 $("#bottomarea").css("opacity", "1");
@@ -32,6 +33,9 @@ function openNewChat() {
 
   $("#chat").empty();
 
+  $("#filearea .fileitem div img").each(function() {
+    URL.revokeObjectURL(this.src);
+  });
   $("#filearea").html("");
   fileUpload = [];
 
@@ -66,6 +70,9 @@ function openExistingChat(uuidChat) {
   $("#textinput").css("height", ($("#textinput")[0].scrollHeight) + "px");
   $("#chat").css("padding-bottom", "200px");
 
+  $("#filearea .fileitem div img").each(function() {
+    URL.revokeObjectURL(this.src);
+  });
   $("#filearea").html("");
   fileUpload = [];
 
@@ -74,8 +81,104 @@ function openExistingChat(uuidChat) {
   socket.emit("LoadMessages", uuid);
 }
 
+function uploadFile(file) {
+  if (file.size > 1e8) {
+    Swal.fire({
+      icon: "error",
+      title: "Unsupported Type",
+      text: "That file is too big!",
+      confirmButtonColor: "#666666",
+      confirmButtonText: "Okay"
+    });
+    return;
+  }
+
+  fileUpload.push({
+    uploadedData: file,
+    uuidName: ""
+  });
+  if (file.type.startsWith("image/")) {
+    $("#filearea").append(`
+      <div class="fileitem">
+        <div>
+          <img title="${file.name}" src="${URL.createObjectURL(file)}">
+        </div>
+        <div class="fileinfo">
+          <div class="name" title="${file.name}">${file.name}</div>
+          <div class="size" title="${formatToFileSize(file.size)}">${formatToFileSize(file.size)}</div>
+        </div>
+        <button class="removebutton"><img src="/Assets/Cross.svg"></button>
+      </div>
+    `);
+  }
+  else {
+    $("#filearea").append(`
+      <div class="fileitem">
+        <div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <div class="fileinfo">
+          <div class="name" title="${file.name}">${file.name}</div>
+          <div class="size" title="${formatToFileSize(file.size)}">${formatToFileSize(file.size)}</div>
+        </div>
+        <button class="removebutton"><img src="/Assets/Cross.svg"></button>
+      </div>
+    `);
+  }
+  const latestButton = $("#filearea .fileitem .removebutton").last();
+  latestButton.on("click", function() {
+    const name = $(this).parent().find(".fileinfo").find(".name").text();
+    fileUpload = fileUpload.filter(file => file.uploadedData.name !== name);
+    const image = $(this).parent().find("div img");
+    if (image.length > 0) {
+      URL.revokeObjectURL(image[0].src);
+    }
+    $(this).parent().remove();
+    if ($("#filearea").html().trim() === "") {
+      $("#filearea").html("");
+    }
+    $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
+  });
+  $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const arrayBuffer = reader.result;
+    socket.emit("FileUpload", {
+      name: file.name,
+      type: file.type,
+      data: arrayBuffer
+    }, fileUpload.length - 1);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
 const sidebar = $("#sidebar");
 socket.emit("LoadChatData");
+
+$(window).on("paste", function(event) {
+  uploadFile(event.originalEvent.clipboardData.files[0]);
+});
+
+$("#inputarea").on("dragenter", function(event) {
+  event.preventDefault();
+  dragCounter++;
+});
+$("#inputarea").on("dragleave", function(event) {
+  event.preventDefault();
+  dragCounter--;
+});
+$("#inputarea").on("dragover", function(event) {
+  event.preventDefault();
+});
+$("#inputarea").on("drop", function(event) {
+  event.preventDefault();
+  dragCounter = 0;
+  uploadFile(event.originalEvent.dataTransfer.files[0]);
+});
 
 $(document).on("click", "#models div", function() {
   let index = $("#models div").index(this);
@@ -140,77 +243,7 @@ $("#filebutton").on("click", function() {
 });
 $("#fileinput").on("change", function() {
   if (this.files[0]) {
-    const file = this.files[0];
-
-    if (file.size > 1e8) {
-      Swal.fire({
-        icon: "error",
-        title: "Unsupported Type",
-        text: "That file is too big!",
-        confirmButtonColor: "#666666",
-        confirmButtonText: "Okay"
-      });
-      return;
-    }
-
-    fileUpload.push({
-      uploadedData: file,
-      uuidName: ""
-    });
-    if (file.type.startsWith("image/")) {
-      $("#filearea").append(`
-        <div class="fileitem">
-          <div>
-            <img title="${file.name}" src="${URL.createObjectURL(file)}">
-          </div>
-          <div class="fileinfo">
-            <div class="name" title="${file.name}">${file.name}</div>
-            <div class="size" title="${formatToFileSize(file.size)}">${formatToFileSize(file.size)}</div>
-          </div>
-          <button class="removebutton"><img src="/Assets/Cross.svg"></button>
-        </div>
-      `);
-    }
-    else {
-      $("#filearea").append(`
-        <div class="fileitem">
-          <div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </div>
-          <div class="fileinfo">
-            <div class="name" title="${file.name}">${file.name}</div>
-            <div class="size" title="${formatToFileSize(file.size)}">${formatToFileSize(file.size)}</div>
-          </div>
-          <button class="removebutton"><img src="/Assets/Cross.svg"></button>
-        </div>
-      `);
-    }
-    const latestButton = $("#filearea .fileitem .removebutton").last();
-    latestButton.on("click", function() {
-      const name = $(this).parent().find(".fileinfo").find(".name").text();
-      fileUpload = fileUpload.filter(file => file.uploadedData.name !== name);
-      $(this).parent().remove();
-      if ($("#filearea").html().trim() === "") {
-        $("#filearea").html("");
-      }
-      $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
-    });
-    $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const arrayBuffer = reader.result;
-      socket.emit("FileUpload", {
-        name: file.name,
-        type: file.type,
-        data: arrayBuffer
-      }, fileUpload.length - 1);
-    };
-    reader.readAsArrayBuffer(file);
-
+    uploadFile(this.files[0]);
     this.value = null;
   }
 });
@@ -512,6 +545,7 @@ socket.on("connect", () => {
     if ($("#filearea").html().trim() === "") {
       $("#filearea").html("");
     }
+    $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
     Swal.fire({
       icon: "error",
       title: "Unsupported Type",
