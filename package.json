@@ -13,9 +13,12 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "image-size": "^2.0.2",
+    "mammoth": "^1.9.1",
     "marked": "^15.0.12",
     "open": "^10.1.2",
     "openai": "^5.0.1",
+    "pdfreader": "^3.0.7",
     "socket.io": "^4.8.1",
     "tiktoken": "^1.0.21",
     "uuid": "^11.1.0"

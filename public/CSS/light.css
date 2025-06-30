@@ -2,11 +2,13 @@
   --background: #ffffff;
   --sidebar: #f4f4f4;
   --selected-sidebar: #dedede;
-  --topbar: #fafafa;
+  --layer: #fafafa;
   --user: #efefef;
   --button: #efefef;
   --button-hover: #d8d8d8;
   --text: #000000;
   --subtext: #666666;
+  --link: #2964aa;
+  --link-hover: #749ac8;
   --utility: #f8f8f8;
 }

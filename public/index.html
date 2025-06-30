@@ -18,13 +18,18 @@
     </div>
     <div id="topbar" class="undragable">
       <div>ChatBeyond</div>
-      <div class="seperator">|</div>
+      <div class="separator">|</div>
       <img id="settingsicon" class="undragable" src="/Assets/SettingsWhite.svg" width="32" title="Settings">
     </div>
     <div id="settings" class="content wrapper" style="display: none;">
-      <h2>API KEY</h2>
+      <h2>API Key</h2>
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
       <input id="apikey" type="text" placeholder="OpenAI API Key">
+      <button id="revealapikey">Show</button>
+      <br><br>
+      <h2>Clean-up</h2>
+      <p>This is to remove any unnecessary files</p>
+      <button id="cleanfiles">Remove any unused uploaded files</button>
       <br><br>
       <h2>Theme</h2>
       <p>Change between themes.</p>
@@ -45,12 +50,17 @@
     <div id="chat" class="content wrapper" style="display: none;"></div>
     <div id="bottomarea" class="wrapper">
       <button id="costbutton">Estimate Cost</button>
-      <div id="otherinput">
-        <button>Add File</button>
+      <div id="inputarea">
+        <div id="filearea"></div>
+        <input id="fileinput" type="file" style="display: none;">
+        <div id="textarea">
+          <textarea id="textinput" maxlength="40960" placeholder="Type your message here"></textarea>
+          <button id="filebutton" title="Add File"><img src="/Assets/FileWhite.svg" width="16" height="16"></button>
+          <button id="reasoningbutton" title="Reasoning"><img src="/Assets/LightbulbWhite.svg" width="16" height="16"></button>
+        </div>
       </div>
-      <textarea id="textinput" maxlength="40960" placeholder="Type here"></textarea>
       <button id="sendbutton">Send</button>
-      <div id="warning">As always, AI can make mistakes. Make sure you check important info provided.</div>
+      <div id="notice">As always, AI can make mistakes. Make sure you check important info provided.</div>
     </div>
     <div id="bottombar" class="undragable">
       <div id="cost">Estimated Input Cost: Uncalculated</div>
@@ -64,6 +74,7 @@
     <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
     <link id="codestyling" rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-dark.min.css">
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js" async></script>
+    <script src="https://unpkg.com/default-passive-events"></script>
     <script src="/JS/utility.js"></script>
     <script src="/JS/main.js"></script>
   </body>
