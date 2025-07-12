@@ -8,6 +8,7 @@
     "start": "node ."
   },
   "author": "Ditpowuh",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^5.4.1",
     "date-fns": "^4.1.0",
@@ -18,7 +19,7 @@
     "marked": "^15.0.12",
     "open": "^10.1.2",
     "openai": "^5.0.1",
-    "pdfreader": "^3.0.7",
+    "pdf-parse": "^1.1.1",
     "socket.io": "^4.8.1",
     "tiktoken": "^1.0.21",
     "uuid": "^11.1.0"

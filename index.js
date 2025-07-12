@@ -12,10 +12,10 @@ import * as date from "date-fns";
 import chalk from "chalk";
 import open from "open";
 import mammoth from "mammoth";
+import readPdf from "pdf-parse/lib/pdf-parse.js";
 import {spawn} from "child_process";
 import {marked} from "marked";
 import {imageSize} from "image-size";
-import {PdfReader} from "pdfreader";
 import {Server} from "socket.io";
 import {fileURLToPath} from "url";
 
@@ -267,7 +267,7 @@ io.on("connection", function(socket) {
       }
     });
   });
-  socket.on("CalculateCost", function(uuid, message, files = []) {
+  socket.on("CalculateCost", async function(uuid, message, files = []) {
     let messages = [];
     if (uuidValidate(uuid)) {
       messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`))).messages;
@@ -278,6 +278,7 @@ io.on("connection", function(socket) {
     });
 
     const encoder = tiktoken.encoding_for_model(settingsData.model);
+
     let tokenCount = 3;
     for (const message of messages) {
       tokenCount += 3;
@@ -346,26 +347,19 @@ io.on("connection", function(socket) {
         tokenCount += encoder.encode(text).length;
       }
       else if (files[i].endsWith(".docx") || files[i].endsWith(".doc")) {
-        mammoth.extractRawText({
+        const result = await mammoth.extractRawText({
           path: path.join(process.cwd(), "data", "files", files[i])
-        }).then(function(result) {
-          tokenCount += encoder.encode(result.value).length;
         });
+        tokenCount += encoder.encode(result.value).length;
       }
       else if (files[i].endsWith(`.pdf`)) {
         const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
-        new PdfReader().parseBuffer(pdfBuffer, (error, item) => {
-          if (error) {
-            console.log(error);
-          }
-          else if (item.text) {
-            tokenCount += encoder.encode(item.text).length;
-          }
-        });
+        const result = await readPdf(pdfBuffer);
+        tokenCount += encoder.encode(result.text).length;
       }
     }
 
-    encoder.free();
+    await encoder.free();
 
     socket.emit("TokenCost", tokenCount, tokenCount * MODEL_DATA[settingsData.model].cost.input / 1e6);
   });
