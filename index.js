@@ -20,6 +20,7 @@ import {Server} from "socket.io";
 import {fileURLToPath} from "url";
 
 import utility from "./utility.js";
+import modelData from "./models.js";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
@@ -31,7 +32,6 @@ const io = new Server(server, {
 });
 
 const PORT = process.env.PORT || 3000;
-const MODEL_DATA = JSON.parse(fs.readFileSync("models.json"));
 const OPEN_ON_START = true;
 const INSTRUCTIONS = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
 
@@ -62,7 +62,7 @@ marked.use({
 
 io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
-    socket.emit("LoadSettings", MODEL_DATA, settingsData);
+    socket.emit("LoadSettings", modelData, settingsData);
   });
   socket.on("SaveSetting", function(key, data) {
     settingsData[key] = data;
@@ -71,7 +71,7 @@ io.on("connection", function(socket) {
   socket.on("ChangeTheme", function(theme) {
     settingsData.theme = theme;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
-    socket.emit("LoadSettings", MODEL_DATA, settingsData);
+    socket.emit("LoadSettings", modelData, settingsData);
   });
   socket.on("LoadChatData", function() {
     const now = new Date();
@@ -221,11 +221,11 @@ io.on("connection", function(socket) {
       input: messages,
       instructions: `${INSTRUCTIONS} Today's date is ${date.format(new Date(), "yyyy-MM-dd")}.`
     };
-    if (MODEL_DATA[settingsData.model].temperature) {
+    if (modelData[settingsData.model].temperature) {
       responseSettings.temperature = 0.7;
       responseSettings.top_p = 1.0;
     }
-    if (MODEL_DATA[settingsData.model].web) {
+    if (modelData[settingsData.model].web) {
       responseSettings.tools = [{
         type: "web_search_preview"
       }];
@@ -361,7 +361,7 @@ io.on("connection", function(socket) {
 
     await encoder.free();
 
-    socket.emit("TokenCost", tokenCount, tokenCount * MODEL_DATA[settingsData.model].cost.input / 1e6);
+    socket.emit("TokenCost", tokenCount, tokenCount * modelData[settingsData.model].cost.input / 1e6);
   });
   socket.on("FileUpload", function(file, index) {
     if (utility.videoTypes.some(ending => file.name.endsWith(`.${ending}`))) {

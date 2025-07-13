@@ -1,4 +1,4 @@
-{
+export default {
   "gpt-4o-mini": {
     "description": "A cheaper verison of GPT-4o. This is the free model of ChatGPT.",
     "cost": {
@@ -59,4 +59,4 @@
     "reasoning": true,
     "web": false
   }
-}
+};
