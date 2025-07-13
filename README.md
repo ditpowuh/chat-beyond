@@ -7,7 +7,7 @@ The app is built with ease of use in mind, keeping everything very simple. Every
 > Note that this does NOT cover the cost of using the models.
 
 Overview/Features:
-- Able to use any of OpenAI's models (if users need a specific model, `models.json` can be modified)
+- Able to use any of OpenAI's models (if technical users need a specific model, `models.js` can be modified)
 - Locally stored conversations and data (in a place where it is easy to find and accessible)
 - Estimates cost by calculating the number of tokens and applying the model's pricing
 - Made to be lightweight as possible whilst maintaining ease of use and configurability
@@ -41,7 +41,7 @@ Settings, chats and files are stored within the `data` directory, which is creat
 
 The models that are provided have been tested and are more than enough for layman/regular users' needs.
 <br>
-But if a specific model is required and you are a technical user, you may add more via `models.json`.
+But if a specific model is required and you are a technical user, more models can be added by modifying `models.js`.
 
 Project was run and tested with both `Node` and `Bun`. The executable produced in `Releases` were produced by `Bun`'s bundler.
 
