@@ -4,6 +4,7 @@ let uuid = "";
 let processing = false;
 
 let fileUpload = [];
+let fileSizeLimit = 1e8;
 let dragCounter = 0;
 
 $("#textinput").css("height", `${$("#textinput")[0].scrollHeight}px`);
@@ -82,7 +83,7 @@ function openExistingChat(uuidChat) {
 }
 
 function uploadFile(file) {
-  if (file.size > 1e8) {
+  if (file.size > fileSizeLimit) {
     Swal.fire({
       icon: "error",
       title: "File size exceeded limit",
@@ -426,7 +427,8 @@ socket.on("connect", () => {
     window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
     lenis.start();
   });
-  socket.on("LoadSettings", function(models, settings) {
+  socket.on("LoadSettings", function(models, settings, limit) {
+    fileSizeLimit = limit;
     $("#apikey").val(settings.apikey);
     $("#models").empty();
     for (const model in models) {
@@ -587,5 +589,5 @@ socket.on("connect", () => {
       }
     });
     processing = false;
-  })
+  });
 });

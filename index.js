@@ -24,16 +24,17 @@ import modelData from "./models.js";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
+const PORT = process.env.PORT || 3000;
+const FILE_SIZE_LIMIT = process.env.FILE_SIZE_LIMIT || 1e8;
+const OPEN_ON_START = true;
+const INSTRUCTIONS = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
+
 const app = express();
 
 const server = http.Server(app);
 const io = new Server(server, {
-  maxHttpBufferSize: 1e8
+  maxHttpBufferSize: FILE_SIZE_LIMIT
 });
-
-const PORT = process.env.PORT || 3000;
-const OPEN_ON_START = true;
-const INSTRUCTIONS = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
 
 let chatOrder = [];
 
@@ -62,7 +63,7 @@ marked.use({
 
 io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
-    socket.emit("LoadSettings", modelData, settingsData);
+    socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
   });
   socket.on("SaveSetting", function(key, data) {
     settingsData[key] = data;
@@ -71,7 +72,7 @@ io.on("connection", function(socket) {
   socket.on("ChangeTheme", function(theme) {
     settingsData.theme = theme;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
-    socket.emit("LoadSettings", modelData, settingsData);
+    socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
   });
   socket.on("LoadChatData", function() {
     const now = new Date();
@@ -352,7 +353,7 @@ io.on("connection", function(socket) {
         });
         tokenCount += encoder.encode(result.value).length;
       }
-      else if (files[i].endsWith(`.pdf`)) {
+      else if (files[i].endsWith(".pdf")) {
         const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
         const result = await readPdf(pdfBuffer);
         tokenCount += encoder.encode(result.text).length;

@@ -313,7 +313,6 @@ a:hover {
   font-size: 15px;
   padding: 10px;
   border-radius: 10px;
-  text-overflow: ellipsis;
   cursor: pointer;
   transition: 0.25s all;
 }
@@ -339,6 +338,13 @@ a:hover {
   opacity: 0;
   cursor: pointer;
   transition: 0.25s opacity;
+}
+
+#sidebar ul li span {
+  height: 20px;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #topbar {
