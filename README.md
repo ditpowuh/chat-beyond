@@ -45,6 +45,8 @@ But if a specific model is required and you are a technical user, more models ca
 
 Project was run and tested with both `Node` and `Bun`. The executable produced in `Releases` were produced by `Bun`'s bundler.
 
+> It should be noted that the cost calculator does not take tokens from reasoning into consideration.
+
 ### File Input
 Images and PDF files are passed directly to OpenAI's API, whereas text files (`.txt`, `.docx`, `.js`, `.cs`, etc.) are extracted and passed as a text input.
 <br>
@@ -65,4 +67,11 @@ A file size limit of 100 MB is imposed currently.
 | Executables           | ❌ |
 
 ⚠️ Spreadsheets - Excel spreadsheets are not supported, but `.csv` files are completely fine.
+
+### Recommended Method for Updating
+>  This is for the executable from [Releases](https://github.com/ditpowuh/chat-beyond/releases).
+
+Extracting the new release, without deleting the older files, is generally fine, but is not the recommended method.
+<br>
+The recommended way of updating is to delete all files and folders except for `data` and then extract the new release as usual.
 
