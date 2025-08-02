@@ -65,8 +65,13 @@ io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
     socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
   });
-  socket.on("SaveSetting", function(key, data) {
-    settingsData[key] = data;
+  socket.on("SaveModel", function(model) {
+    settingsData.model = model;
+    fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
+    socket.emit("SaveModel", modelData[model]);
+  });
+  socket.on("SaveKey", function(key) {
+    settingsData.apikey = key;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
   socket.on("ChangeTheme", function(theme) {
@@ -132,7 +137,7 @@ io.on("connection", function(socket) {
 
     socket.emit("LoadMessages", chat.messages, utility.imageTypes);
   });
-  socket.on("SendMessage", async function(message, identifier, files = []) {
+  socket.on("SendMessage", async function(message, identifier, files = [], reasoningStrength) {
     if (settingsData.apikey === "") {
       socket.emit("NotificationAlert", "No API key", "Please go to settings and put it in.", true, false);
       return;
@@ -230,6 +235,25 @@ io.on("connection", function(socket) {
       responseSettings.tools = [{
         type: "web_search_preview"
       }];
+    }
+    if (modelData[settingsData.model].reasoning) {
+      switch (reasoningStrength) {
+        case 1:
+          responseSettings.reasoning = {
+            effort: "low"
+          };
+          break;
+        case 2:
+          responseSettings.reasoning = {
+            effort: "medium"
+          };
+          break;
+        case 3:
+          responseSettings.reasoning = {
+            effort: "high"
+          };
+          break;
+      }
     }
     await client.responses.create(responseSettings).then(async response => {
       chat.messages.push({

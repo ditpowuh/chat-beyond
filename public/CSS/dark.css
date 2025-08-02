@@ -11,4 +11,7 @@
   --link: #7ab7ff;
   --link-hover: #5e83b3;
   --utility: #272727;
+  --low-strength: #ff0000;
+  --medium-strength: #ffff00;
+  --high-strength: #00ff00;
 }

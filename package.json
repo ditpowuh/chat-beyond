@@ -1,6 +1,6 @@
 {
   "name": "chat-beyond",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A web interface to use OpenAI's API, made to be familiar and easy.",
   "exports": "./index.js",
   "type": "module",

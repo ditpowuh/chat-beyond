@@ -7,6 +7,8 @@ let fileUpload = [];
 let fileSizeLimit = 1e8;
 let dragCounter = 0;
 
+let reasoningStrength = 0;
+
 $("#textinput").css("height", `${$("#textinput")[0].scrollHeight}px`);
 $("#bottomarea").css("opacity", "1");
 $("#textinput").on("input", function() {
@@ -39,6 +41,8 @@ function openNewChat() {
   });
   $("#filearea").html("");
   fileUpload = [];
+
+  setReasoningStrength(0);
 
   uuid = "";
 }
@@ -76,6 +80,8 @@ function openExistingChat(uuidChat) {
   });
   $("#filearea").html("");
   fileUpload = [];
+
+  setReasoningStrength(0);
 
   uuid = uuidChat;
 
@@ -157,6 +163,30 @@ function uploadFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
+function setReasoningStrength(level) {
+  reasoningStrength = level;
+  if (reasoningStrength > 3 || reasoningStrength < 0) {
+    reasoningStrength = 0;
+  }
+  switch (reasoningStrength) {
+    case 1:
+      $("#reasoningbutton").attr("title", "Reasoning: Low");
+      $("#reasoningbutton").css("border", "2.5px solid var(--low-strength)");
+      break;
+    case 2:
+      $("#reasoningbutton").attr("title", "Reasoning: Medium");
+      $("#reasoningbutton").css("border", "2.5px solid var(--medium-strength)");
+      break;
+    case 3:
+      $("#reasoningbutton").attr("title", "Reasoning: High");
+      $("#reasoningbutton").css("border", "2.5px solid var(--high-strength)");
+      break;
+    default:
+      $("#reasoningbutton").attr("title", "Reasoning: None");
+      $("#reasoningbutton").css("border", "");
+  }
+}
+
 const sidebar = $("#sidebar");
 socket.emit("LoadChatData");
 
@@ -191,11 +221,11 @@ $(document).on("click", "#models div", function() {
       model = $(element).find("h3").html();
     }
   });
-  socket.emit("SaveSetting", "model", model);
+  socket.emit("SaveModel", model);
 });
 
 $(document).on("change", "#apikey", function() {
-  socket.emit("SaveSetting", "apikey", $(this).val());
+  socket.emit("SaveKey", $(this).val());
 });
 
 $("#revealapikey").on("click", function() {
@@ -249,6 +279,10 @@ $("#fileinput").on("change", function() {
   }
 });
 
+$("#reasoningbutton").on("click", function() {
+  setReasoningStrength(reasoningStrength + 1);
+});
+
 $("#textinput").on("wheel", function(event) {
   const scrollTop = this.scrollTop;
   const scrollHeight = this.scrollHeight;
@@ -293,7 +327,7 @@ $("#sendbutton").on("click", function() {
   }
   processing = true;
 
-  socket.emit("SendMessage", $("#textinput").val().trim(), uuid !== "" ? uuid : $("#chatname").val().trim(), fileUpload.map(data => data.uuidName));
+  socket.emit("SendMessage", $("#textinput").val().trim(), uuid !== "" ? uuid : $("#chatname").val().trim(), fileUpload.map(data => data.uuidName), reasoningStrength);
 
   $("#filearea").html("");
   fileUpload = [];
@@ -443,6 +477,12 @@ socket.on("connect", () => {
       `);
       const latestModelAdded = $("#models div").last();
       if (model === settings.model) {
+        if (models[model].reasoning) {
+          $("#reasoningbutton").show();
+        }
+        else {
+          $("#reasoningbutton").hide();
+        }
         $(latestModelAdded).addClass("selected");
       }
     }
@@ -558,6 +598,14 @@ socket.on("connect", () => {
   });
   socket.on("UploadComplete", function(uuidName, index) {
     fileUpload[index].uuidName = uuidName;
+  });
+  socket.on("SaveModel", function(modelInfo) {
+    if (modelInfo.reasoning) {
+      $("#reasoningbutton").show();
+    }
+    else {
+      $("#reasoningbutton").hide();
+    }
   });
   socket.on("NotificationAlert", function(title, message, error, clean) {
     if (clean) {
