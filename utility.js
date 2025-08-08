@@ -160,6 +160,24 @@ export const executableTypes = [
   "run"
 ];
 
+export function formatMessage(message) {
+  const pattern = /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
+  return message.replace(
+    pattern, (match, codeBlock, squareBracket, roundBracket) => {
+      if (codeBlock) {
+        return codeBlock;
+      }
+      else if (squareBracket) {
+        return `$$${squareBracket}$$`;
+      }
+      else if (roundBracket) {
+        return `$${roundBracket}$`;
+      }
+      return match;
+    }
+  );
+}
+
 export default {
   textTypes,
   imageTypes,
@@ -168,5 +186,6 @@ export default {
   spreadsheetTypes,
   presentationTypes,
   archiveTypes,
-  executableTypes
+  executableTypes,
+  formatMessage
 };

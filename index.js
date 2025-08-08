@@ -13,8 +13,9 @@ import chalk from "chalk";
 import open from "open";
 import mammoth from "mammoth";
 import readPdf from "pdf-parse/lib/pdf-parse.js";
-import {spawn} from "child_process";
+import markedKatex from "marked-katex-extension";
 import {marked} from "marked";
+import {spawn} from "child_process";
 import {imageSize} from "image-size";
 import {Server} from "socket.io";
 import {fileURLToPath} from "url";
@@ -59,7 +60,11 @@ app.get("*", function(request, response) {
 
 marked.use({
   breaks: true
-});
+},
+markedKatex({
+  throwOnError: false,
+  nonStandard: true
+}));
 
 io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
@@ -132,7 +137,7 @@ io.on("connection", function(socket) {
 
     chat.messages = chat.messages.map(message => ({
       ...message,
-      content: message.role === "assistant" ? marked.parse(message.content) : message.content
+      content: message.role === "assistant" ? marked.parse(utility.formatMessage(message.content)) : message.content
     }));
 
     socket.emit("LoadMessages", chat.messages, utility.imageTypes);
@@ -269,7 +274,7 @@ io.on("connection", function(socket) {
       });
       chatOrder.sort((a, b) => b.time - a.time);
 
-      socket.emit("NewMessage", message, marked.parse(response.output_text), uuid, chat.title, files, utility.imageTypes);
+      socket.emit("NewMessage", message, marked.parse(utility.formatMessage(response.output_text)), uuid, chat.title, files, utility.imageTypes);
 
       for (const message in messages) {
         if (typeof message.content === "string") {
