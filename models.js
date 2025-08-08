@@ -30,7 +30,7 @@ export default {
     "web": true
   },
   "gpt-4.1-mini": {
-    "description": "A weaker, but still strong version of GPT 4.1, with reduced costs.",
+    "description": "A weaker, but still strong version of GPT-4.1, with reduced costs.",
     "cost": {
       "input": 0.4,
       "output": 1.6
@@ -40,7 +40,7 @@ export default {
     "web": true
   },
   "gpt-4.1-nano": {
-    "description": "The cheapest verison of GPT 4.1, which makes it the weakest version of GPT 4.1.",
+    "description": "The cheapest verison of GPT-4.1, which makes it the weakest version of GPT-4.1.",
     "cost": {
       "input": 0.1,
       "output": 0.4
@@ -54,6 +54,36 @@ export default {
     "cost": {
       "input": 1.1,
       "output": 4.4
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": false
+  },
+  "gpt-5": {
+    "description": "The latest flagship GPT model for tasks across all domains.",
+    "cost": {
+      "input": 1.25,
+      "output": 10
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5-mini": {
+    "description": "A faster, more cost-efficient version of GPT-5 that is still strong.",
+    "cost": {
+      "input": 0.25,
+      "output": 2
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5-nano": {
+    "description": "The cheapest verison of GPT-5, which makes it the weakest version of GPT-5.",
+    "cost": {
+      "input": 0.05,
+      "output": 0.4
     },
     "temperature": false,
     "reasoning": true,
