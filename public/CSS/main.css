@@ -1,4 +1,7 @@
 html {
+  background-color: var(--background) !important;
+  color: var(--text) !important;
+  display: inline !important;
   font-family: ui-sans-serif, system-ui, Segoe UI, Helvetica, Apple Color Emoji, Arial, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
@@ -7,8 +10,9 @@ html {
 }
 
 body {
-  background-color: var(--background);
-  color: var(--text);
+  background-color: var(--background) !important;
+  color: var(--text) !important;
+  display: inline !important;
   transition: all 0.25s;
 }
 
@@ -469,7 +473,7 @@ a:hover {
   background-color: var(--user);
   margin: 7.5px 5px;
   width: 320px;
-  height: 320px;
+  height: 330px;
   padding: 10px 30px;
   border: 2.5px solid var(--subtext);
   border-radius: 25px;

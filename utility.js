@@ -162,20 +162,18 @@ export const executableTypes = [
 
 export function formatMessage(message) {
   const pattern = /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
-  return message.replace(
-    pattern, (match, codeBlock, squareBracket, roundBracket) => {
-      if (codeBlock) {
-        return codeBlock;
-      }
-      else if (squareBracket) {
-        return `$$${squareBracket}$$`;
-      }
-      else if (roundBracket) {
-        return `$${roundBracket}$`;
-      }
-      return match;
+  return message.replace(pattern, (match, codeBlock, squareBracket, roundBracket) => {
+    if (codeBlock) {
+      return codeBlock;
     }
-  );
+    else if (squareBracket) {
+      return `$$${squareBracket}$$`;
+    }
+    else if (roundBracket) {
+      return `$${roundBracket}$`;
+    }
+    return match;
+  });
 }
 
 export default {
