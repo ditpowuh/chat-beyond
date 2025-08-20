@@ -12,7 +12,6 @@ html {
 body {
   background-color: var(--background) !important;
   color: var(--text) !important;
-  display: inline !important;
   transition: all 0.25s;
 }
 

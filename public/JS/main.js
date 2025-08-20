@@ -283,7 +283,7 @@ $("#reasoningbutton").on("click", function() {
   setReasoningStrength(reasoningStrength + 1);
 });
 
-$("#textinput").on("wheel", function(event) {
+$("#textinput, #sidebar").on("wheel", function(event) {
   const scrollTop = this.scrollTop;
   const scrollHeight = this.scrollHeight;
   const clientHeight = this.clientHeight;
