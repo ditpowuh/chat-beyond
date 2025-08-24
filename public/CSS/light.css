@@ -15,3 +15,11 @@
   --medium-strength: #edd307;
   --high-strength: #00c400;
 }
+
+::-webkit-scrollbar-thumb {
+  background: #888888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555555;
+}
