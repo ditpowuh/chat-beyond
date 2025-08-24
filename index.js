@@ -328,46 +328,9 @@ io.on("connection", function(socket) {
 
     for (let i = 0; i < files.length; i++) {
       if (utility.imageTypes.some(ending => files[i].endsWith(`.${ending}`))) {
-        if (["gpt-4.1-mini", "gpt-4.1-nano", "o4-mini"].includes(settingsData.model)) {
-          const fileDimensions = imageSize(fs.readFileSync(path.join(process.cwd(), "data", "files", files[i])));
-          let widthPatches = Math.floor((fileDimensions.width + 32 - 1) / 32);
-          let heightPatches = Math.floor((fileDimensions.height + 32 - 1) / 32);
-          if (widthPatches * heightPatches <= 1536) {
-            tokenCount += widthPatches * heightPatches;
-          }
-          else {
-            let scaleFactor = Math.sqrt(1536 * (32 ** 2) / (fileDimensions.width * fileDimensions.height));
-            fileDimensions.width = fileDimensions.width * scaleFactor;
-            fileDimensions.height = fileDimensions.height * scaleFactor;
-            if (fileDimensions.width % 1 !== 0) {
-              scaleFactor = Math.floor(fileDimensions.width) / fileDimensions.width;
-              fileDimensions.width = fileDimensions.width * scaleFactor;
-              fileDimensions.height = fileDimensions.height * scaleFactor;
-            }
-            tokenCount += (fileDimensions.width / 32) * (fileDimensions.height / 32);
-          }
-        }
-        if (["gpt-4o", "gpt-4.1", "gpt-4o-mini"].includes(settingsData.model)) {
-          const fileDimensions = imageSize(fs.readFileSync(path.join(process.cwd(), "data", "files", files[i])));
-          if (fileDimensions.width > 2048 || fileDimensions.height > 2048) {
-            if (fileDimensions.width > fileDimensions.height) {
-              fileDimensions.width = 2048;
-              fileDimensions.height = fileDimensions.height * (2048 / fileDimensions.width);
-            }
-            else {
-              fileDimensions.height = 2048;
-              fileDimensions.width = fileDimensions.width * (2048 / fileDimensions.height);
-            }
-          }
-          if (fileDimensions.width > fileDimensions.height) {
-            fileDimensions.width = 765;
-            fileDimensions.height = fileDimensions.height * (765 / fileDimensions.width);
-          }
-          else {
-            fileDimensions.height = 765;
-            fileDimensions.width = fileDimensions.width * (765 / fileDimensions.height);
-          }
-          tokenCount += Math.ceil(fileDimensions.width / 512) * Math.ceil(fileDimensions.height / 512) * 170 + 85;
+        let imageTokenCost = utility.imageToken.calculateImageCost(settingsData.model, path.join(process.cwd(), "data", "files", files[i]));
+        if (imageTokenCost !== null) {
+          tokenCount += imageTokenCost;
         }
       }
       else if (utility.textTypes.some(ending => files[i].endsWith(`.${ending}`))) {
