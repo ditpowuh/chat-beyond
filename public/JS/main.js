@@ -367,12 +367,12 @@ socket.on("connect", () => {
         const theme = $("#themeselection").val().toUpperCase();
         if (theme === "LIGHT") {
           $(latestListAdded).append(`
-            <li data-uuid="${chats[category][i]["uuid"]}"><span>${chats[category][i]["title"]}</span><button class="deletebutton"><img src="/Assets/BinBlack.svg"></button></li>
+            <li data-uuid="${chats[category][i]["uuid"]}"><span>${chats[category][i]["title"]}</span><button class="modifybutton"><img src="/Assets/SettingsBlack.svg"></button></li>
           `);
         }
         else if (theme === "DARK") {
           $(latestListAdded).append(`
-            <li data-uuid="${chats[category][i]["uuid"]}"><span>${chats[category][i]["title"]}</span><button class="deletebutton"><img src="/Assets/BinWhite.svg"></button></li>
+            <li data-uuid="${chats[category][i]["uuid"]}"><span>${chats[category][i]["title"]}</span><button class="modifybutton"><img src="/Assets/SettingsWhite.svg"></button></li>
           `);
         }
       }
@@ -384,23 +384,66 @@ socket.on("connect", () => {
       document.title = "ChatBeyond: " + $(this).find("span").html();
       openExistingChat($(this).data("uuid"));
     });
-    $("#pastchats .list li .deletebutton").on("click", function(event) {
+    $("#pastchats .list li .modifybutton").on("click", function(event) {
       event.stopPropagation();
       if (processing) {
         return;
       }
       Swal.fire({
-        icon: "warning",
-        title: "Are you sure you want to delete this chat?",
-        text: "You won't be able to revert this.",
+        icon: "question",
+        title: "What would you like to do with this chat?",
         showCancelButton: true,
+        showDenyButton: true,
         confirmButtonColor: "#c24848",
+        denyButtonColor: "#a39345",
         cancelButtonColor: "#666666",
         confirmButtonText: "Delete",
+        denyButtonText: "Rename",
         cancelButtonText: "Cancel"
       }).then((result) => {
         if (result.isConfirmed) {
-          socket.emit("DeleteChat", $(this).parent().data("uuid"));
+          Swal.fire({
+            icon: "warning",
+            title: "Are you sure you want to delete this chat?",
+            text: "You won't be able to revert this.",
+            showCancelButton: true,
+            confirmButtonColor: "#c24848",
+            cancelButtonColor: "#666666",
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              socket.emit("DeleteChat", $(this).parent().data("uuid"));
+            }
+          });
+        }
+        else if (result.isDenied) {
+          Swal.fire({
+            title: "What would you like to rename this chat?",
+            input: "text",
+            inputPlaceholder: "Chat Name",
+            showCancelButton: true,
+            confirmButtonColor: "#a39345",
+            cancelButtonColor: "#666666",
+            confirmButtonText: "Rename",
+            cancelButtonText: "Cancel"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              if (result.value.trim() === "") {
+                Swal.fire({
+                  icon: "error",
+                  title: "No chat name",
+                  text: "That is not a valid name for your conversation.",
+                  confirmButtonColor: "#666666",
+                  confirmButtonText: "Okay"
+                });
+              }
+              else {
+                processing = true;
+                socket.emit("RenameChat", $(this).parent().data("uuid"), result.value.trim());
+              }
+            }
+          });
         }
       });
     });
@@ -469,7 +512,7 @@ socket.on("connect", () => {
       $("#models").append(`
         <div>
           <h3>${model}</h3>
-          <p><b>Description</b><br>${models[model].description}</p>
+          <p><b>Description</b><br><span class="description">${models[model].description}</span></p>
           <p><b>Costs</b><br>$${formatToMoney(models[model].cost.input)} per 1,000,000 tokens for Input<br>$${formatToMoney(models[model].cost.output)} per 1,000,000 tokens for Output</p>
           <p class="small"><b>Web Search</b><br>${models[model].web ? "Available" : "Not Available"}</p>
           <p class="small"><b>Reasoning</b><br>${models[model].reasoning ? "Available" : "Not Available"}</p>
@@ -494,7 +537,7 @@ socket.on("connect", () => {
       $("#codestyling").attr("href", "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-light.min.css");
       $("#filebutton img").attr("src", "/Assets/FileBlack.svg");
       $("#reasoningbutton img").attr("src", "/Assets/LightbulbBlack.svg");
-      $("#pastchats .list li .deletebutton img").attr("src", "/Assets/BinBlack.svg");
+      $("#pastchats .list li .modifybutton img").attr("src", "/Assets/SettingsBlack.svg");
     }
     else if (settings.theme === "DARK") {
       $("#theme").attr("href", "/CSS/dark.css");
@@ -503,7 +546,7 @@ socket.on("connect", () => {
       $("#codestyling").attr("href", "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-dark.min.css");
       $("#filebutton img").attr("src", "/Assets/FileWhite.svg");
       $("#reasoningbutton img").attr("src", "/Assets/LightbulbWhite.svg");
-      $("#pastchats .list li .deletebutton img").attr("src", "/Assets/BinWhite.svg");
+      $("#pastchats .list li .modifybutton img").attr("src", "/Assets/SettingsWhite.svg");
     }
   });
   socket.on("NewMessage", function(originalMessage, output, uuidReceiving, title, files, imageTypes) {
@@ -580,6 +623,17 @@ socket.on("connect", () => {
   socket.on("ReloadChatData", function() {
     openNewChat();
     socket.emit("LoadChatData");
+  });
+  socket.on("ChangeChatName", function(uuid, name) {
+    $(`#pastchats ul.list li[data-uuid="${uuid}"]`).find("span").text(name);
+    processing = false;
+    Swal.fire({
+      icon: "success",
+      title: "Chat renamed",
+      text: "Your conversation has been successfully renamed.",
+      confirmButtonColor: "#666666",
+      confirmButtonText: "Okay"
+    });
   });
   socket.on("UnsupportedType", function(index) {
     fileUpload.splice(index, 1);

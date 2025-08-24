@@ -284,6 +284,22 @@ a:hover {
   overflow-y: scroll;
 }
 
+#sidebar .top {
+  background-color: var(--sidebar);
+  width: 275px;
+  position: fixed;
+  padding-bottom: 20px;
+  border-bottom: 2.5px solid var(--background);
+}
+
+#sidebar .top .list li {
+  width: 230px;
+}
+
+#sidebar #pastchats {
+  padding-top: 120px;
+}
+
 #sidebar #logo {
   margin-top: 12px;
   margin-left: 12px;
@@ -346,6 +362,7 @@ a:hover {
 #sidebar ul li span {
   height: 20px;
   width: 90%;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -489,6 +506,12 @@ a:hover {
 #models div p.small {
   text-align: center;
   font-size: 14px;
+}
+
+#models div p span.description {
+  display: inline-block;
+  max-height: 45px;
+  overflow: hidden;
 }
 
 #newchatarea {

@@ -1,6 +1,5 @@
 import "dotenv/config";
 
-import os from "os";
 import express from "express";
 import http from "http";
 import path from "path";
@@ -16,9 +15,7 @@ import readPdf from "pdf-parse/lib/pdf-parse.js";
 import markedKatex from "marked-katex-extension";
 import {marked} from "marked";
 import {spawn} from "child_process";
-import {imageSize} from "image-size";
 import {Server} from "socket.io";
-import {fileURLToPath} from "url";
 
 import utility from "./utility.js";
 import modelData from "./models.js";
@@ -131,6 +128,12 @@ io.on("connection", function(socket) {
     fs.rmSync(path.join(process.cwd(), "data", `${uuid}.json`));
     chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
     socket.emit("ReloadChatData");
+  });
+  socket.on("RenameChat", function(uuid, newName) {
+    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
+    chat.title = newName;
+    fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
+    socket.emit("ChangeChatName", uuid, newName);
   });
   socket.on("LoadMessages", function(uuid) {
     let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
