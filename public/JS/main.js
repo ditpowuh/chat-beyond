@@ -422,6 +422,7 @@ socket.on("connect", () => {
             title: "What would you like to rename this chat?",
             input: "text",
             inputPlaceholder: "Chat Name",
+            inputValue: $(this).parent().find("span").text(),
             showCancelButton: true,
             confirmButtonColor: "#a39345",
             cancelButtonColor: "#666666",
@@ -607,7 +608,7 @@ socket.on("connect", () => {
   socket.on("ChatInProgress", function() {
     $("#chat").show();
     $("#chat").append(`
-      <div class="message processing">Thinking and typing...</div>
+      <div class="message processing undraggable">Thinking and typing...</div>
     `);
 
     $("#newchatarea").hide(200);
@@ -625,7 +626,7 @@ socket.on("connect", () => {
     socket.emit("LoadChatData");
   });
   socket.on("ChangeChatName", function(uuid, name) {
-    $(`#pastchats ul.list li[data-uuid="${uuid}"]`).find("span").text(name);
+    socket.emit("LoadChatData");
     processing = false;
     Swal.fire({
       icon: "success",

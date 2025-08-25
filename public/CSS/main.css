@@ -286,18 +286,15 @@ a:hover {
 
 #sidebar .top {
   background-color: var(--sidebar);
+  top: 0;
   width: 275px;
-  position: fixed;
+  position: sticky;
   padding-bottom: 20px;
   border-bottom: 2.5px solid var(--background);
 }
 
 #sidebar .top .list li {
   width: 230px;
-}
-
-#sidebar #pastchats {
-  padding-top: 120px;
 }
 
 #sidebar #logo {
@@ -564,7 +561,7 @@ a:hover {
   padding-bottom: 175px;
 }
 
-.undragable {
+.undraggable {
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;

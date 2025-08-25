@@ -133,6 +133,12 @@ io.on("connection", function(socket) {
     let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
     chat.title = newName;
     fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
+    chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
+    chatOrder.push({
+      uuid: uuid,
+      time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
+    });
+    chatOrder.sort((a, b) => b.time - a.time);
     socket.emit("ChangeChatName", uuid, newName);
   });
   socket.on("LoadMessages", function(uuid) {
