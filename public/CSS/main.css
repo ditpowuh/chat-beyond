@@ -12,6 +12,8 @@ html {
 body {
   background-color: var(--background) !important;
   color: var(--text) !important;
+  padding-right: 0 !important;
+  overflow: visible !important;
   transition: all 0.25s;
 }
 
@@ -281,6 +283,7 @@ a:hover {
   display: block;
   width: 275px;
   height: 100%;
+  overflow-x: hidden;
   overflow-y: scroll;
 }
 
@@ -362,6 +365,10 @@ a:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#pastchats {
+  padding-bottom: 25px;
 }
 
 #topbar {
