@@ -170,10 +170,10 @@ export function formatMessage(message) {
       return codeBlock;
     }
     else if (squareBracket) {
-      return `$$${squareBracket}$$`;
+      return `\n$$\n${squareBracket.replace(/\\\\/g, "\\")}\n$$\n`;
     }
     else if (roundBracket) {
-      return `$${roundBracket}$`;
+      return `$${roundBracket.replace(/\\\\/g, "\\")}$`;
     }
     return match;
   });
