@@ -239,7 +239,8 @@ io.on("connection", function(socket) {
     const responseSettings = {
       model: settingsData.model,
       input: messages,
-      instructions: `${INSTRUCTIONS} Today's date is ${date.format(new Date(), "yyyy-MM-dd")}.`
+      instructions: `${INSTRUCTIONS} Today's date is ${date.format(new Date(), "yyyy-MM-dd")}.`,
+      stream: true
     };
     if (modelData[settingsData.model].temperature) {
       responseSettings.temperature = 0.7;
@@ -269,21 +270,32 @@ io.on("connection", function(socket) {
           break;
       }
     }
-    await client.responses.create(responseSettings).then(async response => {
-      chat.messages.push({
-        "role": "assistant",
-        "content": response.output_text
-      });
-      fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
+    await client.responses.create(responseSettings).then(async (stream) => {
+      let response =  "";
+      socket.emit("StartNewMessage", message, uuid, chat.title, files, utility.imageTypes);
 
-      chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
-      chatOrder.push({
-        uuid: uuid,
-        time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
-      });
-      chatOrder.sort((a, b) => b.time - a.time);
+      for await (const event of stream) {
+        if (event.type === "response.output_text.delta") {
+          response += event.delta;
+          socket.emit("ProcessingNewMessage", marked.parse(utility.formatMessage(response)));
+        }
+        else if (event.type === "response.completed") {
+          chat.messages.push({
+            "role": "assistant",
+            "content": response
+          });
+          fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
 
-      socket.emit("NewMessage", message, marked.parse(utility.formatMessage(response.output_text)), uuid, chat.title, files, utility.imageTypes);
+          chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
+          chatOrder.push({
+            uuid: uuid,
+            time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
+          });
+          chatOrder.sort((a, b) => b.time - a.time);
+
+          socket.emit("FinishNewMessage", marked.parse(utility.formatMessage(response)));
+        }
+      }
 
       for (const message in messages) {
         if (typeof message.content === "string") {

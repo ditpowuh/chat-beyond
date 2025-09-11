@@ -550,7 +550,7 @@ socket.on("connect", () => {
       $("#pastchats .list li .modifybutton img").attr("src", "/Assets/SettingsWhite.svg");
     }
   });
-  socket.on("NewMessage", function(originalMessage, output, uuidReceiving, title, files, imageTypes) {
+  socket.on("StartNewMessage", function(originalMessage, uuidReceiving, title, files, imageTypes) {
     $("#chat .message.processing").remove();
 
     for (let i = 0; i < files.length; i++) {
@@ -588,38 +588,49 @@ socket.on("connect", () => {
     $("#chat").append(`
       <div class="message user">${originalMessage}</div>
     `);
+
+    socket.emit("LoadChatData");
+    uuid = uuidReceiving;
+
+    document.title = `ChatBeyond: ${title}`;
+    lenis.scrollTo(document.body.scrollHeight);
+
+    $("#chat").append(`
+      <div class="message"></div>
+    `);
+
+  });
+  socket.on("ProcessingNewMessage", function(message) {
+    $("#chat").children(".message").last().remove();
+    $("#chat").append(`
+      <div class="message">${message}</div>
+    `);
+
+    hljs.highlightAll();
+    $("#chat a").attr("target", "_blank");
+  });
+  socket.on("FinishNewMessage", function(output) {
+    $("#chat").children(".message").last().remove();
     $("#chat").append(`
       <div class="message">${output}</div>
     `);
 
     socket.emit("LoadChatData");
     processing = false;
-    uuid = uuidReceiving;
-
-    document.title = `ChatBeyond: ${title}`;
 
     hljs.highlightAll();
     $("#chat a").attr("target", "_blank");
 
-    lenis.stop();
-    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
-    lenis.start();
+    lenis.scrollTo(document.body.scrollHeight);
   });
   socket.on("ChatInProgress", function() {
     $("#chat").show();
-    $("#chat").append(`
-      <div class="message processing undraggable">Thinking and typing...</div>
-    `);
 
     $("#newchatarea").hide(200);
     $("#textinput").val("");
     $("#textinput").css("height", "");
     $("#textinput").css("height", `${$("#textinput")[0].scrollHeight}px`);
     $("#chat").css("padding-bottom", "200px");
-
-    lenis.stop();
-    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
-    lenis.start();
   });
   socket.on("ReloadChatData", function() {
     openNewChat();
