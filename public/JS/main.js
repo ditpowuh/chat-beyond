@@ -14,7 +14,7 @@ $("#bottomarea").css("opacity", "1");
 $("#textinput").on("input", function() {
   $(this).css("height", "");
   $(this).css("height", `${this.scrollHeight}px`);
-  $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
+  $("#chat").css("padding-bottom", `${240 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
 });
 
 socket.emit("LoadSettings");
@@ -29,7 +29,7 @@ function openNewChat() {
   $("#textinput").val("");
   $("#textinput").css("height", "");
   $("#textinput").css("height", `${$("#textinput")[0].scrollHeight}px`);
-  $("#chat").css("padding-bottom", "200px");
+  $("#chat").css("padding-bottom", "240px");
 
   $("#newchatarea .message").hide(200);
   $("#chatname").val("");
@@ -59,9 +59,7 @@ function openSettings() {
 
   socket.emit("LoadSettings");
 
-  lenis.stop();
-  window.scrollTo({top: 0, behavior: "instant"});
-  lenis.start();
+  goToBottom();
 }
 
 function openExistingChat(uuidChat) {
@@ -73,7 +71,7 @@ function openExistingChat(uuidChat) {
   $("#textinput").val("");
   $("#textinput").css("height", "");
   $("#textinput").css("height", ($("#textinput")[0].scrollHeight) + "px");
-  $("#chat").css("padding-bottom", "200px");
+  $("#chat").css("padding-bottom", "240px");
 
   $("#filearea .fileitem div img").each(function() {
     URL.revokeObjectURL(this.src);
@@ -501,9 +499,7 @@ socket.on("connect", () => {
     hljs.highlightAll();
     $("#chat a").attr("target", "_blank");
 
-    lenis.stop();
-    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
-    lenis.start();
+    goToBottom();
   });
   socket.on("LoadSettings", function(models, settings, limit) {
     fileSizeLimit = limit;
@@ -656,7 +652,7 @@ socket.on("connect", () => {
     if ($("#filearea").html().trim() === "") {
       $("#filearea").html("");
     }
-    $("#chat").css("padding-bottom", `${200 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
+    $("#chat").css("padding-bottom", `${240 + ($("#textinput")[0].offsetHeight - 48) + $("#filearea")[0].offsetHeight}px`);
     Swal.fire({
       icon: "error",
       title: "Unsupported Type",

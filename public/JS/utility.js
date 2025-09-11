@@ -1,3 +1,10 @@
+const lenis = new Lenis();
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
 function formatToMoney(number) {
   return (Math.round(number * 100) / 100).toFixed(2);
 }
@@ -24,9 +31,11 @@ function formatToFileSize(bytes) {
   return result;
 }
 
-const lenis = new Lenis();
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
+async function goToBottom() {
+  lenis.stop();
+  await new Promise((resolve) => {
+    window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
+    requestAnimationFrame(resolve);
+  });
+  lenis.start();
 }
-requestAnimationFrame(raf);
