@@ -390,6 +390,15 @@ io.on("connection", function(socket) {
       socket.emit("UnsupportedType", index);
       return;
     }
+    if (utility.fontTypes.some(ending => file.name.endsWith(`.${ending}`))) {
+      socket.emit("UnsupportedType", index);
+      return;
+    }
+    if (file.name.endsWith(".heic")) {
+      socket.emit("UnsupportedType", index);
+      return;
+    }
+    
     const buffer = Buffer.from(file.data);
     const extension = path.extname(file.name);
     const uuidFile = uuidv4();

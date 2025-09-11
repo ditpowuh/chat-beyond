@@ -91,7 +91,6 @@ export const videoTypes = [
   "mpeg",
   "mpg",
   "ogv",
-  "ts",
   "mts",
   "vob"
 ];
@@ -110,7 +109,8 @@ export const audioTypes = [
   "amr",
   "opus",
   "midi",
-  "mid"
+  "mid",
+  "flp"
 ];
 
 export const spreadsheetTypes = [
@@ -156,11 +156,17 @@ export const executableTypes = [
   "app",
   "deb",
   "rpm",
-  "dmg",
   "jar",
   "elf",
   "bin",
   "run"
+];
+
+export const fontTypes = [
+  "ttf",
+  "otf",
+  "woff",
+  "woff2"
 ];
 
 export function formatMessage(message) {
@@ -286,6 +292,7 @@ export default {
   presentationTypes,
   archiveTypes,
   executableTypes,
+  fontTypes,
   formatMessage,
   imageToken
 };

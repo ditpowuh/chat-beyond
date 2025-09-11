@@ -65,6 +65,7 @@ A file size limit of 100 MB is imposed currently.
 | Presentation files    | ❌ |
 | Archive files         | ❌ |
 | Executables           | ❌ |
+| Font files            | ❌ |
 
 ⚠️ Spreadsheets - Excel spreadsheets are not supported, but `.csv` files are completely fine.
 
