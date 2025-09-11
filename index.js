@@ -272,10 +272,14 @@ io.on("connection", function(socket) {
     }
     await client.responses.create(responseSettings).then(async (stream) => {
       let response =  "";
-      socket.emit("StartNewMessage", message, uuid, chat.title, files, utility.imageTypes);
+      let started = false;
 
       for await (const event of stream) {
         if (event.type === "response.output_text.delta") {
+          if (!started) {
+            socket.emit("StartNewMessage", message, uuid, chat.title, files, utility.imageTypes);
+            started = true;
+          }
           response += event.delta;
           socket.emit("ProcessingNewMessage", marked.parse(utility.formatMessage(response)));
         }
@@ -410,7 +414,7 @@ io.on("connection", function(socket) {
       socket.emit("UnsupportedType", index);
       return;
     }
-    
+
     const buffer = Buffer.from(file.data);
     const extension = path.extname(file.name);
     const uuidFile = uuidv4();

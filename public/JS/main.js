@@ -624,6 +624,9 @@ socket.on("connect", () => {
     lenis.scrollTo(document.body.scrollHeight);
   });
   socket.on("ChatInProgress", function() {
+    $("#chat").append(`
+      <div class="message processing undraggable">Processing and thinking...</div>
+    `);
     $("#chat").show();
 
     $("#newchatarea").hide(200);
