@@ -15,7 +15,7 @@
     "dotenv": "^17.2.2",
     "express": "^4.21.2",
     "image-size": "^2.0.2",
-    "mammoth": "^1.10.0",
+    "mammoth": "^1.11.0",
     "marked": "^15.0.12",
     "marked-katex-extension": "^5.1.5",
     "open": "^10.2.0",
