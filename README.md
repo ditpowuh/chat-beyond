@@ -76,3 +76,13 @@ Extracting the new release, without deleting the older files, is generally fine,
 <br>
 The recommended way of updating is to delete all files and folders except for `data` and then extract the new release as usual.
 
+### Build
+The executables can be generated via the following commands.
+#### Windows
+```
+bun build index.js --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64
+```
+#### MacOS
+```
+bun build index.js --compile --target=bun-darwin-arm64 --outfile output/ChatBeyond-macos-arm64
+```
