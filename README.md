@@ -30,8 +30,8 @@ Note that you do not need to edit `settings.json` as all settings are configurab
 4. Open the app and go to settings.
 5. Put your API key in.
 
-#### For Programmers
-1. Install necessary Node.JS packages via `npm install`.
+#### For Programmers or Technical Users
+1. Download source code and install necessary Node.JS packages via `npm install`.
 2. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
 3. Run the app (via `npm start`).
 4. Go to settings and put your API key in.
