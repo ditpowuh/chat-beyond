@@ -60,7 +60,7 @@ export default {
     "web": false
   },
   "gpt-5": {
-    "description": "The latest flagship GPT model for tasks across all domains.",
+    "description": "A previous strong flagship GPT model for tasks across all domains.",
     "cost": {
       "input": 1.25,
       "output": 10
@@ -88,5 +88,25 @@ export default {
     "temperature": false,
     "reasoning": true,
     "web": false
+  },
+  "gpt-5.1": {
+    "description": "The flagship GPT model for coding and agentic tasks with configurable reasoning and non-reasoning effort.",
+    "cost": {
+      "input": 1.25,
+      "output": 10
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.2": {
+    "description": "The latest flagship GPT model for coding and agentic tasks across industries.",
+    "cost": {
+      "input": 1.75,
+      "output": 14
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
   }
 };
