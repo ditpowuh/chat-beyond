@@ -466,6 +466,20 @@ io.on("connection", function(socket) {
     }
     socket.emit("NotificationAlert", "Unused Files Deleted", "All unused files were deleted.", false, false);
   });
+  socket.on("ClearAndDeleteAll", function() {
+    fs.rmSync(path.join(process.cwd(), "data"), {
+      recursive: true,
+      force: true
+    });
+    fs.mkdirSync(path.join(process.cwd(), "data"));
+    fs.mkdirSync(path.join(process.cwd(), "data", "files"));
+    fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
+
+    chatOrder = [];
+
+    socket.emit("NotificationAlert", "Unused Files Deleted", "All chats and uploaded files were delete.", false, true);
+    socket.emit("ReloadChatData");
+  });
 });
 
 server.listen(PORT, function() {

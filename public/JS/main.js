@@ -242,6 +242,11 @@ $("#cleanfiles").on("click", function() {
   socket.emit("ClearUnusedFiles");
 });
 
+$("#deleteall").on("click", function() {
+  processing = true;
+  socket.emit("ClearAndDeleteAll");
+});
+
 $("#themeselection").on("change", function() {
   socket.emit("ChangeTheme", $("#themeselection").val().toUpperCase());
 });

@@ -444,6 +444,16 @@ a:hover {
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#settings button:hover {
+  background-color: var(--button-hover);
+}
+
+#settings .settingbutton {
+  margin: 2.5px 0;
+  padding: 20px 30px;
 }
 
 #settingsicon {
@@ -469,11 +479,6 @@ a:hover {
 
 #revealapikey {
   width: 80px;
-}
-
-#cleanfiles {
-  height: 50px;
-  width: 300px;
 }
 
 #themeselection {
