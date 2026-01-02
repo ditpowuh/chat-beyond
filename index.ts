@@ -11,11 +11,11 @@ import * as date from "date-fns";
 import chalk from "chalk";
 import open from "open";
 import mammoth from "mammoth";
-// TEMP: Reimplement after - import readPdf from "pdf-parse/lib/pdf-parse.js";
 import markedKatex from "marked-katex-extension";
 import {marked} from "marked";
 import {spawn} from "child_process";
 import {Server} from "socket.io";
+import {PDFParse} from "pdf-parse";
 
 import utility from "./utility";
 import modelData from "./models";
@@ -402,10 +402,10 @@ io.on("connection", function(socket) {
         tokenCount += encoder.encode(result.value).length;
       }
       else if (files[i].endsWith(".pdf")) {
-        // TEMP: Reimplement after
-        // const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
-        // const result = await readPdf(pdfBuffer);
-        // tokenCount += encoder.encode(result.text).length;
+        const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
+        const parser = new PDFParse({data: pdfBuffer});
+        const result = await parser.getText();
+        tokenCount += encoder.encode(result.text).length;
       }
     }
 

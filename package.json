@@ -29,7 +29,7 @@
     "marked-katex-extension": "^5.1.6",
     "open": "^10.2.0",
     "openai": "^5.23.2",
-    "pdf-parse": "^1.1.4",
+    "pdf-parse": "^2.4.5",
     "socket.io": "^4.8.1",
     "tiktoken": "^1.0.22",
     "uuid": "^11.1.0"
