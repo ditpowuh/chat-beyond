@@ -1,7 +1,7 @@
 import fs from "fs";
 import {imageSize} from "image-size";
 
-export const textTypes = [
+export const textTypes: string[] = [
   "txt",
   "md",
   "markdown",
@@ -68,7 +68,7 @@ export const textTypes = [
   "svelte"
 ];
 
-export const imageTypes = [
+export const imageTypes: string[] = [
   "png",
   "jpg",
   "jpeg",
@@ -77,7 +77,7 @@ export const imageTypes = [
   "bmp"
 ];
 
-export const videoTypes = [
+export const videoTypes: string[] = [
   "mp4",
   "m4v",
   "mov",
@@ -95,7 +95,7 @@ export const videoTypes = [
   "vob"
 ];
 
-export const audioTypes = [
+export const audioTypes: string[] = [
   "mp3",
   "wav",
   "aac",
@@ -113,7 +113,7 @@ export const audioTypes = [
   "flp"
 ];
 
-export const spreadsheetTypes = [
+export const spreadsheetTypes: string[] = [
   "xls",
   "xlsx",
   "xlsm",
@@ -121,7 +121,7 @@ export const spreadsheetTypes = [
   "xlsb"
 ];
 
-export const presentationTypes = [
+export const presentationTypes: string[] = [
   "ppt",
   "pptx",
   "pps",
@@ -129,7 +129,7 @@ export const presentationTypes = [
   "odp"
 ];
 
-export const archiveTypes = [
+export const archiveTypes: string[] = [
   "zip",
   "rar",
   "7z",
@@ -148,7 +148,7 @@ export const archiveTypes = [
   "cpio"
 ];
 
-export const executableTypes = [
+export const executableTypes: string[] = [
   "exe",
   "msi",
   "com",
@@ -162,14 +162,14 @@ export const executableTypes = [
   "run"
 ];
 
-export const fontTypes = [
+export const fontTypes: string[] = [
   "ttf",
   "otf",
   "woff",
   "woff2"
 ];
 
-export function formatMessage(message) {
+export function formatMessage(message: string): string {
   const pattern = /(```[\s\S]*?```|`.*?`)|\\\[([\s\S]*?[^\\])\\\]|\\\((.*?)\\\)/g;
   return message.replace(pattern, (match, codeBlock, squareBracket, roundBracket) => {
     if (codeBlock) {
@@ -185,7 +185,7 @@ export function formatMessage(message) {
   });
 }
 
-export function calculateImageCost(model, path) {
+export function calculateImageCost(model: string, path: string): number | null {
   if (Object.keys(imageToken.smallCategory).includes(model)) {
     const fileDimensions = imageSize(fs.readFileSync(path));
     let rescaleFactor = 1;
@@ -224,7 +224,13 @@ export function calculateImageCost(model, path) {
   }
 }
 
-export const imageToken = {
+interface ImageTokenInterface {
+  smallCategory: Record<string, {multiplier: number}>;
+  bigCategory: Record<string, {base: number, tile: number}>;
+  calculateImageCost: (model: string, path: string) => number | null;
+}
+
+export const imageToken: ImageTokenInterface = {
   smallCategory: {
     "gpt-5-mini": {
       "multiplier": 1.62

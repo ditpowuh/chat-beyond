@@ -1,4 +1,12 @@
-export default {
+type ModelData = {
+  description: string;
+  cost: {input: number, output: number};
+  temperature: boolean;
+  reasoning: boolean;
+  web: boolean;
+};
+
+const models: Record<string, ModelData> = {
   "gpt-4o-mini": {
     "description": "A cheaper verison of GPT-4o. This is the free model of ChatGPT.",
     "cost": {
@@ -110,3 +118,5 @@ export default {
     "web": true
   }
 };
+
+export default models;

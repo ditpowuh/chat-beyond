@@ -11,30 +11,57 @@ import * as date from "date-fns";
 import chalk from "chalk";
 import open from "open";
 import mammoth from "mammoth";
-import readPdf from "pdf-parse/lib/pdf-parse.js";
+// TEMP: Reimplement after - import readPdf from "pdf-parse/lib/pdf-parse.js";
 import markedKatex from "marked-katex-extension";
 import {marked} from "marked";
 import {spawn} from "child_process";
 import {Server} from "socket.io";
 
-import utility from "./utility.js";
-import modelData from "./models.js";
+import utility from "./utility";
+import modelData from "./models";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
-const PORT = process.env.PORT || 3000;
-const FILE_SIZE_LIMIT = process.env.FILE_SIZE_LIMIT || 1e8;
-const OPEN_ON_START = true;
-const INSTRUCTIONS = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
+import type {TiktokenModel} from "tiktoken";
+
+const PORT: number = Number(process.env.PORT) || 3000;
+const FILE_SIZE_LIMIT: number = Number(process.env.FILE_SIZE_LIMIT) || 1e8;
+const OPEN_ON_START: boolean = true;
+const INSTRUCTIONS: string = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
 
 const app = express();
 
-const server = http.Server(app);
+const server = http.createServer(app);
 const io = new Server(server, {
   maxHttpBufferSize: FILE_SIZE_LIMIT
 });
 
-let chatOrder = [];
+type ModelEffort = "low" | "medium" | "high";
+
+type Message = {
+  role: string;
+  content: string;
+  files?: string[];
+};
+
+type ChatOrderItem = {
+  uuid: string;
+  time: Date;
+  title?: string;
+};
+
+type ResponseSettings = {
+  model: string;
+  input: {role: string, content: {type: string, text: string, file_id?: number}[]};
+  instructions: string;
+  stream: boolean;
+  temperature?: number;
+  top_p?: number;
+  tools?: Record<string, unknown>[];
+  reasoning?: {effort: ModelEffort};
+};
+
+let chatOrder: ChatOrderItem[] = [];
 
 let settingsData = {
   "apikey": "",
@@ -84,7 +111,7 @@ io.on("connection", function(socket) {
   socket.on("LoadChatData", function() {
     const now = new Date();
 
-    const grouped = {
+    const grouped: Record<string, ChatOrderItem[]> = {
       "Today": [],
       "Yesterday": [],
       "Past 7 Days": [],
@@ -92,7 +119,7 @@ io.on("connection", function(socket) {
     };
     for (const chat of chatOrder) {
 
-      chat["title"] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${chat.uuid}.json`))).title;
+      chat["title"] = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${chat.uuid}.json`), "utf8")).title;
 
       const chatTime = new Date(chat.time);
       if (date.isToday(chatTime)) {
@@ -130,7 +157,7 @@ io.on("connection", function(socket) {
     socket.emit("ReloadChatData");
   });
   socket.on("RenameChat", function(uuid, newName) {
-    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
+    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8"));
     chat.title = newName;
     fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
     chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
@@ -138,13 +165,13 @@ io.on("connection", function(socket) {
       uuid: uuid,
       time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
     });
-    chatOrder.sort((a, b) => b.time - a.time);
+    chatOrder.sort((a, b) => b.time.getTime() - a.time.getTime());
     socket.emit("ChangeChatName", uuid, newName);
   });
   socket.on("LoadMessages", function(uuid) {
-    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`)));
+    let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8"));
 
-    chat.messages = chat.messages.map(message => ({
+    chat.messages = chat.messages.map((message: Message) => ({
       ...message,
       content: message.role === "assistant" ? marked.parse(utility.formatMessage(message.content)) : message.content
     }));
@@ -158,17 +185,19 @@ io.on("connection", function(socket) {
     }
     const client = new OpenAI({apiKey: settingsData.apikey});
 
-    let chat = {};
+    let chat: {messages: Message[], title?: string} = {
+      messages: []
+    };
     let uuid;
     if (!uuidValidate(identifier)) {
       chat = {
-        title: identifier,
-        messages: []
+        ...chat,
+        title: identifier
       };
       uuid = uuidv4();
     }
     else {
-      chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${identifier}.json`)));
+      chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${identifier}.json`), "utf8"));
       uuid = identifier;
     }
     if (files.length === 0) {
@@ -197,35 +226,36 @@ io.on("connection", function(socket) {
             text: chat.messages[i].content
           }
         ];
-        if ("files" in chat.messages[i]) {
-          for (let j = 0; j < chat.messages[i].files.length; j++) {
-            const fileContent = fs.createReadStream(path.join(process.cwd(), "data", "files", chat.messages[i].files[j]));
+        const files = chat.messages[i].files;
+        if (files) {
+          for (let j = 0; j < files.length; j++) {
+            const fileContent = fs.createReadStream(path.join(process.cwd(), "data", "files", files[j]));
             const fileUploadResult = await client.files.create({
               file: fileContent,
               purpose: "user_data"
             });
-            if (utility.imageTypes.some(ending => chat.messages[i].files[j].endsWith(`.${ending}`))) {
+            if (utility.imageTypes.some(ending => files[j].endsWith(`.${ending}`))) {
               messages[i].content.push({
                 type: "input_image",
                 file_id: fileUploadResult.id
               });
             }
             else {
-              if (chat.messages[i].files[j].endsWith(".pdf")) {
+              if (files[j].endsWith(".pdf")) {
                 messages[i].content.push({
                   type: "input_file",
                   file_id: fileUploadResult.id
                 });
               }
-              else if (utility.textTypes.some(ending => chat.messages[i].files[j].endsWith(`.${ending}`))) {
-                const text = fs.readFileSync(path.join(process.cwd(), "data", "files", chat.messages[i].files[j]), {
+              else if (utility.textTypes.some(ending => files[j].endsWith(`.${ending}`))) {
+                const text = fs.readFileSync(path.join(process.cwd(), "data", "files", files[j]), {
                   encoding: "utf8"
                 });
                 messages[i].content[0].text += `\nContents of file given:\n${text}`;
               }
-              else if (chat.messages[i].files[j].endsWith(".docx") || chat.messages[i].files[j].endsWith(".doc")) {
+              else if (files[j].endsWith(".docx") || files[j].endsWith(".doc")) {
                 const result = await mammoth.extractRawText({
-                  path: path.join(process.cwd(), "data", "files", chat.messages[i].files[j])
+                  path: path.join(process.cwd(), "data", "files", files[j])
                 });
                 messages[i].content[0].text += `\nContents of document given:\n${result.value}`;
               }
@@ -236,7 +266,7 @@ io.on("connection", function(socket) {
       }
     }
 
-    const responseSettings = {
+    const responseSettings: ResponseSettings = {
       model: settingsData.model,
       input: messages,
       instructions: `${INSTRUCTIONS} Today's date is ${date.format(new Date(), "yyyy-MM-dd")}.`,
@@ -270,7 +300,7 @@ io.on("connection", function(socket) {
           break;
       }
     }
-    await client.responses.create(responseSettings).then(async (stream) => {
+    await client.responses.create(responseSettings as any).then(async (stream: any) => {
       let response =  "";
       let started = false;
 
@@ -295,17 +325,18 @@ io.on("connection", function(socket) {
             uuid: uuid,
             time: fs.statSync(path.join(process.cwd(), "data", `${uuid}.json`)).mtime
           });
-          chatOrder.sort((a, b) => b.time - a.time);
+          chatOrder.sort((a, b) => b.time.getTime() - a.time.getTime());
 
           socket.emit("FinishNewMessage", marked.parse(utility.formatMessage(response)));
         }
       }
+      console.log(messages)
 
-      for (const message in messages) {
+      for (const message of messages) {
         if (typeof message.content === "string") {
           continue;
         }
-        for (const content in message.content) {
+        for (const content of message.content) {
           if (content.type === "input_image" || content.type === "input_file") {
             await client.files.delete(content.file_id);
           }
@@ -325,14 +356,14 @@ io.on("connection", function(socket) {
   socket.on("CalculateCost", async function(uuid, message, files = []) {
     let messages = [];
     if (uuidValidate(uuid)) {
-      messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`))).messages;
+      messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8")).messages;
     }
     messages.push({
       "role": "user",
       "content": message
     });
 
-    const encoder = tiktoken.encoding_for_model(settingsData.model);
+    const encoder = tiktoken.encoding_for_model(settingsData.model as TiktokenModel);
 
     let tokenCount = 3;
     for (const message of messages) {
@@ -371,9 +402,10 @@ io.on("connection", function(socket) {
         tokenCount += encoder.encode(result.value).length;
       }
       else if (files[i].endsWith(".pdf")) {
-        const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
-        const result = await readPdf(pdfBuffer);
-        tokenCount += encoder.encode(result.text).length;
+        // TEMP: Reimplement after
+        // const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
+        // const result = await readPdf(pdfBuffer);
+        // tokenCount += encoder.encode(result.text).length;
       }
     }
 
@@ -418,20 +450,18 @@ io.on("connection", function(socket) {
     const buffer = Buffer.from(file.data);
     const extension = path.extname(file.name);
     const uuidFile = uuidv4();
-    fs.writeFileSync(path.join(process.cwd(), "data", "files", uuidFile + extension), buffer, (error) => {
-      if (error) {
-        socket.emit("NotificationAlert", "A problem occured", error.message, true, true);
-        return;
-      }
-    });
+    try {
+      fs.writeFileSync(path.join(process.cwd(), "data", "files", uuidFile + extension), buffer);
+    }
+    catch (error: any) {
+      socket.emit("NotificationAlert", "A problem occured", error.message, true, true);
+    }
     socket.emit("UploadComplete", uuidFile + extension, index);
   });
   socket.on("ShowFile", function(file) {
     const filePath = path.join(process.cwd(), "data", "files", file);
     if (process.platform === "darwin") {
-      open(filePath, {
-        reveal: true
-      });
+      open(filePath);
     }
     else if (process.platform === "win32") {
       spawn("explorer.exe", [`/select,${filePath}`], {
@@ -450,7 +480,7 @@ io.on("connection", function(socket) {
       if (data[i] === "settings.json" || data[i] === "files") {
         continue;
       }
-      let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", data[i])));
+      let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", data[i]), "utf8"));
       for (let j = 0; j < chat.messages.length; j++) {
         if ("files" in chat.messages[j]) {
           for (let k = 0; k < chat.messages[j].files.length; k++) {
@@ -511,7 +541,7 @@ fs.readdir(path.join(process.cwd(), "data"), (error, files) => {
     });
   }
 
-  chatOrder.sort((a, b) => b.time - a.time);
+  chatOrder.sort((a, b) => b.time.getTime() - a.time.getTime());
 });
 
-settingsData = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "settings.json")));
+settingsData = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "settings.json"), "utf8"));

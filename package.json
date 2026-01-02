@@ -2,13 +2,22 @@
   "name": "chat-beyond",
   "version": "0.6.0",
   "description": "A web interface to use OpenAI's API, made to be familiar and easy.",
-  "exports": "./index.js",
+  "module": "index.ts",
   "type": "module",
+  "private": true,
   "scripts": {
-    "start": "node ."
+    "start": "bun index.ts",
+    "build:windows": "bun build index.js --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64",
+    "build:mac": "bun build index.js --compile --target=bun-darwin-arm64 --outfile output/ChatBeyond-macos-arm64"
   },
   "author": "Ditpowuh",
   "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.3",
+    "@types/socket.io": "^3.0.1",
+    "typescript": "^5"
+  },
   "dependencies": {
     "chalk": "^5.6.2",
     "date-fns": "^4.1.0",
@@ -24,5 +33,8 @@
     "socket.io": "^4.8.1",
     "tiktoken": "^1.0.22",
     "uuid": "^11.1.0"
+  },
+  "engine": {
+    "bun": ">=1.3.4"
   }
 }
