@@ -1,5 +1,11 @@
 import fs from "fs";
+
+import chalk from "chalk";
+import tiktoken from "tiktoken";
+
 import {imageSize} from "image-size";
+
+import type {Tiktoken, TiktokenModel} from "tiktoken";
 
 export const textTypes: string[] = [
   "txt",
@@ -185,6 +191,16 @@ export function formatMessage(message: string): string {
   });
 }
 
+export function getEncoder(model: string): Tiktoken {
+  try {
+    return tiktoken.encoding_for_model(model as TiktokenModel);
+  }
+  catch (error) {
+    console.log(`${chalk.yellow("Note:")} The currently selected model does not have a verified encoding. "o200k_base" is being used in place, which is likely to be correct for newer models, but if costs are critical, please double check.`);
+    return tiktoken.get_encoding("o200k_base");
+  }
+}
+
 export function calculateImageCost(model: string, path: string): number | null {
   if (Object.keys(imageToken.smallCategory).includes(model)) {
     const fileDimensions = imageSize(fs.readFileSync(path));
@@ -249,6 +265,14 @@ export const imageToken: ImageTokenInterface = {
     }
   },
   bigCategory: {
+    "gpt-5.2": {
+      "base": 70,
+      "tile": 140
+    },
+    "gpt-5.1": {
+      "base": 70,
+      "tile": 140
+    },
     "gpt-5": {
       "base": 70,
       "tile": 140
@@ -300,5 +324,6 @@ export default {
   executableTypes,
   fontTypes,
   formatMessage,
+  getEncoder,
   imageToken
 };

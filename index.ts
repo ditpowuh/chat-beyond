@@ -6,7 +6,6 @@ import path from "path";
 import fs from "fs";
 
 import OpenAI from "openai";
-import tiktoken from "tiktoken";
 import * as date from "date-fns";
 import chalk from "chalk";
 import open from "open";
@@ -21,8 +20,6 @@ import utility from "./utility";
 import modelData from "./models";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
-
-import type {TiktokenModel} from "tiktoken";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const FILE_SIZE_LIMIT: number = Number(process.env.FILE_SIZE_LIMIT) || 1e8;
@@ -363,7 +360,7 @@ io.on("connection", function(socket) {
       "content": message
     });
 
-    const encoder = tiktoken.encoding_for_model(settingsData.model as TiktokenModel);
+    const encoder = utility.getEncoder(settingsData.model);
 
     let tokenCount = 3;
     for (const message of messages) {
