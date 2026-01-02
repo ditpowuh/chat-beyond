@@ -327,7 +327,6 @@ io.on("connection", function(socket) {
           socket.emit("FinishNewMessage", marked.parse(utility.formatMessage(response)));
         }
       }
-      console.log(messages)
 
       for (const message of messages) {
         if (typeof message.content === "string") {
