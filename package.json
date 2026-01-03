@@ -6,9 +6,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun index.ts",
-    "build:windows": "bun build index.js --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64",
-    "build:mac": "bun build index.js --compile --target=bun-darwin-arm64 --outfile output/ChatBeyond-macos-arm64"
+    "start": "bun index.ts --tsconfig-override tsconfig.bun.json",
+    "build:windows": "bun build index.ts --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64",
+    "build:mac": "bun build index.ts --compile --target=bun-darwin-arm64 --outfile output/ChatBeyond-macos-arm64",
+    "node:start": "node dist/index.js",
+    "node:compile": "tsc -p tsconfig.node.json"
   },
   "author": "Ditpowuh",
   "license": "MIT",

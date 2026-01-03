@@ -4,3 +4,4 @@ node_modules
 *.bat
 data
 output
+dist

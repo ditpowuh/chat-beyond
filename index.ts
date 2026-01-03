@@ -16,8 +16,8 @@ import {spawn} from "child_process";
 import {Server} from "socket.io";
 import {PDFParse} from "pdf-parse";
 
-import utility from "./utility";
-import modelData from "./models";
+import utility from "./utility.js";
+import modelData from "./models.js";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
@@ -35,19 +35,19 @@ const io = new Server(server, {
 
 type ModelEffort = "low" | "medium" | "high";
 
-type Message = {
+interface Message {
   role: string;
   content: string;
   files?: string[];
 };
 
-type ChatOrderItem = {
+interface ChatOrderItem {
   uuid: string;
   time: Date;
   title?: string;
 };
 
-type ResponseSettings = {
+interface ResponseSettings {
   model: string;
   input: {role: string, content: {type: string, text: string, file_id?: number}[]};
   instructions: string;
@@ -79,11 +79,7 @@ app.get("*", function(request, response) {
   response.sendFile(path.join(process.cwd(), "public", "404.html"));
 });
 
-marked.use({
-  breaks: true
-},
-markedKatex({
-  throwOnError: false,
+marked.use({breaks: true}, markedKatex({
   nonStandard: true
 }));
 

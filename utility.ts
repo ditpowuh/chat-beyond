@@ -240,13 +240,13 @@ export function calculateImageCost(model: string, path: string): number | null {
   }
 }
 
-interface ImageTokenInterface {
+interface ImageTokenData {
   smallCategory: Record<string, {multiplier: number}>;
   bigCategory: Record<string, {base: number, tile: number}>;
   calculateImageCost: (model: string, path: string) => number | null;
 }
 
-export const imageToken: ImageTokenInterface = {
+export const imageToken: ImageTokenData = {
   smallCategory: {
     "gpt-5-mini": {
       "multiplier": 1.62
