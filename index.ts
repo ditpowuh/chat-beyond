@@ -33,34 +33,27 @@ const io = new Server(server, {
   maxHttpBufferSize: FILE_SIZE_LIMIT
 });
 
-type ModelEffort = "low" | "medium" | "high";
-
 interface Message {
   role: string;
   content: string;
   files?: string[];
-};
+}
 
 interface ChatOrderItem {
   uuid: string;
   time: Date;
   title?: string;
-};
+}
 
-interface ResponseSettings {
+interface SettingsData {
+  apikey: string;
   model: string;
-  input: {role: string, content: {type: string, text: string, file_id?: number}[]};
-  instructions: string;
-  stream: boolean;
-  temperature?: number;
-  top_p?: number;
-  tools?: Record<string, unknown>[];
-  reasoning?: {effort: ModelEffort};
-};
+  theme: string;
+}
 
 let chatOrder: ChatOrderItem[] = [];
 
-let settingsData = {
+let settingsData: SettingsData = {
   "apikey": "",
   "model": "gpt-4o",
   "theme": "DARK"
@@ -87,16 +80,16 @@ io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
     socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
   });
-  socket.on("SaveModel", function(model) {
+  socket.on("SaveModel", function(model: string) {
     settingsData.model = model;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
     socket.emit("SaveModel", modelData[model]);
   });
-  socket.on("SaveKey", function(key) {
+  socket.on("SaveKey", function(key: string) {
     settingsData.apikey = key;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
-  socket.on("ChangeTheme", function(theme) {
+  socket.on("ChangeTheme", function(theme: string) {
     settingsData.theme = theme;
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
     socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
@@ -144,12 +137,12 @@ io.on("connection", function(socket) {
 
     socket.emit("LoadChatData", grouped);
   });
-  socket.on("DeleteChat", function(uuid) {
+  socket.on("DeleteChat", function(uuid: string) {
     fs.rmSync(path.join(process.cwd(), "data", `${uuid}.json`));
     chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
     socket.emit("ReloadChatData");
   });
-  socket.on("RenameChat", function(uuid, newName) {
+  socket.on("RenameChat", function(uuid: string, newName: string) {
     let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8"));
     chat.title = newName;
     fs.writeFileSync(path.join(process.cwd(), "data", `${uuid}.json`), JSON.stringify(chat, null, 2));
@@ -161,7 +154,7 @@ io.on("connection", function(socket) {
     chatOrder.sort((a, b) => b.time.getTime() - a.time.getTime());
     socket.emit("ChangeChatName", uuid, newName);
   });
-  socket.on("LoadMessages", function(uuid) {
+  socket.on("LoadMessages", function(uuid: string) {
     let chat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8"));
 
     chat.messages = chat.messages.map((message: Message) => ({
@@ -171,7 +164,7 @@ io.on("connection", function(socket) {
 
     socket.emit("LoadMessages", chat.messages, utility.imageTypes);
   });
-  socket.on("SendMessage", async function(message, identifier, files = [], reasoningStrength) {
+  socket.on("SendMessage", async function(message: string, identifier: string, files: string[] = [], reasoningStrength: number) {
     if (settingsData.apikey === "") {
       socket.emit("NotificationAlert", "No API key", "Please go to settings and put it in.", true, false);
       return;
@@ -181,7 +174,7 @@ io.on("connection", function(socket) {
     let chat: {messages: Message[], title?: string} = {
       messages: []
     };
-    let uuid;
+    let uuid: string;
     if (!uuidValidate(identifier)) {
       chat = {
         ...chat,
@@ -219,7 +212,7 @@ io.on("connection", function(socket) {
             text: chat.messages[i].content
           }
         ];
-        const files = chat.messages[i].files;
+        const files: string[] | undefined = chat.messages[i].files;
         if (files) {
           for (let j = 0; j < files.length; j++) {
             const fileContent = fs.createReadStream(path.join(process.cwd(), "data", "files", files[j]));
@@ -259,7 +252,7 @@ io.on("connection", function(socket) {
       }
     }
 
-    const responseSettings: ResponseSettings = {
+    const responseSettings: OpenAI.Responses.ResponseCreateParamsStreaming = {
       model: settingsData.model,
       input: messages,
       instructions: `${INSTRUCTIONS} Today's date is ${date.format(new Date(), "yyyy-MM-dd")}.`,
@@ -293,9 +286,9 @@ io.on("connection", function(socket) {
           break;
       }
     }
-    await client.responses.create(responseSettings as any).then(async (stream: any) => {
-      let response =  "";
-      let started = false;
+    await client.responses.create(responseSettings).then(async (stream) => {
+      let response: string =  "";
+      let started: boolean = false;
 
       for await (const event of stream) {
         if (event.type === "response.output_text.delta") {
@@ -334,7 +327,7 @@ io.on("connection", function(socket) {
           }
         }
       }
-    }).catch(error => {
+    }).catch((error) => {
       if (error.status === 401) {
         socket.emit("NotificationAlert", "Incorrect API key", "Please go to settings and fix your API key.", true, true);
         return;
@@ -345,8 +338,8 @@ io.on("connection", function(socket) {
       }
     });
   });
-  socket.on("CalculateCost", async function(uuid, message, files = []) {
-    let messages = [];
+  socket.on("CalculateCost", async function(uuid: string, message: string, files: string[] = []) {
+    let messages: Message[] = [];
     if (uuidValidate(uuid)) {
       messages = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", `${uuid}.json`), "utf8")).messages;
     }
@@ -357,26 +350,28 @@ io.on("connection", function(socket) {
 
     const encoder = utility.getEncoder(settingsData.model);
 
-    let tokenCount = 3;
+    let tokenCount: number = 3;
     for (const message of messages) {
       tokenCount += 3;
       for (const key in message) {
         if (key === "files") {
-          for (let i = 0; i < message["files"].length; i++) {
-            files.push(message["files"][i]);
+          if (message["files"]) {
+            for (let i = 0; i < message["files"].length; i++) {
+              files.push(message["files"][i]);
+            }
+            continue;
           }
-          continue;
         }
         if (key === "name") {
           tokenCount++;
         }
-        tokenCount += encoder.encode(message[key]).length;
+        tokenCount += encoder.encode(message[key as keyof Message] as string).length;
       }
     }
 
     for (let i = 0; i < files.length; i++) {
       if (utility.imageTypes.some(ending => files[i].endsWith(`.${ending}`))) {
-        let imageTokenCost = utility.imageToken.calculateImageCost(settingsData.model, path.join(process.cwd(), "data", "files", files[i]));
+        let imageTokenCost: number | null = utility.imageToken.calculateImageCost(settingsData.model, path.join(process.cwd(), "data", "files", files[i]));
         if (imageTokenCost !== null) {
           tokenCount += imageTokenCost;
         }
@@ -405,7 +400,7 @@ io.on("connection", function(socket) {
 
     socket.emit("TokenCost", tokenCount, tokenCount * modelData[settingsData.model].cost.input / 1e6);
   });
-  socket.on("FileUpload", function(file, index) {
+  socket.on("FileUpload", function(file: {name: string, type: string, data: ArrayBuffer}, index: number) {
     if (utility.videoTypes.some(ending => file.name.endsWith(`.${ending}`))) {
       socket.emit("UnsupportedType", index);
       return;
@@ -445,12 +440,14 @@ io.on("connection", function(socket) {
     try {
       fs.writeFileSync(path.join(process.cwd(), "data", "files", uuidFile + extension), buffer);
     }
-    catch (error: any) {
-      socket.emit("NotificationAlert", "A problem occured", error.message, true, true);
+    catch (error) {
+      if (error instanceof Error) {
+        socket.emit("NotificationAlert", "A problem occured", error.message, true, true);
+      }
     }
     socket.emit("UploadComplete", uuidFile + extension, index);
   });
-  socket.on("ShowFile", function(file) {
+  socket.on("ShowFile", function(file: string) {
     const filePath = path.join(process.cwd(), "data", "files", file);
     if (process.platform === "darwin") {
       open(filePath);

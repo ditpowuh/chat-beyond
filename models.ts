@@ -4,7 +4,7 @@ interface ModelData {
   temperature: boolean;
   reasoning: boolean;
   web: boolean;
-};
+}
 
 const models: Record<string, ModelData> = {
   "gpt-4o-mini": {
