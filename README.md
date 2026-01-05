@@ -6,16 +6,16 @@ The app is built with ease of use in mind, keeping everything very simple. Every
 <br/>
 Updating to the latest version of the application is highly recommended for bug fixes and to get new models.
 
-This project is made with the runtime [Bun](https://bun.com/) and the languages `TypeScript` and `JavaScript`.
+This project is made with the runtime [Bun](https://bun.com/) in mind (with Node.JS support). The languages used in this project are `TypeScript` and `JavaScript`.
 
-> Note that this does NOT cover the cost of using the models.
+> Note that this app does NOT cover the cost of using the models for you.
 
 Overview/Features:
 - Able to use any of OpenAI's models (if technical users need a specific model, `models.ts` can be modified)
 - Locally stored conversations and data (in a place where it is easy to find and accessible)
 - Estimates input cost by calculating the number of tokens and applying the model's pricing
-- Made to be lightweight as possible whilst keeping it robust and maintaining ease of use and configurability
-- User interface built from the ground up that supports showing images and code
+- Made to be lightweight as possible, whilst keeping it robust and maintaining ease of use and configurability
+- User interface built from the ground up, with support for showing images and code
 
 This app is recommended if you:
 1. do not constantly use ChatGPT on both a daily and frequent basis
@@ -28,18 +28,26 @@ Note that you do not need to edit `settings.json` as all settings are configurab
 
 ### How to use
 #### For Non-Programmers
-1. Download the latest version of ChatBeyond from the [Releases](https://github.com/ditpowuh/chat-beyond/releases) section.
+1. Download the latest version of ChatBeyond from the [Releases](https://github.com/ditpowuh/chat-beyond/releases) section of the repository.
 2. Extract the contents of the zip file that you have downloaded.
 3. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
 4. Open the app and go to settings.
 5. Put your API key in.
 
 #### For Programmers or Technical Users
+##### Bun
 1. Ensure that [Bun](https://bun.com/) is installed and ready.
 2. Download source code and install necessary packages via `bun install`.
 3. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
 4. Run the app (via `bun start`).
-5. Go to settings and put your API key in.
+5. Go to settings in the app and put your API key in.
+
+##### Node.JS
+1. Download source code and install necessary packages via `npm install`.
+2. Compile TypeScript to JavaScript by running `npm run node:compile`.
+3. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
+4. Run the app using `npm run node:start`.
+5. Go to settings in the app and put your API key in.
 
 ### Technical Info
 Settings, chats and files are stored within the `data` directory, which is created when the app is opened.
@@ -48,7 +56,7 @@ The models that are provided have been tested and are more than enough for layma
 <br/>
 But if a specific model is required and you are a technical user, more models can be added by modifying `models.ts`.
 
-This project was made with `Bun` in mind - the executable produced in `Releases` were produced by `Bun`'s bundler.
+This project was made primarily with `Bun` in mind, with the executable in `Releases` being produced by `Bun`'s bundler.
 
 > It should be noted that the cost calculator does not take tokens from reasoning into consideration.
 
@@ -77,12 +85,12 @@ A file size limit of 100 MB is imposed currently.
 ### Recommended Method for Updating
 >  This is for the executable from [Releases](https://github.com/ditpowuh/chat-beyond/releases).
 
-Extracting the new release, without deleting the older files, is generally fine, but is not the recommended method.
+Extracting the new release, without deleting the older files, is generally fine, but is not recommended.
 <br/>
 The recommended way of updating is to delete all files and folders except for `data` and then extract the new release as usual.
 
 ### Build
-The executables can be generated via the following commands.
+The executables can be generated via the following commands using `Bun`.
 #### Windows
 ```
 bun run build:windows
