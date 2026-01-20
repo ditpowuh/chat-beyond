@@ -58,8 +58,6 @@ function openSettings() {
   $("#revealapikey").text("Show");
 
   socket.emit("LoadSettings");
-
-  goToBottom();
 }
 
 function openExistingChat(uuidChat) {
@@ -243,8 +241,21 @@ $("#cleanfiles").on("click", function() {
 });
 
 $("#deleteall").on("click", function() {
-  processing = true;
-  socket.emit("ClearAndDeleteAll");
+  Swal.fire({
+    icon: "warning",
+    title: "Are you sure you want to delete all data?",
+    text: "You won't be able to revert this.",
+    showCancelButton: true,
+    confirmButtonColor: "#c24848",
+    cancelButtonColor: "#666666",
+    confirmButtonText: "Delete",
+    cancelButtonText: "Cancel"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      processing = true;
+      socket.emit("ClearAndDeleteAll");
+    }
+  });
 });
 
 $("#themeselection").on("change", function() {
