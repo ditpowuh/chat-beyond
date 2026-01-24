@@ -58,6 +58,8 @@ function openSettings() {
   $("#revealapikey").text("Show");
 
   socket.emit("LoadSettings");
+
+  lenis.scrollTo(0, {immediate: true});
 }
 
 function openExistingChat(uuidChat) {
