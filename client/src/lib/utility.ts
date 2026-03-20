@@ -1,17 +1,12 @@
-const lenis = new Lenis();
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
+import Lenis from "lenis";
 
-function formatToMoney(number) {
-  return (Math.round(number * 100) / 100).toFixed(2);
+export function formatToMoney(inputNumber: number): string {
+  return (Math.round(inputNumber * 100) / 100).toFixed(2);
 }
 
-function formatToFileSize(bytes) {
-  let result;
-  const format = (value, unit) => {
+export function formatToFileSize(bytes: number): string {
+  let result = "";
+  const format = (value: number, unit: string) => {
     const rounded = Math.round(value * 10) / 10;
     return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded} ${unit}`;
   };
@@ -31,11 +26,15 @@ function formatToFileSize(bytes) {
   return result;
 }
 
-async function goToBottom() {
+export async function goToBottom(lenis: Lenis): Promise<void> {
   lenis.stop();
   await new Promise((resolve) => {
     window.scrollTo({top: document.body.scrollHeight, behavior: "instant"});
     requestAnimationFrame(resolve);
   });
   lenis.start();
+}
+
+export function getImageFromTheme(theme: string, images: Record<string, string>): string {
+  return images[theme] || "";
 }
