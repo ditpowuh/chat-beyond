@@ -5,3 +5,13 @@ node_modules
 data
 output
 dist
+/public
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.local
+.DS_Store
