@@ -7,17 +7,17 @@ import "./app.css";
 import Swal from "sweetalert2";
 import {useLenis} from "lenis/react";
 
-import Sidebar from "./components/Sidebar";
-import Version from "./components/Version";
-import Settings from "./components/Settings";
-import NewChat from "./components/NewChat";
-import ExistingChat from "./components/ExistingChat";
-import InputArea from "./components/InputArea";
+import Sidebar from "@/components/Sidebar";
+import Version from "@/components/Version";
+import Settings from "@/components/Settings";
+import NewChat from "@/components/NewChat";
+import ExistingChat from "@/components/ExistingChat";
+import InputArea from "@/components/InputArea";
 
-import {socket} from "./lib/socket";
-import {getImageFromTheme} from "./lib/utility";
+import {socket} from "@/lib/socket";
+import {getImageFromTheme} from "@/lib/utility";
 
-import type {SavedSettings, ModelData} from "./types/settings";
+import type {SavedSettings, ModelData} from "@/types/settings";
 
 export type PageType = "Home" | "ExistingChat" | "Settings";
 

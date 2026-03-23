@@ -4,16 +4,16 @@ import Swal from "sweetalert2";
 
 import {useLenis} from "lenis/react";
 
-import {socket} from "../lib/socket";
-import {getImageFromTheme} from "../lib/utility";
+import {socket} from "@/lib/socket";
+import {getImageFromTheme} from "@/lib/utility";
 
-import whiteLogo from "../assets/LogoWhite.png";
-import blackLogo from "../assets/LogoBlack.png";
-import whiteSettingsIcon from "../assets/SettingsWhite.svg";
-import blackSettingsIcon from "../assets/SettingsBlack.svg";
+import whiteLogo from "@/assets/LogoWhite.png";
+import blackLogo from "@/assets/LogoBlack.png";
+import whiteSettingsIcon from "@/assets/SettingsWhite.svg";
+import blackSettingsIcon from "@/assets/SettingsBlack.svg";
 
-import type {PageType} from "../App";
-import type {ChatOrderItem} from "../types/chat";
+import type {PageType} from "@/App";
+import type {ChatOrderItem} from "@/types/chat";
 
 interface SidebarProps {
   setPage: React.Dispatch<React.SetStateAction<PageType>>;

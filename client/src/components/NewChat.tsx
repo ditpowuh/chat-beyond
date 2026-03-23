@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-import {socket} from "../lib/socket";
+import {socket} from "@/lib/socket";
 
 interface NewChatProps {
   chatNameRef: React.RefObject<HTMLInputElement | null>;

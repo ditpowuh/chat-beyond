@@ -2,19 +2,19 @@ import {useState, useEffect, useRef} from "react";
 
 import Swal from "sweetalert2";
 
-import whiteFileIcon from "../assets/FileWhite.svg";
-import blackFileIcon from "../assets/FileBlack.svg";
-import whiteLightbulbIcon from "../assets/LightbulbWhite.svg";
-import blackLightbulbIcon from "../assets/LightbulbBlack.svg";
-import crossIcon from "../assets/Cross.svg";
+import whiteFileIcon from "@/assets/FileWhite.svg";
+import blackFileIcon from "@/assets/FileBlack.svg";
+import whiteLightbulbIcon from "@/assets/LightbulbWhite.svg";
+import blackLightbulbIcon from "@/assets/LightbulbBlack.svg";
+import crossIcon from "@/assets/Cross.svg";
 
 import CostEstimation from "./CostEstimation";
 
-import {socket} from "../lib/socket";
-import {formatToFileSize, getImageFromTheme} from "../lib/utility";
+import {socket} from "@/lib/socket";
+import {formatToFileSize, getImageFromTheme} from "@/lib/utility";
 
-import type {UploadedFile} from "../types/chat";
-import type {PageType} from "../App";
+import type {UploadedFile} from "@/types/chat";
+import type {PageType} from "@/App";
 
 const reasoningMap: Record<number, string> = {
   0: "None",

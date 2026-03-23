@@ -2,10 +2,10 @@ import {useState, useEffect} from "react";
 
 import Swal from "sweetalert2";
 
-import {socket} from "../lib/socket";
-import {formatToMoney} from "../lib/utility";
+import {socket} from "@/lib/socket";
+import {formatToMoney} from "@/lib/utility";
 
-import type {SavedSettings, ModelData} from "../types/settings";
+import type {SavedSettings, ModelData} from "@/types/settings";
 
 interface SettingsProps {
   settings: SavedSettings;

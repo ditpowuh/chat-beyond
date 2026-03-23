@@ -2,8 +2,8 @@ import {useState, useEffect} from "react";
 
 import {confetti} from "@tsparticles/confetti";
 
-import {socket} from "../lib/socket";
-import {formatToMoney} from "../lib/utility";
+import {socket} from "@/lib/socket";
+import {formatToMoney} from "@/lib/utility";
 
 interface CostEstimationProps {
   calculating: boolean;

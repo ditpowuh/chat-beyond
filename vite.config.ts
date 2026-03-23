@@ -1,4 +1,5 @@
 import {defineConfig} from "vite";
+import path from "path";
 
 import react from "@vitejs/plugin-react";
 import checker from "vite-plugin-checker";
@@ -15,9 +16,15 @@ export default defineConfig({
     })
   ],
   root: "./client",
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./client/src")
+    }
+  },
   build: {
     outDir: "../public",
-    emptyOutDir: true
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 2000
   },
   server: {
     proxy: {

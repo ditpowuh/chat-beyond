@@ -23,7 +23,6 @@ import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const FILE_SIZE_LIMIT: number = Number(process.env.FILE_SIZE_LIMIT) || 1e8;
-const OPEN_ON_START: boolean = true;
 const INSTRUCTIONS: string = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
 
 const app = express();
@@ -56,7 +55,7 @@ let chatOrder: ChatOrderItem[] = [];
 let settingsData: SettingsData = {
   "apikey": "",
   "model": "gpt-4o",
-  "theme": "DARK"
+  "theme": "dark"
 };
 
 process.on("uncaughtException", function(exception) {
@@ -502,11 +501,7 @@ io.on("connection", function(socket) {
 
 server.listen(PORT, function() {
   console.log(`Listening at specified port...`);
-  console.log(`\nOpening app in browser now...`);
-  if (OPEN_ON_START) {
-    open(`http://localhost:${PORT}`);
-  }
-  console.log(`If the app has not opened, go to ${chalk.cyanBright(`http://localhost:${PORT}`)} to use the app.`);
+  console.log(`Open ${chalk.cyanBright(`http://localhost:${PORT}`)} to use the app.`);
 });
 
 if (!fs.existsSync(path.join(process.cwd(), "data"))){

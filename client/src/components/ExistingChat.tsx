@@ -5,10 +5,10 @@ import hljs from "highlight.js";
 import {v4 as uuidv4} from "uuid";
 import {useLenis} from "lenis/react";
 
-import {goToBottom} from "../lib/utility";
-import {socket} from "../lib/socket";
+import {goToBottom} from "@/lib/utility";
+import {socket} from "@/lib/socket";
 
-import type {Message} from "../types/chat";
+import type {Message} from "@/types/chat";
 
 interface ExistingChatProps {
   bottomPadding: number;
