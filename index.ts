@@ -67,8 +67,8 @@ app.use(express.static("public", {
 }));
 app.use("/files", express.static("data/files"));
 
-app.get("*", function(request, response) {
-  response.sendFile(path.join(process.cwd(), "public", "404.html"));
+app.use((request, response) => {
+  response.status(404).redirect("/");
 });
 
 marked.use({breaks: true}, markedKatex({
