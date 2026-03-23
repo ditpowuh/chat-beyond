@@ -1,12 +1,15 @@
 # ChatBeyond
 
+![GitHub Release](https://img.shields.io/github/v/release/ditpowuh/chat-beyond?style=for-the-badge&color=000000)
+![GitHub License](https://img.shields.io/github/license/ditpowuh/chat-beyond?style=for-the-badge&color=408040)
+
 This web application serves to be an alternative to ChatGPT, creating a familiar environment with a similar user interface. It uses OpenAI's developer API, allowing users to use OpenAI's stronger models without the need of paying a subscription.
 
 The app is built with ease of use in mind, keeping everything very simple. Everything can be found within the directory of which the app is stored in.
 <br/>
 Updating to the latest version of the application is highly recommended for bug fixes and to get new models.
 
-This project is made with the runtime [Bun](https://bun.com/) in mind (with Node.JS support). The languages used in this project are `TypeScript` and `JavaScript`.
+This project is made with the runtime [Bun](https://bun.com/) in mind (with Node.JS support), and is written in `TypeScript`.
 
 > Note that this app does NOT cover the cost of using the models for you.
 
@@ -18,7 +21,7 @@ Overview/Features:
 - User interface built from the ground up, with support for showing images and code
 
 This app is recommended if you:
-1. do not constantly use ChatGPT on both a daily and frequent basis
+1. use ChatGPT, but not on both a daily and frequent basis
 2. require a stronger OpenAI model than the models ChatGPT (Free Plan) provides
 
 ### Settings
@@ -39,14 +42,15 @@ Note that you do not need to edit `settings.json` as all settings are configurab
 1. Ensure that [Bun](https://bun.com/) is installed and ready.
 2. Download source code and install necessary packages via `bun install`.
 3. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
-4. Run the app (via `bun start`).
+4. Run the app (via `bun dev`).
 5. Go to settings in the app and put your API key in.
 
 ##### Node.JS
 1. Download source code and install necessary packages via `npm install`.
 2. Compile TypeScript to JavaScript by running `npm run node:compile`.
 3. Prepare an API key if you have not done so already over at [OpenAI's website](https://platform.openai.com/).
-4. Run the app using `npm run node:start`.
+4. Run the app using `npm run node:dev` and `npm run client:dev` in another terminal.
+   - If a single terminal is preferred, `npm run client:build` can be run to build the client code and then `npm run node:dev` for running the app.
 5. Go to settings in the app and put your API key in.
 
 ### Technical Info
@@ -90,8 +94,20 @@ Extracting the new release, without deleting the older files, is generally fine,
 The recommended way of updating is to delete all files and folders except for `data` and then extract the new release as usual.
 
 ### Build
+#### Client/Frontend
+The user interface can be built via the following command.
+##### Bun
+```
+bun run client:build
+```
+##### NPM
+```
+npm run client:build
+```
+
+#### Server/Executable
 The executables can be generated via the following commands using `Bun`.
-#### Windows
+##### Windows
 ```
 bun run build:windows
 ```
@@ -99,7 +115,7 @@ or
 ```
 bun build index.ts --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64
 ```
-#### MacOS
+##### MacOS
 ```
 bun run build:mac
 ```
