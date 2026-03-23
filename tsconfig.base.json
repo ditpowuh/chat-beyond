@@ -17,9 +17,11 @@
   ],
   "exclude": [
     "node_modules",
+    "client",
     "public",
     "output",
     "dist",
-    "**/-*"
+    "**/-*",
+    "*.config.ts"
   ]
 }
