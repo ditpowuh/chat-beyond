@@ -254,29 +254,29 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
                         </svg>
                       )}
                     </div>
-                    <div className="fileinfo">
-                      <div className="name" title={file.uploadedData.name}>{file.uploadedData.name}</div>
-                      <div className="size" title={formatToFileSize(file.uploadedData.size)}>{formatToFileSize(file.uploadedData.size)}</div>
+                    <div className={styles.fileinfo}>
+                      <div className={styles.name} title={file.uploadedData.name}>{file.uploadedData.name}</div>
+                      <div className={styles.size} title={formatToFileSize(file.uploadedData.size)}>{formatToFileSize(file.uploadedData.size)}</div>
                     </div>
-                    <button className="removebutton" onClick={(e) => removeFile(file)}><img src={crossIcon}/></button>
+                    <button className={styles.removebutton} onClick={(e) => removeFile(file)}><img src={crossIcon}/></button>
                   </div>
                 ))
               }
             </div>
-            <input ref={fileInputRef} id="fileinput" type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
+            <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
             <div className={styles.textarea}>
-              <button id="filebutton" title="Add File" onClick={openFileDialog}>
               <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
+              <button title="Add File" onClick={openFileDialog}>
                 <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
               </button>
               {reasoningEnabled && (
-                <button id="reasoningbutton" title={`Reasoning: ${reasoningMap[reasoningLevel]}`} style={getReasoningStyles(reasoningLevel)} onClick={changeReasoningLevel}>
+                <button title={`Reasoning: ${reasoningMap[reasoningLevel]}`} style={getReasoningStyles(reasoningLevel)} onClick={changeReasoningLevel}>
                   <img src={getImageFromTheme(theme, {dark: whiteLightbulbIcon, light: blackLightbulbIcon})} width="16" height="16"/>
                 </button>
               )}
             </div>
           </div>
-          <button id="sendbutton" onClick={sendMessage}>Send</button>
+          <button onClick={sendMessage}>Send</button>
           <div className={styles.notice}>As always, AI can make mistakes. Make sure you check important info provided.</div>
         </div>
       )}
