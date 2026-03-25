@@ -53,6 +53,10 @@
   border: none;
 }
 
+.modelnotice {
+  font-size: 12px;
+}
+
 .models {
   display: inline-block;
 }

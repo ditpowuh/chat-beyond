@@ -8,7 +8,7 @@ interface ModelData {
 
 const models: Record<string, ModelData> = {
   "gpt-4o-mini": {
-    "description": "A cheaper verison of GPT-4o. This is the free model of ChatGPT.",
+    "description": "A cheaper verison of GPT-4o. This was formerly the free model of ChatGPT.",
     "cost": {
       "input": 0.15,
       "output": 0.6
@@ -18,7 +18,7 @@ const models: Record<string, ModelData> = {
     "web": true
   },
   "gpt-4o": {
-    "description": "This is the main model of ChatGPT's subscriptions.",
+    "description": "This is formerly the main model of ChatGPT's subscriptions.",
     "cost": {
       "input": 2.5,
       "output": 10
@@ -28,7 +28,7 @@ const models: Record<string, ModelData> = {
     "web": true
   },
   "gpt-4.1": {
-    "description": "Described as the flagship GPT model for complex tasks, this model peforms strongly.",
+    "description": "Formerly, described as the flagship GPT model for complex tasks, this model peforms strongly.",
     "cost": {
       "input": 2,
       "output": 8
@@ -98,7 +98,7 @@ const models: Record<string, ModelData> = {
     "web": false
   },
   "gpt-5.1": {
-    "description": "The flagship GPT model for coding and agentic tasks with configurable reasoning and non-reasoning effort.",
+    "description": "The former flagship GPT model for coding and agentic tasks.",
     "cost": {
       "input": 1.25,
       "output": 10
@@ -112,6 +112,36 @@ const models: Record<string, ModelData> = {
     "cost": {
       "input": 1.75,
       "output": 14
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.4": {
+    "description": "Described as OpenAI's frontier model for complex professional work.",
+    "cost": {
+      "input": 2.5,
+      "output": 15
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.4-mini": {
+    "description": "A faster and more efficient of GPT-5.4, that's smaller and cheaper.",
+    "cost": {
+      "input": 0.75,
+      "output": 4.5
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.4-nano": {
+    "description": "A version of GPT-5.4 for tasks where speed and cost matter most.",
+    "cost": {
+      "input": 0.2,
+      "output": 1.25
     },
     "temperature": false,
     "reasoning": true,
