@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  padding: 0 !important;
   overflow: visible !important;
   transition: all 0.25s;
 }
