@@ -1,7 +1,7 @@
 import styles from "./App.module.css";
 import {useState, useEffect, useRef} from "react";
 
-import "./app.css";
+import "./global.css";
 import whiteSettingsIcon from "@/assets/SettingsWhite.svg";
 import blackSettingsIcon from "@/assets/SettingsBlack.svg";
 
