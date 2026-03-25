@@ -1,0 +1,106 @@
+.sidebar {
+  background-color: var(--sidebar);
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: block;
+  width: 275px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.sidebar .top {
+  background-color: var(--sidebar);
+  top: 0;
+  width: 275px;
+  position: sticky;
+  padding-bottom: 20px;
+  border-bottom: 2.5px solid var(--background);
+}
+
+.sidebar .top .list li {
+  width: 230px;
+}
+
+.sidebar .logo {
+  margin-top: 12px;
+  margin-left: 12px;
+  padding: 6px;
+  transition: 0.25s all;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.sidebar .logo:hover {
+  background-color: var(--selected-sidebar);
+}
+
+.sidebar div.category {
+  margin: 10px 20px;
+  color: var(--subtext);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  margin: 0 10px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s all;
+}
+
+.sidebar ul li:hover {
+  background-color: var(--selected-sidebar);
+}
+
+.sidebar ul li:hover > button {
+  visibility: visible;
+  opacity: 1;
+}
+
+.sidebar ul li button {
+  background-color: var(--sidebar);
+  visibility: hidden;
+  border: none;
+  color: var(--subtext);
+  font-size: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 25%;
+  opacity: 0;
+  cursor: pointer;
+  transition: 0.25s opacity;
+}
+
+.sidebar ul li span {
+  height: 20px;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar br {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.pastchats {
+  padding-bottom: 25px;
+}

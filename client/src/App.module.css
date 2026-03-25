@@ -1,0 +1,36 @@
+.topbar {
+  background-color: var(--layer);
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 475px;
+  height: 60px;
+  padding-top: 20px;
+  border-radius: 0 20px 20px 0;
+}
+
+.topbar .separator {
+  font-size: 24px;
+  padding: 0 5px;
+}
+
+.topbar > * {
+  display: inline;
+}
+
+.topbar > :first-child {
+  margin-left: 300px;
+}
+
+.settingsicon {
+  margin-bottom: 4px;
+  vertical-align: middle;
+  transition: 0.25s transform;
+  cursor: pointer;
+}
+
+.settingsicon:hover {
+  transform: rotate(90deg);
+}

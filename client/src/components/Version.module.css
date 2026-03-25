@@ -1,0 +1,13 @@
+.version {
+  background-color: var(--layer);
+  color: var(--subtext);
+  font-size: 12px;
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
+  right: 0;
+  display: block;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}

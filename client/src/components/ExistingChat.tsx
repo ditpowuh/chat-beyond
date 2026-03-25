@@ -1,3 +1,4 @@
+import styles from "./ExistingChat.module.css";
 import {Fragment, useState, useEffect, useRef} from "react";
 
 import hljs from "highlight.js";
@@ -125,7 +126,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
   }, [bottomPadding]);
 
   return (
-    <div ref={chatRef} id="chat" className="content wrapper" style={{paddingBottom: bottomPadding}}>
+    <div ref={chatRef} className={`${styles.chat} content wrapper`} style={{paddingBottom: bottomPadding}}>
       {
         currentMessages.map((message) => {
           if (message.role === "user") {
@@ -135,38 +136,38 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
                   message.files?.map((file) => {
                     if (storedImageTypes.some(imageType => file.endsWith(imageType))) {
                       return (
-                        <div className="message user file">
+                        <div className={`${styles.message} ${styles.user} ${styles.file}`}>
                           <img src={`/files/${file}`}/>
-                          <span className="subtext image">{file}</span>
+                          <span className={`${styles.subtext} ${styles.image}`}>{file}</span>
                         </div>
                       );
                     }
                     else {
                       return (
-                        <div className="message user file">
-                          <span className="fileicon">
+                        <div className={`${styles.message} ${styles.user} ${styles.file}`}>
+                          <span className={styles.fileicon}>
                             <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
                               <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                               <path d="M14 2v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                             </svg>
                           </span>
-                          <span className="subtext file">{file}</span>
+                          <span className={`${styles.subtext} ${styles.file}`}>{file}</span>
                         </div>
                       );
                     }
                   })
                 }
-                <div className="message user">{message.content}</div>
+                <div className={`${styles.message} ${styles.user}`}>{message.content}</div>
               </Fragment>
             );
           }
           else {
-            return <div key={message.uuid} className="message" dangerouslySetInnerHTML={{__html: message.content}}></div>;
+            return <div key={message.uuid} className={styles.message} dangerouslySetInnerHTML={{__html: message.content}}></div>;
           }
         })
       }
       {processingChatInProgress && (
-        <div className="message processing undraggable">Processing and thinking...</div>
+        <div className={`${styles.message} ${styles.processing} undraggable`}>Processing and thinking...</div>
       )}
     </div>
   );

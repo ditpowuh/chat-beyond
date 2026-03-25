@@ -1,3 +1,4 @@
+import styles from "./Settings.module.css";
 import {useState, useEffect} from "react";
 
 import Swal from "sweetalert2";
@@ -78,36 +79,36 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
   }
 
   return (
-    <div id="settings" className="content wrapper">
+    <div className={`${styles.settings} content wrapper`}>
       <h2>API Key</h2>
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
-      <input id="apikey" className={!showKey ? "hideapi" : ""} type="text" placeholder="OpenAI API Key" value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)}/>
-      <button id="revealapikey" onClick={(e) => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
+      <input className={!showKey ? `${styles.apikey} ${styles.hideapi}` : styles.apikey} type="text" placeholder="OpenAI API Key" value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)}/>
+      <button className={styles.revealapikey} onClick={(e) => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
       <br/><br/>
       <h2>Clean-up</h2>
       <p>This is to remove any unnecessary files or to reset everything.</p>
-      <button id="cleanfiles" className="settingbutton" onClick={clearUnusedFiles}>Remove any unused uploaded files</button>
+      <button id="cleanfiles" className={styles.settingbutton} onClick={clearUnusedFiles}>Remove any unused uploaded files</button>
       <br/>
-      <button id="deleteall" className="settingbutton" onClick={deleteAllFiles}>Delete all files and chats</button>
+      <button id="deleteall" className={styles.settingbutton} onClick={deleteAllFiles}>Delete all files and chats</button>
       <br/><br/>
       <h2>Theme</h2>
       <p>Change between themes.</p>
-      <select id="themeselection" name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
+      <select className={styles.themeselection} name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
       <br/><br/>
       <h2>Model</h2>
       <p>Choose one of the different models. Note that 100 tokens is around 75 words.</p>
-      <div id="models">
+      <div className={styles.models}>
         {
           Object.keys(models).map((key) => (
-            <div key={key} className={key === settings.model ? "selected" : ""} onClick={(e) => applySetting("model", key)}>
+            <div key={key} className={key === settings.model ? styles.selected : ""} onClick={(e) => applySetting("model", key)}>
               <h3>{key}</h3>
-              <p><b>Description</b><br/><span className="description">{models[key].description}</span></p>
+              <p><b>Description</b><br/><span className={styles.description}>{models[key].description}</span></p>
               <p><b>Costs</b><br/>${formatToMoney(models[key].cost.input)} per 1,000,000 tokens for Input<br/>${formatToMoney(models[key].cost.output)} per 1,000,000 tokens for Output</p>
-              <p className="small"><b>Web Search</b><br/>{models[key].web ? "Available" : "Not Available"}</p>
-              <p className="small"><b>Reasoning</b><br/>{models[key].reasoning ? "Available" : "Not Available"}</p>
+              <p className={styles.small}><b>Web Search</b><br/>{models[key].web ? "Available" : "Not Available"}</p>
+              <p className={styles.small}><b>Reasoning</b><br/>{models[key].reasoning ? "Available" : "Not Available"}</p>
             </div>
           ))
         }

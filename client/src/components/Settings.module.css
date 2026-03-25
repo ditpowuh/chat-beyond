@@ -1,0 +1,87 @@
+.settings button {
+  background-color: var(--user);
+  color: var(--text);
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.settings button:hover {
+  background-color: var(--button-hover);
+}
+
+.settings br {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.settings .settingbutton {
+  margin: 2.5px 0;
+  padding: 20px 30px;
+}
+
+.apikey {
+  background-color: var(--user);
+  color: var(--text);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  width: 600px;
+  text-align: center;
+}
+
+.hideapi {
+  -webkit-text-security: disc;
+}
+
+.revealapikey {
+  width: 80px;
+}
+
+.themeselection {
+  background-color: var(--user);
+  color: var(--text);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+}
+
+.models {
+  display: inline-block;
+}
+
+.models div {
+  display: inline-block;
+  background-color: var(--user);
+  margin: 7.5px 5px;
+  width: 320px;
+  height: 330px;
+  padding: 10px 30px;
+  border: 2.5px solid var(--subtext);
+  border-radius: 25px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.25s background-color, 0.25s box-shadow, 0.25s border-color;
+}
+
+.models div.selected {
+  box-shadow: 0 0 15px var(--subtext);
+  border: 2.5px solid var(--text);
+}
+
+.models div p.small {
+  text-align: center;
+  font-size: 14px;
+}
+
+.models div p span.description {
+  display: inline-block;
+  max-height: 45px;
+  overflow: hidden;
+}

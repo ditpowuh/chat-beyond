@@ -1,3 +1,4 @@
+import styles from "./InputArea.module.css";
 import {useState, useEffect, useRef} from "react";
 
 import Swal from "sweetalert2";
@@ -222,13 +223,13 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
   return (
     <>
       {currentPage !== "Settings" && (
-        <div id="bottomarea" className="wrapper">
-          <button id="costbutton" onClick={(e) => calculateCost()}>Estimate Cost</button>
-          <div id="inputarea" onDrop={handleDrop}>
-            <div ref={fileAreaRef} id="filearea">
+        <div className={`${styles.bottomarea} wrapper`}>
+          <button onClick={(e) => calculateCost()}>Estimate Cost</button>
+          <div className={styles.inputarea} onDrop={handleDrop}>
+            <div ref={fileAreaRef} className={styles.filearea}>
               {
                 files.map((file, i) => (
-                  <div className="fileitem" key={i}>
+                  <div className={styles.fileitem} key={i}>
                     <div>
                       {file.preview && (
                         <img src={file.preview} title={file.uploadedData.name}/>
@@ -250,8 +251,8 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
               }
             </div>
             <input ref={fileInputRef} id="fileinput" type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
-            <div id="textarea">
-              <textarea ref={textInputRef} id="textinput" maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
+            <div className={styles.textarea}>
+              <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
               <button id="filebutton" title="Add File" onClick={openFileDialog}>
                 <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
               </button>
@@ -263,7 +264,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
             </div>
           </div>
           <button id="sendbutton" onClick={sendMessage}>Send</button>
-          <div id="notice">As always, AI can make mistakes. Make sure you check important info provided.</div>
+          <div className={styles.notice}>As always, AI can make mistakes. Make sure you check important info provided.</div>
         </div>
       )}
       <CostEstimation calculating={isCalculatingCost} processing={processing}/>

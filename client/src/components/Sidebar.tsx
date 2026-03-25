@@ -1,3 +1,4 @@
+import styles from "./Sidebar.module.css";
 import {useState, useEffect} from "react";
 
 import Swal from "sweetalert2";
@@ -148,20 +149,20 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
   }
 
   return (
-    <div id="sidebar">
-      <div className="top">
-        <img id="logo" className="undraggable" src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} width="36" onClick={(e) => goHome()}/>
-        <ul className="list">
-          <li id="newchat" onClick={(e) => goHome()}>New chat</li>
+    <div className={styles.sidebar}>
+      <div className={styles.top}>
+        <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} width="36" onClick={(e) => goHome()}/>
+        <ul className={styles.list}>
+          <li onClick={(e) => goHome()}>New chat</li>
         </ul>
       </div>
       <br/>
-      <div id="pastchats">
+      <div className={styles.pastchats}>
         {
           Object.keys(chats).map((category) => (
             <div key={category}>
-              <div className="category">{category}</div>
-              <ul className="list">
+              <div className={styles.category}>{category}</div>
+              <ul className={styles.list}>
                 {
                   chats[category].map((chat) => (
                     <li key={chat.uuid} onClick={(e) => openChat(chat.uuid, chat.title)}>

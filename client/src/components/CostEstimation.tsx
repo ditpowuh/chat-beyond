@@ -1,3 +1,4 @@
+import styles from "./CostEstimation.module.css";
 import {useState, useEffect} from "react";
 
 import {confetti} from "@tsparticles/confetti";
@@ -40,8 +41,8 @@ export default function CostEstimation({calculating, processing}: CostEstimation
   }, []);
 
   return (
-    <div id="bottombar" className="undraggable">
-      <div id="cost">{`Estimated Input Cost: ${calculating ? "Calculating..." : estimatedCost}`}</div>
+    <div className={`${styles.bottombar} undraggable`}>
+      <div className={styles.cost}>{`Estimated Input Cost: ${calculating ? "Calculating..." : estimatedCost}`}</div>
     </div>
   );
 }

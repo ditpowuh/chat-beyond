@@ -1,8 +1,9 @@
+import styles from "./App.module.css";
 import {useState, useEffect, useRef} from "react";
 
-import whiteSettingsIcon from "./assets/SettingsWhite.svg";
-import blackSettingsIcon from "./assets/SettingsBlack.svg";
 import "./app.css";
+import whiteSettingsIcon from "@/assets/SettingsWhite.svg";
+import blackSettingsIcon from "@/assets/SettingsBlack.svg";
 
 import Swal from "sweetalert2";
 import {useLenis} from "lenis/react";
@@ -122,10 +123,10 @@ export default function App() {
   return (
     <>
       <Sidebar setPage={setPage} processing={processing} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
-      <div id="topbar" className="undraggable">
+      <div className={`${styles.topbar} undraggable`}>
         <div>ChatBeyond</div>
-        <div className="separator">|</div>
-        <img id="settingsicon" className="undraggable" src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} width="32" title="Settings" onClick={(e) => setPage("Settings")}/>
+        <div className={styles.separator}>|</div>
+        <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} width="32" title="Settings" onClick={(e) => setPage("Settings")}/>
       </div>
       {page === "Home" && <NewChat chatNameRef={chatNameRef}/>}
       {page === "Settings" && <Settings settings={settings} setSettings={setSettings} processing={processing}/>}
