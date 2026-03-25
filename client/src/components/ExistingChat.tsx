@@ -16,9 +16,10 @@ interface ExistingChatProps {
   processingChatInProgress: boolean;
   setProcessingChatInProgress: React.Dispatch<React.SetStateAction<boolean>>;
   processing: React.RefObject<boolean>;
+  chatUUID: string;
 }
 
-export default function ExistingChat({bottomPadding, processingChatInProgress, setProcessingChatInProgress, processing}: ExistingChatProps) {
+export default function ExistingChat({bottomPadding, processingChatInProgress, setProcessingChatInProgress, processing, chatUUID}: ExistingChatProps) {
   const lenis = useLenis();
 
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
@@ -103,6 +104,10 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
       socket.off("FinishNewMessage", finishNewMessage);
     }
   }, []);
+
+  useEffect(() => {
+    hasGoneToBottom.current = false;
+  }, [chatUUID]);
 
   useEffect(() => {
     hljs.highlightAll();

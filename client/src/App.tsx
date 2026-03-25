@@ -131,7 +131,7 @@ export default function App() {
       </div>
       {page === "Home" && <NewChat chatNameRef={chatNameRef}/>}
       {page === "Settings" && <Settings settings={settings} setSettings={setSettings} processing={processing}/>}
-      {page === "ExistingChat" && <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing}/>}
+      {page === "ExistingChat" && <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing} chatUUID={chatUUID}/>}
       <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding}/>
       <link rel="stylesheet" href={`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-${settings.theme}.min.css`}/>
     </>
