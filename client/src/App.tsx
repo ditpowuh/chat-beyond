@@ -124,7 +124,8 @@ export default function App() {
     <>
       <Sidebar setPage={setPage} processing={processing} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
       <div className={`${styles.topbar} undraggable`}>
-        <div>ChatBeyond</div>
+        <div className={styles.name}>ChatBeyond</div>
+        <Version/>
         <div className={styles.separator}>|</div>
         <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} width="32" title="Settings" onClick={(e) => setPage("Settings")}/>
       </div>
@@ -132,7 +133,6 @@ export default function App() {
       {page === "Settings" && <Settings settings={settings} setSettings={setSettings} processing={processing}/>}
       {page === "ExistingChat" && <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing}/>}
       <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding}/>
-      <Version/>
       <link rel="stylesheet" href={`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-${settings.theme}.min.css`}/>
     </>
   );

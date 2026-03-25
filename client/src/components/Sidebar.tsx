@@ -151,7 +151,7 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
   return (
     <div className={styles.sidebar}>
       <div className={styles.top}>
-        <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} width="36" onClick={(e) => goHome()}/>
+        <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} onClick={(e) => goHome()}/>
         <ul className={styles.list}>
           <li onClick={(e) => goHome()}>New chat</li>
         </ul>

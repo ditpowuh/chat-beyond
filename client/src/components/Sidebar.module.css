@@ -22,10 +22,11 @@
 }
 
 .sidebar .top .list li {
-  width: 230px;
+  width: 250px;
 }
 
 .sidebar .logo {
+  width: 48px;
   margin-top: 12px;
   margin-left: 12px;
   padding: 6px;

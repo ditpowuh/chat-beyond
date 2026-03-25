@@ -5,15 +5,18 @@
   top: 0;
   left: 0;
   display: block;
-  width: 475px;
-  height: 60px;
+  height: 80px;
   padding-top: 20px;
   border-radius: 0 20px 20px 0;
 }
 
+.topbar .name {
+  font-weight: bold;
+}
+
 .topbar .separator {
   font-size: 24px;
-  padding: 0 5px;
+  padding: 0 10px;
 }
 
 .topbar > * {
@@ -25,7 +28,7 @@
 }
 
 .settingsicon {
-  margin-bottom: 4px;
+  margin: 0 24px 4px 4px;
   vertical-align: middle;
   transition: 0.25s transform;
   cursor: pointer;

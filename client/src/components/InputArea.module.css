@@ -6,7 +6,7 @@
   left: 50%;
   transform: translateX(-50%);
   padding-left: 275px;
-  width: 1200px;
+  width: 1475px;
   transition: 0.25s opacity;
 }
 
@@ -23,7 +23,7 @@
   width: 160px;
   border: none;
   border-radius: 15px;
-  margin: 0 5px;
+  margin: 0 10px;
   cursor: pointer;
   transform: translateY(20%);
   transition: 0.2s background-color;

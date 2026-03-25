@@ -42,6 +42,7 @@
 
 .revealapikey {
   width: 80px;
+  margin: 0 5px;
 }
 
 .themeselection {
@@ -60,8 +61,7 @@
   display: inline-block;
   background-color: var(--user);
   margin: 7.5px 5px;
-  width: 320px;
-  height: 330px;
+  width: 390px;
   padding: 10px 30px;
   border: 2.5px solid var(--subtext);
   border-radius: 25px;
