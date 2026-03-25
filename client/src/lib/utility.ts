@@ -36,5 +36,8 @@ export async function goToBottom(lenis: Lenis): Promise<void> {
 }
 
 export function getImageFromTheme(theme: string, images: Record<string, string>): string {
-  return images[theme] || "";
+  if (images[theme]) {
+    return images[theme];
+  }
+  return Object.values(images)[0] ?? "";
 }

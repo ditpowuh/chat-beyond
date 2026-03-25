@@ -89,7 +89,7 @@ io.on("connection", function(socket) {
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
   socket.on("ChangeTheme", function(theme: string) {
-    settingsData.theme = theme;
+    settingsData.theme = theme.toLowerCase();
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
     socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
   });
