@@ -62,6 +62,19 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
     }
   }, []);
 
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const element = event.currentTarget;
+
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
+    const delta = event.deltaY;
+
+    if (!(delta < 0 && scrollTop === 0 || delta > 0 && scrollTop + clientHeight >= scrollHeight)) {
+      event.stopPropagation();
+    }
+  }
+
   const openChat = (uuid: string, title: string) => {
     if (chatUUID === uuid) {
       lenis!.scrollTo(document.body.scrollHeight);
@@ -149,7 +162,7 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
   }
 
   return (
-    <div className={styles.sidebar}>
+    <div className={styles.sidebar} onWheel={handleWheel}>
       <div className={styles.top}>
         <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} onClick={(e) => goHome()}/>
         <ul className={styles.list}>

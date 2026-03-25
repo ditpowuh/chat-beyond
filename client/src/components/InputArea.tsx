@@ -177,6 +177,19 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     uploadFile(event.dataTransfer.files[0]);
   }
 
+  const handleWheel = (event: React.WheelEvent<HTMLTextAreaElement>) => {
+    const element = event.currentTarget;
+
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
+    const delta = event.deltaY;
+
+    if (!(delta < 0 && scrollTop === 0 || delta > 0 && scrollTop + clientHeight >= scrollHeight)) {
+      event.stopPropagation();
+    }
+  }
+
   const changeInputHeight = () => {
     if (textInputRef.current && fileAreaRef.current) {
       const lineHeight = 24;
@@ -252,8 +265,8 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
             </div>
             <input ref={fileInputRef} id="fileinput" type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
             <div className={styles.textarea}>
-              <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
               <button id="filebutton" title="Add File" onClick={openFileDialog}>
+              <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
                 <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
               </button>
               {reasoningEnabled && (
