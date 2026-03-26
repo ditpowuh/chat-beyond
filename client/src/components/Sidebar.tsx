@@ -17,6 +17,7 @@ import type {PageType} from "@/App";
 import type {ChatOrderItem} from "@/types/chat";
 
 interface SidebarProps {
+  page: PageType;
   setPage: React.Dispatch<React.SetStateAction<PageType>>;
   processing: React.RefObject<boolean>;
   chatUUID: string;
@@ -24,7 +25,7 @@ interface SidebarProps {
   theme: string;
 }
 
-export default function Sidebar({setPage, processing, chatUUID, setChatUUID, theme}: SidebarProps) {
+export default function Sidebar({page, setPage, processing, chatUUID, setChatUUID, theme}: SidebarProps) {
   const lenis = useLenis();
 
   const [chats, setChats] = useState<Record<string, ChatOrderItem[]>>({});
@@ -86,7 +87,6 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
     document.title = `ChatBeyond: ${title}`;
     setPage("ExistingChat");
     setChatUUID(uuid);
-    socket.emit("LoadMessages", uuid);
   }
 
   const modifyChat = (event: React.MouseEvent<HTMLButtonElement>, title: string, uuid: string) => {
@@ -155,7 +155,7 @@ export default function Sidebar({setPage, processing, chatUUID, setChatUUID, the
   }
 
   const goHome = () => {
-    if (processing.current === true) {
+    if (processing.current === true || page === "Home") {
       return;
     }
     setPage("Home");

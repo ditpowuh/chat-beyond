@@ -39,6 +39,10 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
     }
     socket.on("LoadMessages", loadMessages);
 
+    if (chatUUID !== "") {
+      socket.emit("LoadMessages", chatUUID);
+    }
+
     const startNewMessage = (originalMessage: string, uuidReceiving: string, title: string, files: string[], imageTypes: string[]) => {
       setStoredImageTypes(imageTypes);
       setCurrentMessages((previous) => ([
@@ -103,10 +107,6 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
       socket.off("ProcessingNewMessage", processingNewMessage);
       socket.off("FinishNewMessage", finishNewMessage);
     }
-  }, []);
-
-  useEffect(() => {
-    hasGoneToBottom.current = false;
   }, [chatUUID]);
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import "./global.css";
 import whiteSettingsIcon from "@/assets/SettingsWhite.svg";
 import blackSettingsIcon from "@/assets/SettingsBlack.svg";
 
+import {AnimatePresence, motion} from "framer-motion";
 import Swal from "sweetalert2";
 import {useLenis} from "lenis/react";
 
@@ -122,16 +123,26 @@ export default function App() {
 
   return (
     <>
-      <Sidebar setPage={setPage} processing={processing} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
+      <Sidebar page={page} setPage={setPage} processing={processing} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
       <div className={`${styles.topbar} undraggable`}>
         <div className={styles.name}>ChatBeyond</div>
         <Version/>
         <div className={styles.separator}>|</div>
-        <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} width="32" title="Settings" onClick={(e) => setPage("Settings")}/>
+        <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} title="Settings" onClick={(e) => setPage("Settings")}/>
       </div>
-      {page === "Home" && <NewChat chatNameRef={chatNameRef}/>}
-      {page === "Settings" && <Settings settings={settings} setSettings={setSettings} processing={processing}/>}
-      {page === "ExistingChat" && <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing} chatUUID={chatUUID}/>}
+      <AnimatePresence mode="wait">
+        <motion.div key={page === "ExistingChat" ? `ExistingChat-${chatUUID}` : page} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 1}} transition={{duration: 0.25}}>
+          {page === "Home" && (
+            <NewChat chatNameRef={chatNameRef}/>
+          )}
+          {page === "Settings" && (
+            <Settings settings={settings} setSettings={setSettings} processing={processing}/>
+          )}
+          {page === "ExistingChat" && (
+            <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing} chatUUID={chatUUID}/>
+          )}
+        </motion.div>
+      </AnimatePresence>
       <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding}/>
       <link rel="stylesheet" href={`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-${settings.theme}.min.css`}/>
     </>

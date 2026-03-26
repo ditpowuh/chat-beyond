@@ -1,6 +1,7 @@
 import styles from "./InputArea.module.css";
 import {useState, useEffect, useRef} from "react";
 
+import {AnimatePresence, motion} from "framer-motion";
 import Swal from "sweetalert2";
 
 import whiteFileIcon from "@/assets/FileWhite.svg";
@@ -45,6 +46,16 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
   const textInputRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const fileAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const hiddenAnimationState = {
+    transform: "translateX(-50%) translateY(125%)",
+    opacity: 0
+  };
+
+  const visibleAnimationState = {
+    transform: "translateX(-50%)",
+    opacity: 1
+  };
 
   useEffect(() => {
     const tokenCost = (tokenCount: number, cost: number) => {
@@ -235,51 +246,53 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
 
   return (
     <>
-      {currentPage !== "Settings" && (
-        <div className={`${styles.bottomarea} wrapper`}>
-          <button onClick={(e) => calculateCost()}>Estimate Cost</button>
-          <div className={styles.inputarea} onDrop={handleDrop}>
-            <div ref={fileAreaRef} className={styles.filearea}>
-              {
-                files.map((file, i) => (
-                  <div className={styles.fileitem} key={i}>
-                    <div>
-                      {file.preview && (
-                        <img src={file.preview} title={file.uploadedData.name}/>
-                      )}
-                      {!file.preview && (
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                          <path d="M14 2v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                        </svg>
-                      )}
+      <AnimatePresence mode="wait">
+        {currentPage !== "Settings" && (
+          <motion.div className={`${styles.bottomarea} wrapper`} initial={hiddenAnimationState} animate={visibleAnimationState} exit={hiddenAnimationState} transition={{duration: 0.25}}>
+            <button onClick={(e) => calculateCost()}>Estimate Cost</button>
+            <div className={styles.inputarea} onDrop={handleDrop}>
+              <div ref={fileAreaRef} className={styles.filearea}>
+                {
+                  files.map((file, i) => (
+                    <div className={styles.fileitem} key={i}>
+                      <div>
+                        {file.preview && (
+                          <img src={file.preview} title={file.uploadedData.name}/>
+                        )}
+                        {!file.preview && (
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                            <path d="M14 2v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                          </svg>
+                        )}
+                      </div>
+                      <div className={styles.fileinfo}>
+                        <div className={styles.name} title={file.uploadedData.name}>{file.uploadedData.name}</div>
+                        <div className={styles.size} title={formatToFileSize(file.uploadedData.size)}>{formatToFileSize(file.uploadedData.size)}</div>
+                      </div>
+                      <button className={styles.removebutton} onClick={(e) => removeFile(file)}><img src={crossIcon}/></button>
                     </div>
-                    <div className={styles.fileinfo}>
-                      <div className={styles.name} title={file.uploadedData.name}>{file.uploadedData.name}</div>
-                      <div className={styles.size} title={formatToFileSize(file.uploadedData.size)}>{formatToFileSize(file.uploadedData.size)}</div>
-                    </div>
-                    <button className={styles.removebutton} onClick={(e) => removeFile(file)}><img src={crossIcon}/></button>
-                  </div>
-                ))
-              }
-            </div>
-            <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
-            <div className={styles.textarea}>
-              <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
-              <button title="Add File" onClick={openFileDialog}>
-                <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
-              </button>
-              {reasoningEnabled && (
-                <button title={`Reasoning: ${reasoningMap[reasoningLevel]}`} style={getReasoningStyles(reasoningLevel)} onClick={changeReasoningLevel}>
-                  <img src={getImageFromTheme(theme, {dark: whiteLightbulbIcon, light: blackLightbulbIcon})} width="16" height="16"/>
+                  ))
+                }
+              </div>
+              <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
+              <div className={styles.textarea}>
+                <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
+                <button title="Add File" onClick={openFileDialog}>
+                  <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
                 </button>
-              )}
+                {reasoningEnabled && (
+                  <button title={`Reasoning: ${reasoningMap[reasoningLevel]}`} style={getReasoningStyles(reasoningLevel)} onClick={changeReasoningLevel}>
+                    <img src={getImageFromTheme(theme, {dark: whiteLightbulbIcon, light: blackLightbulbIcon})} width="16" height="16"/>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <button onClick={sendMessage}>Send</button>
-          <div className={styles.notice}>As always, AI can make mistakes. Make sure you check important info provided.</div>
-        </div>
-      )}
+            <button onClick={sendMessage}>Send</button>
+            <div className={styles.notice}>As always, AI can make mistakes. Make sure you check important info provided.</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <CostEstimation calculating={isCalculatingCost} processing={processing}/>
     </>
   );
