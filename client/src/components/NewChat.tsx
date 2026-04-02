@@ -1,6 +1,8 @@
 import styles from "./NewChat.module.css";
 import {useState} from "react";
 
+import {AnimatePresence, motion} from "framer-motion";
+
 import {socket} from "@/lib/socket";
 
 interface NewChatProps {
@@ -14,7 +16,13 @@ export default function NewChat({chatNameRef}: NewChatProps) {
     <div className={`${styles.newchatarea} content wrapper`}>
       <h1>Let's start. How can I help?</h1>
       <input ref={chatNameRef} className={styles.chatname} type="text" placeholder="Chat name" onChange={(e) => setHasName(e.target.value.length > 0)}/>
-      {hasName && <h4 className="message">Great! Start your chat with a message below!</h4>}
+      <AnimatePresence>
+        {hasName && (
+          <motion.h4 key="message" className="message" initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} transition={{duration: 0.25}}>
+            Great! Start your chat with a message below!
+          </motion.h4>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
