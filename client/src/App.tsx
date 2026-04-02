@@ -41,6 +41,15 @@ export default function App() {
 
   const processing = useRef<boolean>(false);
 
+  const openSettings = () => {
+    if (page === "Settings") {
+      lenis!.scrollTo(0);
+    }
+    else {
+      setPage("Settings");
+    }
+  }
+
   useEffect(() => {
     socket.emit("LoadSettings");
 
@@ -128,7 +137,7 @@ export default function App() {
         <div className={styles.name}>ChatBeyond</div>
         <Version/>
         <div className={styles.separator}>|</div>
-        <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} title="Settings" onClick={(e) => setPage("Settings")}/>
+        <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} title="Settings" onClick={openSettings}/>
       </div>
       <AnimatePresence mode="wait">
         <motion.div key={page === "ExistingChat" ? `ExistingChat-${chatUUID}` : page} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 1}} transition={{duration: 0.25}}>
