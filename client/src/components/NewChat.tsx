@@ -18,7 +18,7 @@ export default function NewChat({chatNameRef}: NewChatProps) {
       <input ref={chatNameRef} className={styles.chatname} type="text" placeholder="Chat name" onChange={(e) => setHasName(e.target.value.length > 0)}/>
       <AnimatePresence>
         {hasName && (
-          <motion.h4 key="message" className="message" initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} transition={{duration: 0.25}}>
+          <motion.h4 key="message" initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} transition={{duration: 0.25}}>
             Great! Start your chat with a message below!
           </motion.h4>
         )}

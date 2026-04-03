@@ -102,7 +102,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
       <p>
         <span>Choose one of the different models. Note that 100 tokens is around 75 words.</span>
         <br/>
-        <span className={styles.modelnotice}>For information about models, head to <a href="https://developers.openai.com/api/docs/models" target="_blank" rel="noopener noreferrer">OpenAI's developer documentation</a>.</span>
+        <span className={styles.modelnotice}>For information about models, head to <a href="https://developers.openai.com/api/docs/models/all" target="_blank" rel="noopener noreferrer">OpenAI's developer documentation</a>.</span>
       </p>
       <div className={styles.models}>
         {
