@@ -77,9 +77,20 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
     socket.on("UploadComplete", uploadComplete);
 
+    const handlePaste = (event: ClipboardEvent) => {
+      const files = event.clipboardData?.files;
+      if (files && files.length > 0) {
+        uploadFile(files[0]);
+      }
+    }
+
+    window.addEventListener("paste", handlePaste);
+
     return () => {
       socket.off("TokenCost", tokenCost);
       socket.off("UploadComplete", uploadComplete);
+
+      window.removeEventListener("paste", handlePaste);
     }
   }, []);
 
