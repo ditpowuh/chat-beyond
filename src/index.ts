@@ -49,6 +49,7 @@ interface SettingsData {
   apikey: string;
   model: string;
   theme: string;
+  calculatormode: "pessimistic" | "optimistic";
 }
 
 let chatOrder: ChatOrderItem[] = [];
@@ -56,7 +57,8 @@ let chatOrder: ChatOrderItem[] = [];
 let settingsData: SettingsData = {
   "apikey": "",
   "model": "gpt-4o",
-  "theme": "dark"
+  "theme": "dark",
+  "calculatormode": "pessimistic"
 };
 
 process.on("uncaughtException", function(exception) {
@@ -101,6 +103,10 @@ io.on("connection", function(socket) {
       ...(ENV_API_KEY !== null && {apikey: ""})
     };
     socket.emit("LoadSettings", modelData, settingsDataEmitted, ENV_API_KEY !== null, FILE_SIZE_LIMIT);
+  });
+  socket.on("ChangeCostCalculatorMode", function(mode: "pessimistic" | "optimistic") {
+    settingsData.calculatormode = mode;
+    fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
   });
   socket.on("LoadChatData", function() {
     const now = new Date();

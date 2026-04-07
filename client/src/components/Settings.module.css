@@ -45,7 +45,7 @@
   margin: 0 5px;
 }
 
-.themeselection {
+.selection {
   background-color: var(--user);
   color: var(--text);
   padding: 10px 20px;
@@ -53,7 +53,7 @@
   border: none;
 }
 
-.modelnotice {
+.settingsnotice {
   font-size: 12px;
 }
 

@@ -33,7 +33,8 @@ export default function App() {
   const [settings, setSettings] = useState<SavedSettings>({
     apikey: "",
     theme: "dark",
-    model: "gpt-4o"
+    model: "gpt-4o",
+    calculatormode: "pessimistic"
   });
   const [processingChatInProgress, setProcessingChatInProgress] = useState<boolean>(false);
   const [pagePadding, setPagePadding] = useState<number>(240);

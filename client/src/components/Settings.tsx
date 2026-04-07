@@ -74,6 +74,13 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
         socket.emit("SaveModel", value);
         break;
       }
+      case "calculatormode": {
+        if (value === "pessimistic" || value === "optimistic") {
+          setSettings(previous => ({...previous, calculatormode: value}));
+          socket.emit("ChangeCostCalculatorMode", value);
+        }
+        break;
+      }
       default: {
         break;
       }
@@ -95,16 +102,37 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
       <br/><br/>
       <h2>Theme</h2>
       <p>Change between themes.</p>
-      <select className={styles.themeselection} name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
+      <select className={styles.selection} name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
+      </select>
+      <br/><br/>
+      <h2>Input Cost Calculator Mode</h2>
+      <p>
+        <span>
+          This application allows for the model to decide the detail level for image vision.
+          <br/>
+          Because of that, the input token cost calculator cannot reliably be accurate.
+        </span>
+        <br/><br/>
+        <span className={styles.settingsnotice}>
+          Pessimistic - The image inputs is assumed to be taken at the highest resolution possible.
+          <br/>
+          Optimistic - The image inputs is assumed to be taken at the lowest resolution possible.
+          <br/><br/>
+          For cost-saving purposes, it is recommended to set to pessmistic.
+        </span>
+      </p>
+      <select className={styles.selection} name="Input Cost Calculator Mode" defaultValue={settings.theme} onChange={(e) => applySetting("calculatormode", e.target.value)}>
+        <option value="pessimistic">Pessimistic</option>
+        <option value="optimistic">Optimistic</option>
       </select>
       <br/><br/>
       <h2>Model</h2>
       <p>
         <span>Choose one of the different models. Note that 100 tokens is around 75 words.</span>
         <br/>
-        <span className={styles.modelnotice}>For information about models, head to <a href="https://developers.openai.com/api/docs/models/all" target="_blank" rel="noopener noreferrer">OpenAI's developer documentation</a>.</span>
+        <span className={styles.settingsnotice}>For information about models, head to <a href="https://developers.openai.com/api/docs/models/all" target="_blank" rel="noopener noreferrer">OpenAI's developer documentation</a>.</span>
       </p>
       <div className={styles.models}>
         {
