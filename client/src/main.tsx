@@ -1,9 +1,9 @@
 import * as ReactDOM from "react-dom/client";
 
 import {StrictMode} from "react";
-import App from "./App";
+import App from "@/App";
 
-import LenisProvider from "./context/LenisProvider";
+import LenisProvider from "@/context/LenisProvider";
 
 import "lenis/dist/lenis.css";
 import "katex/dist/katex.min.css";

@@ -11,7 +11,7 @@ import whiteLightbulbIcon from "@/assets/LightbulbWhite.svg";
 import blackLightbulbIcon from "@/assets/LightbulbBlack.svg";
 import crossIcon from "@/assets/Cross.svg";
 
-import CostEstimation from "./CostEstimation";
+import CostEstimation from "@/components/CostEstimation";
 
 import {socket} from "@/lib/socket";
 import {formatToFileSize, getImageFromTheme} from "@/lib/utility";
