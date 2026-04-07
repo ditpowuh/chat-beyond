@@ -19,11 +19,13 @@
   "author": "Ditpowuh",
   "license": "MIT",
   "devDependencies": {
+    "@rolldown/plugin-babel": "^0.2.2",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "babel-plugin-react-compiler": "^1.0.0",
     "concurrently": "^9.2.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.6",
