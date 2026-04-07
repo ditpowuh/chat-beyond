@@ -3,6 +3,8 @@ import tiktoken from "tiktoken";
 
 import type {Tiktoken, TiktokenModel} from "tiktoken";
 
+import imageToken from "./images.js";
+
 export const textTypes: string[] = [
   "txt",
   "md",
@@ -198,6 +200,7 @@ export function getEncoder(model: string): Tiktoken {
 }
 
 export default {
+  imageToken,
   textTypes,
   imageTypes,
   videoTypes,

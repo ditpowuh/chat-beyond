@@ -16,10 +16,10 @@ import {marked} from "marked";
 import {spawn} from "child_process";
 import {Server} from "socket.io";
 
-import utility from "./utility.js";
-import modelData from "./models.js";
-
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
+import utility from "./lib/utility.js";
+
+import modelData from "./models.js";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const FILE_SIZE_LIMIT: number = Number(process.env.FILE_SIZE_LIMIT) || 1e8;
@@ -385,7 +385,7 @@ io.on("connection", function(socket) {
 
     for (let i = 0; i < files.length; i++) {
       if (utility.imageTypes.some(ending => files[i].endsWith(`.${ending}`))) {
-        let imageTokenCost: number | null = utility.imageToken.calculateImageCost(settingsData.model, path.join(process.cwd(), "data", "files", files[i]));
+        let imageTokenCost: number | null = utility.imageToken.calculateImageCost(settingsData.model, path.join(process.cwd(), "data", "files", files[i]), settingsData.calculatormode);
         if (imageTokenCost !== null) {
           tokenCount += imageTokenCost;
         }
