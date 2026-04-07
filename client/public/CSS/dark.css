@@ -1,7 +1,8 @@
 :root {
   --background: #212121;
   --sidebar: #171717;
-  --selected-sidebar: #232323;
+  --sidebar-hover: #232323;
+  --sidebar-selected: #1c1c1c;
   --layer: #1c1c1c;
   --user: #303030;
   --button: #303030;

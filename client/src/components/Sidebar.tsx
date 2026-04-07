@@ -178,7 +178,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
               <ul className={styles.list}>
                 {
                   chats[category].map((chat) => (
-                    <li key={chat.uuid} onClick={(e) => openChat(chat.uuid, chat.title)}>
+                    <li key={chat.uuid} className={chat.uuid === chatUUID ? styles.selected : ""} onClick={(e) => openChat(chat.uuid, chat.title)}>
                       <span>{chat.title}</span>
                       <button onClick={(e) => modifyChat(e, chat.title, chat.uuid)}>
                         <img src={getImageFromTheme(theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})}/>

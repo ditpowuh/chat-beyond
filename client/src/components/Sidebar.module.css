@@ -36,7 +36,7 @@
 }
 
 .sidebar .logo:hover {
-  background-color: var(--selected-sidebar);
+  background-color: var(--sidebar-hover);
 }
 
 .sidebar div.category {
@@ -63,12 +63,20 @@
 }
 
 .sidebar ul li:hover {
-  background-color: var(--selected-sidebar);
+  background-color: var(--sidebar-hover);
 }
 
 .sidebar ul li:hover > button {
   visibility: visible;
   opacity: 1;
+}
+
+.sidebar ul li.selected {
+  background-color: var(--sidebar-selected);
+}
+
+.sidebar ul li.selected:hover {
+  background-color: var(--sidebar-hover);
 }
 
 .sidebar ul li button {
