@@ -2,6 +2,7 @@ import styles from "./InputArea.module.css";
 import {useState, useEffect, useRef} from "react";
 
 import {AnimatePresence, motion} from "framer-motion";
+import TextareaAutosize from "react-textarea-autosize";
 import Swal from "sweetalert2";
 
 import whiteFileIcon from "@/assets/FileWhite.svg";
@@ -230,15 +231,6 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
 
   const changeInputHeight = () => {
     if (textInputRef.current && fileAreaRef.current) {
-      const lineHeight = 24;
-      const lineCount = textInputRef.current.value.split("\n").length;
-
-      if (lineCount <= 2) {
-        setInputHeight(48);
-      }
-      else {
-        setInputHeight(lineCount * lineHeight);
-      }
       setPagePadding(240 + (textInputRef.current.offsetHeight - 48) + fileAreaRef.current.offsetHeight);
     }
   }
@@ -305,7 +297,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
               </div>
               <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
               <div className={styles.textarea}>
-                <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
+                <TextareaAutosize ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} onWheel={handleWheel} minRows={2}></TextareaAutosize>
                 <button title="Add File" onClick={openFileDialog}>
                   <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
                 </button>
