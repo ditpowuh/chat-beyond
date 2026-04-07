@@ -98,7 +98,16 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     if (textInputRef.current !== null) {
       textInputRef.current.value = "";
     }
-  }, [currentPage]);
+    setFiles((previous) => {
+      previous.forEach((file) => {
+        if (file.preview !== null) {
+          URL.revokeObjectURL(file.preview);
+        }
+      });
+      return [];
+    });
+    changeInputHeight();
+  }, [currentPage, chatUUID]);
 
   const openFileDialog = () => {
     if (fileInputRef.current) {
@@ -199,6 +208,13 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     uploadFile(event.dataTransfer.files[0]);
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  }
+
   const handleWheel = (event: React.WheelEvent<HTMLTextAreaElement>) => {
     const element = event.currentTarget;
 
@@ -249,6 +265,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
         });
         return;
       }
+      processing.current = true;
       socket.emit("SendMessage", textInputRef.current.value.trim(), chatUUID !== "" ? chatUUID : chatNameRef!.current!.value.trim(), files.map(data => data.uuidName), reasoningLevel);
       textInputRef.current.value = "";
       setFiles([]);
@@ -288,7 +305,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
               </div>
               <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
               <div className={styles.textarea}>
-                <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
+                <textarea ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} onWheel={handleWheel} style={textInputRef.current ? {height: inputHeight} : {}}></textarea>
                 <button title="Add File" onClick={openFileDialog}>
                   <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
                 </button>
