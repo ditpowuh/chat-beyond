@@ -16,6 +16,7 @@
   width: 540px;
   border-radius: 25px;
   white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 .chat .message.user.file {
