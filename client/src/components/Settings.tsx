@@ -17,13 +17,15 @@ interface SettingsProps {
 export default function Settings({settings, setSettings, processing}: SettingsProps) {
   const [models, setModels] = useState<Record<string, ModelData>>({});
   const [showKey, setShowKey] = useState<boolean>(false);
+  const [disabledInput, setDisabledInput] = useState<boolean>(false);
 
   useEffect(() => {
     socket.emit("LoadSettings");
 
-    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, limit: number) => {
+    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, disableInput: boolean, limit: number) => {
       setSettings(settings);
       setModels(models);
+      setDisabledInput(disableInput);
     }
     socket.on("LoadSettings", loadSettings);
 
@@ -82,7 +84,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
     <div className={`${styles.settings} content wrapper`}>
       <h2>API Key</h2>
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
-      <input className={!showKey ? `${styles.apikey} ${styles.hideapi}` : styles.apikey} type="text" placeholder="OpenAI API Key" value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)}/>
+      <input className={!showKey ? `${styles.apikey} ${styles.hideapi}` : styles.apikey} type="text" placeholder={disabledInput ? "API key has been detected in .env - Using that instead." : "OpenAI API Key"} value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)} disabled={disabledInput}/>
       <button className={styles.revealapikey} onClick={(e) => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
       <br/><br/>
       <h2>Clean-up</h2>

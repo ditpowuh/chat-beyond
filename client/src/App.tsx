@@ -53,7 +53,7 @@ export default function App() {
   useEffect(() => {
     socket.emit("LoadSettings");
 
-    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, limit: number) => {
+    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, disableInput: boolean, limit: number) => {
       setSettings(settings);
       setFileSizeLimit(limit);
       for (const model in models) {

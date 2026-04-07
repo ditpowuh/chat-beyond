@@ -23,7 +23,8 @@ import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 const FILE_SIZE_LIMIT: number = Number(process.env.FILE_SIZE_LIMIT) || 1e8;
-const INSTRUCTIONS: string = "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
+const INSTRUCTIONS: string = process.env.INSTRUCTIONS || "You are ChatGPT, a large language model that is a helpful and honest AI assistant. You can see images.";
+const ENV_API_KEY: string | null = process.env.API_KEY || null;
 
 const app = express();
 
@@ -77,7 +78,11 @@ marked.use({breaks: true}, markedKatex({
 
 io.on("connection", function(socket) {
   socket.on("LoadSettings", function() {
-    socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
+    const settingsDataEmitted = {
+      ...settingsData,
+      ...(ENV_API_KEY !== null && {apikey: ""})
+    };
+    socket.emit("LoadSettings", modelData, settingsDataEmitted, ENV_API_KEY !== null, FILE_SIZE_LIMIT);
   });
   socket.on("SaveModel", function(model: string) {
     settingsData.model = model;
@@ -91,7 +96,11 @@ io.on("connection", function(socket) {
   socket.on("ChangeTheme", function(theme: string) {
     settingsData.theme = theme.toLowerCase();
     fs.writeFileSync(path.join(process.cwd(), "data", "settings.json"), JSON.stringify(settingsData, null, 2));
-    socket.emit("LoadSettings", modelData, settingsData, FILE_SIZE_LIMIT);
+    const settingsDataEmitted = {
+      ...settingsData,
+      ...(ENV_API_KEY !== null && {apikey: ""})
+    };
+    socket.emit("LoadSettings", modelData, settingsDataEmitted, ENV_API_KEY !== null, FILE_SIZE_LIMIT);
   });
   socket.on("LoadChatData", function() {
     const now = new Date();
@@ -168,7 +177,7 @@ io.on("connection", function(socket) {
       socket.emit("NotificationAlert", "No API key", "Please go to settings and put it in.", true, false);
       return;
     }
-    const client = new OpenAI({apiKey: settingsData.apikey});
+    const client = new OpenAI({apiKey: ENV_API_KEY === null ? settingsData.apikey : ENV_API_KEY});
 
     let chat: {messages: Message[], title?: string} = {
       messages: []
