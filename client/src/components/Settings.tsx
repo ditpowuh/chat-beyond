@@ -123,7 +123,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
           For cost-saving purposes, it is recommended to set to pessmistic.
         </span>
       </p>
-      <select className={styles.selection} name="Input Cost Calculator Mode" defaultValue={settings.theme} onChange={(e) => applySetting("calculatormode", e.target.value)}>
+      <select className={styles.selection} name="Input Cost Calculator Mode" defaultValue={settings.calculatormode} onChange={(e) => applySetting("calculatormode", e.target.value)}>
         <option value="pessimistic">Pessimistic</option>
         <option value="optimistic">Optimistic</option>
       </select>

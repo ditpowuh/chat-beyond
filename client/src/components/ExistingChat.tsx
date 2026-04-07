@@ -149,6 +149,10 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
     }
   }, [isVisible, currentMessages, bottomPadding, processingChatInProgress]);
 
+  const triggerShowFile = (fileName: string) => {
+    socket.emit("ShowFile", fileName);
+  }
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div key={chatUUID || "pending"} ref={chatRef} className={`${styles.chat} content wrapper`} style={{paddingBottom: bottomPadding}} initial={{opacity: 0}} animate={{opacity: isVisible ? 1 : 0 }} transition={{duration: 0.3}}>
@@ -162,7 +166,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
                       if (storedImageTypes.some(imageType => file.endsWith(imageType))) {
                         return (
                           <div className={`${styles.message} ${styles.user} ${styles.file}`}>
-                            <img src={`/files/${file}`}/>
+                            <img src={`/files/${file}`} onClick={(e) => triggerShowFile(file)}/>
                             <span className={`${styles.subtext} ${styles.image}`}>{file}</span>
                           </div>
                         );
@@ -170,7 +174,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
                       else {
                         return (
                           <div className={`${styles.message} ${styles.user} ${styles.file}`}>
-                            <span className={styles.fileicon}>
+                            <span className={styles.fileicon} onClick={(e) => triggerShowFile(file)}>
                               <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
                                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                                 <path d="M14 2v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
