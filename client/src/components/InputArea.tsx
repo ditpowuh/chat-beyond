@@ -5,6 +5,8 @@ import {AnimatePresence, motion} from "framer-motion";
 import TextareaAutosize from "react-textarea-autosize";
 import Swal from "sweetalert2";
 
+import {useLenis} from "lenis/react";
+
 import whiteFileIcon from "@/assets/FileWhite.svg";
 import blackFileIcon from "@/assets/FileBlack.svg";
 import whiteLightbulbIcon from "@/assets/LightbulbWhite.svg";
@@ -38,6 +40,8 @@ interface InputAreaProps {
 }
 
 export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, chatNameRef, processing, currentPage, theme, setPagePadding}: InputAreaProps) {
+  const lenis = useLenis();
+
   const [isCalculatingCost, setIsCalculatingCost] = useState<boolean>(false);
   const [reasoningLevel, setReasoningLevel] = useState<number>(0);
   const [files, setFiles] = useState<UploadedFile[]>([]);
@@ -261,6 +265,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
       socket.emit("SendMessage", textInputRef.current.value.trim(), chatUUID !== "" ? chatUUID : chatNameRef!.current!.value.trim(), files.map(data => data.uuidName), reasoningLevel);
       textInputRef.current.value = "";
       setFiles([]);
+      lenis!.scrollTo(document.body.scrollHeight);
     }
   }
 

@@ -140,7 +140,7 @@ export default function App() {
         <img className={`${styles.settingsicon} undraggable`} src={getImageFromTheme(settings.theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})} title="Settings" onClick={openSettings}/>
       </div>
       <AnimatePresence mode="wait">
-        <motion.div key={page === "ExistingChat" ? `ExistingChat-${chatUUID}` : page} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 1}} transition={{duration: 0.25}}>
+        <motion.div key={page} initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 1}} transition={{duration: 0.3}}>
           {page === "Home" && (
             <NewChat chatNameRef={chatNameRef}/>
           )}
