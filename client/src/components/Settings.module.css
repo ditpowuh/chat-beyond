@@ -89,3 +89,37 @@
   max-height: 45px;
   overflow: hidden;
 }
+
+.overview {
+  position: fixed;
+  bottom: 15px;
+  right: 30px;
+  text-align: left;
+}
+
+.overview .heading {
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  margin: 15px 0;
+}
+
+.overview ul {
+  background: var(--user);
+  padding: 15px 20px;
+  list-style-type: none;
+  border-radius: 15px;
+}
+
+.overview ul li {
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.overview ul li span {
+  font-size: 10px;
+}
+
+.overview ul li a {
+  cursor: pointer;
+}

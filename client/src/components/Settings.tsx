@@ -1,7 +1,9 @@
 import styles from "./Settings.module.css";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 
 import Swal from "sweetalert2";
+
+import {useLenis} from "lenis/react";
 
 import {socket} from "@/lib/socket";
 import {formatToMoney} from "@/lib/utility";
@@ -15,9 +17,19 @@ interface SettingsProps {
 }
 
 export default function Settings({settings, setSettings, processing}: SettingsProps) {
+  const lenis = useLenis();
+
   const [models, setModels] = useState<Record<string, ModelData>>({});
   const [showKey, setShowKey] = useState<boolean>(false);
   const [disabledInput, setDisabledInput] = useState<boolean>(false);
+
+  const sectionRefs = {
+    apikey: useRef<HTMLHeadingElement>(null),
+    cleanup: useRef<HTMLHeadingElement>(null),
+    theme: useRef<HTMLHeadingElement>(null),
+    calculatormode: useRef<HTMLHeadingElement>(null),
+    model: useRef<HTMLHeadingElement>(null)
+  };
 
   useEffect(() => {
     socket.emit("LoadSettings");
@@ -87,27 +99,64 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
     }
   }
 
+  const scrollToSection = (ref: React.RefObject<HTMLElement | null>) => {
+    if (ref.current) {
+      lenis!.scrollTo(ref.current);
+    }
+  }
+
   return (
     <div className={`${styles.settings} content wrapper`}>
-      <h2>API Key</h2>
+      <div className={styles.overview}>
+        <div></div>
+        <ul>
+          <li className={styles.heading}>Settings Index</li>
+          <li>
+            <a onClick={(e) => scrollToSection(sectionRefs.apikey)}>API Key</a>
+            <br/>
+            <span>Set your API key here.</span>
+          </li>
+          <li>
+            <a onClick={(e) => scrollToSection(sectionRefs.cleanup)}>Clean-up</a>
+            <br/>
+            <span>Remove unnessessary files here.</span>
+          </li>
+          <li>
+            <a onClick={(e) => scrollToSection(sectionRefs.theme)}>Theme</a>
+            <br/>
+            <span>Change your theme.</span>
+          </li>
+          <li>
+            <a onClick={(e) => scrollToSection(sectionRefs.calculatormode)}>Input Cost Calculator Mode</a>
+            <br/>
+            <span>Change how the input cost calculator behaves.</span>
+          </li>
+          <li>
+            <a onClick={(e) => scrollToSection(sectionRefs.model)}>Model</a>
+            <br/>
+            <span>Change what model you're using.</span>
+          </li>
+        </ul>
+      </div>
+      <h2 ref={sectionRefs.apikey}>API Key</h2>
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
       <input className={!showKey ? `${styles.apikey} ${styles.hideapi}` : styles.apikey} type="text" placeholder={disabledInput ? "API key has been detected in .env - Using that instead." : "OpenAI API Key"} value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)} disabled={disabledInput}/>
       <button className={styles.revealapikey} onClick={(e) => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
       <br/><br/>
-      <h2>Clean-up</h2>
+      <h2 ref={sectionRefs.cleanup}>Clean-up</h2>
       <p>This is to remove any unnecessary files or to reset everything.</p>
       <button id="cleanfiles" className={styles.settingbutton} onClick={clearUnusedFiles}>Remove any unused uploaded files</button>
       <br/>
       <button id="deleteall" className={styles.settingbutton} onClick={deleteAllFiles}>Delete all files and chats</button>
       <br/><br/>
-      <h2>Theme</h2>
+      <h2 ref={sectionRefs.theme}>Theme</h2>
       <p>Change between themes.</p>
       <select className={styles.selection} name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
       <br/><br/>
-      <h2>Input Cost Calculator Mode</h2>
+      <h2 ref={sectionRefs.calculatormode}>Input Cost Calculator Mode</h2>
       <p>
         <span>
           This application allows for the model to decide the detail level for image vision.
@@ -128,7 +177,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
         <option value="optimistic">Optimistic</option>
       </select>
       <br/><br/>
-      <h2>Model</h2>
+      <h2 ref={sectionRefs.model}>Model</h2>
       <p>
         <span>Choose one of the different models. Note that 100 tokens is around 75 words.</span>
         <br/>
