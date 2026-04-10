@@ -89,7 +89,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
     setChatUUID(uuid);
   }
 
-  const modifyChat = (event: React.MouseEvent<HTMLButtonElement>, title: string, uuid: string) => {
+  const modifyChat = (event: React.MouseEvent<HTMLButtonElement>, title: string, uuid: string, currentUUID: string) => {
     event.stopPropagation();
     if (processing.current === true) {
       return;
@@ -146,6 +146,9 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
             }
             else {
               processing.current = true;
+              if (currentUUID === uuid) {
+                document.title = `ChatBeyond: ${result.value.trim()}`;
+              }
               socket.emit("RenameChat", uuid, result.value.trim());
             }
           }
@@ -180,7 +183,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
                   chats[category].map((chat) => (
                     <li key={chat.uuid} className={chat.uuid === chatUUID ? styles.selected : ""} onClick={(e) => openChat(chat.uuid, chat.title)}>
                       <span>{chat.title}</span>
-                      <button onClick={(e) => modifyChat(e, chat.title, chat.uuid)}>
+                      <button onClick={(e) => modifyChat(e, chat.title, chat.uuid, chatUUID)}>
                         <img src={getImageFromTheme(theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})}/>
                       </button>
                     </li>
