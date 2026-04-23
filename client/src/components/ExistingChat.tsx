@@ -31,8 +31,12 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setIsVisible(false);
-    lenis!.scrollTo(0, {immediate: true});
+    const requestMessages: boolean = chatUUID !== "" && !processing.current;
+
+    if (requestMessages) {
+      setIsVisible(false);
+      lenis!.scrollTo(0, {immediate: true});
+    }
 
     const loadMessages = (messages: Message[], imageTypes: string[]) => {
       setStoredImageTypes(imageTypes);
@@ -53,7 +57,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
     }
     socket.on("LoadMessages", loadMessages);
 
-    if (chatUUID !== "") {
+    if (requestMessages) {
       socket.emit("LoadMessages", chatUUID);
     }
     else {
