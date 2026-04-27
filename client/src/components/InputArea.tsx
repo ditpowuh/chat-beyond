@@ -18,6 +18,8 @@ import CostEstimation from "@/components/CostEstimation";
 import {socket} from "@/lib/socket";
 import {formatToFileSize, getImageFromTheme} from "@/lib/utility";
 
+import {DEFAULT_PAGE_PADDING} from "@/lib/constants";
+
 import type {UploadedFile} from "@/types/chat";
 import type {PageType} from "@/App";
 
@@ -235,7 +237,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
 
   const changeInputHeight = () => {
     if (textInputRef.current && fileAreaRef.current) {
-      setPagePadding(240 + (textInputRef.current.offsetHeight - 48) + fileAreaRef.current.offsetHeight);
+      setPagePadding(DEFAULT_PAGE_PADDING + (textInputRef.current.offsetHeight - 48) + fileAreaRef.current.offsetHeight);
     }
   }
 
@@ -265,6 +267,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
       socket.emit("SendMessage", textInputRef.current.value.trim(), chatUUID !== "" ? chatUUID : chatNameRef!.current!.value.trim(), files.map(data => data.uuidName), reasoningLevel);
       textInputRef.current.value = "";
       setFiles([]);
+      setPagePadding(DEFAULT_PAGE_PADDING);
       lenis!.scrollTo(document.body.scrollHeight);
     }
   }
