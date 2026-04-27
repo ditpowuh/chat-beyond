@@ -1,6 +1,6 @@
 # ChatBeyond
 
-[![GitHub Release](https://img.shields.io/github/v/release/ditpowuh/chat-beyond?style=for-the-badge&color=000000)](https://github.com/ditpowuh/chat-beyond/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/ditpowuh/chat-beyond?style=for-the-badge&color=000000&include_prereleases)](https://github.com/ditpowuh/chat-beyond/releases)
 [![GitHub License](https://img.shields.io/github/license/ditpowuh/chat-beyond?style=for-the-badge&color=408040)](https://github.com/ditpowuh/chat-beyond/blob/main/LICENSE.md)
 
 This web application serves to be an alternative to ChatGPT, creating a familiar environment with a similar user interface. It uses OpenAI's developer API, allowing users to use OpenAI's stronger models without the need of paying a subscription.
