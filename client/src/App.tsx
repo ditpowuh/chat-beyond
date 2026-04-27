@@ -43,6 +43,9 @@ export default function App() {
   const processing = useRef<boolean>(false);
 
   const openSettings = () => {
+    if (processing.current === true) {
+      return;
+    }
     if (page === "Settings") {
       lenis!.scrollTo(0);
     }
@@ -87,7 +90,12 @@ export default function App() {
     socket.on("NotificationAlert", notificationAlert);
 
     const reloadChatData = () => {
-      setPage("Home");
+      setPage((previous) => {
+        if (previous === "Settings") {
+          return previous;
+        }
+        return "Home";
+      });
     }
     socket.on("ReloadChatData", reloadChatData);
 
