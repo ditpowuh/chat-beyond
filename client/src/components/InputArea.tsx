@@ -140,17 +140,22 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
       preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
     };
 
-    setFiles((previous) => [...previous, newFile]);
+    setFiles((previous) => {
+      const index = previous.length;
+      const updated = [...previous, newFile];
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      socket.emit("FileUpload", {
-        name: file.name,
-        type: file.type,
-        data: reader.result
-      }, files.length);
-    }
-    reader.readAsArrayBuffer(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        socket.emit("FileUpload", {
+          name: file.name,
+          type: file.type,
+          data: reader.result
+        }, index);
+      };
+      reader.readAsArrayBuffer(file);
+
+      return updated;
+    });
   }
 
   const removeFile = (file: UploadedFile) => {
