@@ -14,7 +14,8 @@
     "client:build": "vite build",
     "client:dev": "vite",
     "node:start": "node dist/index.js",
-    "node:compile": "tsc -p tsconfig.node.json"
+    "node:compile": "tsc -p tsconfig.node.json",
+    "postinstall": "patch-package"
   },
   "author": "Ditpowuh",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "concurrently": "^9.2.1",
+    "patch-package": "^8.0.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.10",
     "vite-plugin-checker": "^0.12.0"

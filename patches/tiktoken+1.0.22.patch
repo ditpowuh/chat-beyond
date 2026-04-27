@@ -1,0 +1,127 @@
+diff --git a/node_modules/tiktoken/package.json b/node_modules/tiktoken/package.json
+index e6942c0..8bf38a4 100644
+--- a/node_modules/tiktoken/package.json
++++ b/node_modules/tiktoken/package.json
+@@ -15,24 +15,27 @@
+   "files": [
+     "**/*"
+   ],
+-  "main": "tiktoken.cjs",
++  "main": "tiktoken.js",
+   "types": "tiktoken.d.ts",
+   "exports": {
+     ".": {
+       "types": "./tiktoken.d.ts",
+       "edge-light": "./tiktoken.js",
++      "bun": "./tiktoken.js",
+       "node": "./tiktoken.cjs",
+       "default": "./tiktoken.js"
+     },
+     "./init": {
+       "types": "./init.d.ts",
+       "edge-light": "./init.js",
++      "bun": "./init.js",
+       "node": "./init.cjs",
+       "default": "./init.js"
+     },
+     "./load": {
+       "types": "./load.d.ts",
+       "edge-light": "./load.js",
++      "bun": "./load.js",
+       "node": "./load.cjs",
+       "default": "./load.js"
+     },
+@@ -47,18 +50,21 @@
+     "./lite": {
+       "types": "./lite/tiktoken.d.ts",
+       "edge-light": "./lite/tiktoken.js",
++      "bun": "./lite/tiktoken.js",
+       "node": "./lite/tiktoken.cjs",
+       "default": "./lite/tiktoken.js"
+     },
+     "./lite/init": {
+       "types": "./lite/init.d.ts",
+       "edge-light": "./lite/init.js",
++      "bun": "./lite/init.js",
+       "node": "./lite/init.cjs",
+       "default": "./lite/init.js"
+     },
+     "./lite/load": {
+       "types": "./lite/load.d.ts",
+       "edge-light": "./lite/load.js",
++      "bun": "./lite/load.js",
+       "node": "./lite/load.cjs",
+       "default": "./lite/load.js"
+     },
+@@ -76,6 +82,7 @@
+     "./encoders/gpt2": {
+       "types": "./encoders/gpt2.d.ts",
+       "edge-light": "./encoders/gpt2.js",
++      "bun": "./encoders/gpt2.js",
+       "node": "./encoders/gpt2.cjs",
+       "default": "./encoders/gpt2.js"
+     },
+@@ -83,6 +90,7 @@
+     "./encoders/r50k_base": {
+       "types": "./encoders/r50k_base.d.ts",
+       "edge-light": "./encoders/r50k_base.js",
++      "bun": "./encoders/r50k_base.js",
+       "node": "./encoders/r50k_base.cjs",
+       "default": "./encoders/r50k_base.js"
+     },
+@@ -90,6 +98,7 @@
+     "./encoders/p50k_base": {
+       "types": "./encoders/p50k_base.d.ts",
+       "edge-light": "./encoders/p50k_base.js",
++      "bun": "./encoders/p50k_base.js",
+       "node": "./encoders/p50k_base.cjs",
+       "default": "./encoders/p50k_base.js"
+     },
+@@ -97,6 +106,7 @@
+     "./encoders/p50k_edit": {
+       "types": "./encoders/p50k_edit.d.ts",
+       "edge-light": "./encoders/p50k_edit.js",
++      "bun": "./encoders/p50k_edit.js",
+       "node": "./encoders/p50k_edit.cjs",
+       "default": "./encoders/p50k_edit.js"
+     },
+@@ -104,6 +114,7 @@
+     "./encoders/cl100k_base": {
+       "types": "./encoders/cl100k_base.d.ts",
+       "edge-light": "./encoders/cl100k_base.js",
++      "bun": "./encoders/cl100k_base.js",
+       "node": "./encoders/cl100k_base.cjs",
+       "default": "./encoders/cl100k_base.js"
+     },
+@@ -111,6 +122,7 @@
+     "./encoders/o200k_base": {
+       "types": "./encoders/o200k_base.d.ts",
+       "edge-light": "./encoders/o200k_base.js",
++      "bun": "./encoders/o200k_base.js",
+       "node": "./encoders/o200k_base.cjs",
+       "default": "./encoders/o200k_base.js"
+     }
+diff --git a/node_modules/tiktoken/tiktoken.js b/node_modules/tiktoken/tiktoken.js
+index 16c441e..00c0aef 100644
+--- a/node_modules/tiktoken/tiktoken.js
++++ b/node_modules/tiktoken/tiktoken.js
+@@ -1,4 +1,15 @@
+-import * as wasm from "./tiktoken_bg.wasm";
+-export * from "./tiktoken_bg.js";
++import wasm_path from "./tiktoken_bg.wasm";
++import * as bg from "./tiktoken_bg.js";
+ import { __wbg_set_wasm } from "./tiktoken_bg.js";
+-__wbg_set_wasm(wasm);
+\ No newline at end of file
++import { readFileSync } from "fs";
++
++export * from "./tiktoken_bg.js";
++
++const wasm_buffer = readFileSync(wasm_path);
++const wasm_module = new WebAssembly.Module(wasm_buffer);
++
++const wasm_instance = new WebAssembly.Instance(wasm_module, {
++  "./tiktoken_bg.js": bg
++});
++
++__wbg_set_wasm(wasm_instance.exports);

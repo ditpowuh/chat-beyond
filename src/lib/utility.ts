@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import tiktoken from "tiktoken";
+import {encoding_for_model, get_encoding} from "tiktoken";
 
 import type {Tiktoken, TiktokenModel} from "tiktoken";
 
@@ -191,11 +191,23 @@ export function formatMessage(message: string): string {
 
 export function getEncoder(model: string): Tiktoken {
   try {
-    return tiktoken.encoding_for_model(model as TiktokenModel);
+    return encoding_for_model(model as TiktokenModel);
   }
-  catch (error) {
-    console.log(`${chalk.yellow("Note:")} The currently selected model does not have a verified encoding. "o200k_base" is being used in place, which is likely to be correct for newer models, but if costs are critical, please double check.`);
-    return tiktoken.get_encoding("o200k_base");
+  catch (error: unknown) {
+    if (error instanceof Error) {
+      if (error.message.startsWith("Invalid model")) {
+        console.log(`${chalk.yellow("Note:")} The currently selected model does not have a verified encoding. "o200k_base" is being used in place, which is likely to be correct for newer models, but if costs are critical, please double check.`);
+      }
+    }
+    try {
+      return get_encoding("o200k_base");
+    }
+    catch (fallbackError: unknown) {
+      if (fallbackError instanceof Error) {
+        console.error("Fallback encoding failed.");
+      }
+      throw new Error("Could not initialize fallback encoding.");
+    }
   }
 }
 
