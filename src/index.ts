@@ -10,7 +10,7 @@ import * as date from "date-fns";
 import chalk from "chalk";
 import open from "open";
 import mammoth from "mammoth";
-import readPdf from "pdf-parse/lib/pdf-parse.js";
+import * as unpdf from "unpdf";
 import markedKatex from "marked-katex-extension";
 import {marked} from "marked";
 import {spawn} from "child_process";
@@ -404,7 +404,8 @@ io.on("connection", function(socket) {
       }
       else if (files[i].endsWith(".pdf")) {
         const pdfBuffer = fs.readFileSync(path.join(process.cwd(), "data", "files", files[i]));
-        const result = await readPdf(pdfBuffer);
+        const pdf = await unpdf.getDocumentProxy(new Uint8Array(pdfBuffer));
+        const result = await unpdf.extractText(pdf, {mergePages: true});
         tokenCount += encoder.encode(result.text).length;
       }
     }

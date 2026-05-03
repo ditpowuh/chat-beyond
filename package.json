@@ -48,7 +48,6 @@
     "marked-katex-extension": "^5.1.8",
     "open": "^11.0.0",
     "openai": "6.33.0",
-    "pdf-parse": "^1.1.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-textarea-autosize": "^8.5.9",
@@ -56,6 +55,7 @@
     "socket.io-client": "^4.8.3",
     "sweetalert2": "^11.26.24",
     "tiktoken": "^1.0.22",
+    "unpdf": "^1.6.2",
     "uuid": "^14.0.0"
   },
   "engine": {
