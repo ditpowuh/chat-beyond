@@ -227,19 +227,6 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
   }
 
-  const handleWheel = (event: React.WheelEvent<HTMLTextAreaElement>) => {
-    const element = event.currentTarget;
-
-    const scrollTop = element.scrollTop;
-    const scrollHeight = element.scrollHeight;
-    const clientHeight = element.clientHeight;
-    const delta = event.deltaY;
-
-    if (!(delta < 0 && scrollTop === 0 || delta > 0 && scrollTop + clientHeight >= scrollHeight)) {
-      event.stopPropagation();
-    }
-  }
-
   const changeInputHeight = () => {
     if (textInputRef.current && fileAreaRef.current) {
       setPagePadding(DEFAULT_PAGE_PADDING + (textInputRef.current.offsetHeight - 48) + fileAreaRef.current.offsetHeight);
@@ -310,7 +297,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
               </div>
               <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
               <div className={styles.textarea}>
-                <TextareaAutosize ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} onWheel={handleWheel} minRows={2}></TextareaAutosize>
+                <TextareaAutosize ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} minRows={2}></TextareaAutosize>
                 <button title="Add File" onClick={openFileDialog}>
                   <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
                 </button>

@@ -5,8 +5,17 @@ interface LenisProviderProps {
 }
 
 export default function LenisProvider({children}: LenisProviderProps) {
+  const options = {
+    autoRaf: true,
+    stopInertiaOnNavigate: true,
+    autoToggle: true,
+    anchors: true,
+    allowNestedScroll: true,
+    naiveDimensions: true
+  };
+
   return (
-    <ReactLenis root options={{autoRaf: true}}>
+    <ReactLenis root options={options}>
       {children}
     </ReactLenis>
   );
