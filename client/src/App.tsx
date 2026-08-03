@@ -161,7 +161,7 @@ export default function App() {
           )}
         </motion.div>
       </AnimatePresence>
-      <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding}/>
+      <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding} pagePadding={pagePadding}/>
       <link rel="stylesheet" href={`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-${settings.theme}.min.css`}/>
     </>
   );

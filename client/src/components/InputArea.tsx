@@ -14,6 +14,7 @@ import blackLightbulbIcon from "@/assets/LightbulbBlack.svg";
 import crossIcon from "@/assets/Cross.svg";
 
 import CostEstimation from "@/components/CostEstimation";
+import DownButton from "@/components/DownButton";
 
 import {socket} from "@/lib/socket";
 import {formatToFileSize, getImageFromTheme} from "@/lib/utility";
@@ -39,9 +40,10 @@ interface InputAreaProps {
   currentPage: PageType;
   theme: string;
   setPagePadding: React.Dispatch<React.SetStateAction<number>>;
+  pagePadding: number;
 }
 
-export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, chatNameRef, processing, currentPage, theme, setPagePadding}: InputAreaProps) {
+export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, chatNameRef, processing, currentPage, theme, setPagePadding, pagePadding}: InputAreaProps) {
   const lenis = useLenis();
 
   const [isCalculatingCost, setIsCalculatingCost] = useState<boolean>(false);
@@ -314,6 +316,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
         )}
       </AnimatePresence>
       <CostEstimation calculating={isCalculatingCost} processing={processing}/>
+      <DownButton theme={theme} page={currentPage} chatUUID={chatUUID} padding={pagePadding}/>
     </>
   );
 }

@@ -34,6 +34,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
     const requestMessages: boolean = chatUUID !== "" && !processing.current;
 
     if (requestMessages) {
+      setCurrentMessages([]);
       setIsVisible(false);
       lenis!.scrollTo(0, {immediate: true});
     }
