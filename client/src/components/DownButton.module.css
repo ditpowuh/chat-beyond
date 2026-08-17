@@ -4,7 +4,8 @@
   left: 50%;
   margin-left: calc(275px / 2);
   border-radius: 50%;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--layer);
+  backdrop-filter: blur(5px);
   width: 50px;
   height: 50px;
   z-index: 5;
