@@ -118,7 +118,7 @@ const models: Record<string, ModelData> = {
     "web": true
   },
   "gpt-5.4": {
-    "description": "Described as OpenAI's frontier model for complex professional work.",
+    "description": "Formerly described as OpenAI's frontier model for complex professional work.",
     "cost": {
       "input": 2.5,
       "output": 15
@@ -142,6 +142,36 @@ const models: Record<string, ModelData> = {
     "cost": {
       "input": 0.2,
       "output": 1.25
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.6-sol": {
+    "description": "Described as OpenAI's frontier model for complex professional work",
+    "cost": {
+      "input": 4,
+      "output": 20
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.6-terra": {
+    "description": "A faster and more efficient model of GPT-5.6, that's smaller and cheaper, balancing intelligence and cost.",
+    "cost": {
+      "input": 2,
+      "output": 12
+    },
+    "temperature": false,
+    "reasoning": true,
+    "web": true
+  },
+  "gpt-5.6-luna": {
+    "description": "A version of GPT-5.6 for tasks where speed and cost matter most.",
+    "cost": {
+      "input": 0.2,
+      "output": 1.2
     },
     "temperature": false,
     "reasoning": true,
