@@ -1,9 +1,9 @@
 import fs from "fs";
 
-import {imageSize} from "image-size";
+import probe from "probe-image-size";
 
 export function calculateImageCostByPatch(path: string, multiplier: number, maxPatches: number, mode: "pessimistic" | "optimistic"): number {
-  const fileDimensions = imageSize(fs.readFileSync(path));
+  const fileDimensions = probe.sync(fs.readFileSync(path));
   if (mode === "optimistic") {
     fileDimensions.width = 512;
     fileDimensions.height = 512;
@@ -22,7 +22,7 @@ export function calculateImageCostByTile(path: string, base: number, tile: numbe
   if (mode === "optimistic") {
     return base;
   }
-  const fileDimensions = imageSize(fs.readFileSync(path));
+  const fileDimensions = probe.sync(fs.readFileSync(path));
   if (fileDimensions.width > 2048 || fileDimensions.height > 2048) {
     if (fileDimensions.width > fileDimensions.height) {
       fileDimensions.height = fileDimensions.height * (2048 / fileDimensions.width);
