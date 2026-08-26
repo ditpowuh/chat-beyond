@@ -23,6 +23,7 @@ Overview/Features:
 This app is recommended if you:
 1. use ChatGPT, but not on both a daily and frequent basis
 2. require a stronger OpenAI model than the models ChatGPT (Free Plan) provides
+3. often require image or file input
 
 ### Settings
 The default model that is set is `gpt-4o`.
