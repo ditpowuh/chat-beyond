@@ -1,7 +1,7 @@
 import styles from "./InputArea.module.css";
 import {useState, useEffect, useRef} from "react";
 
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
 import Swal from "sweetalert2";
 

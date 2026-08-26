@@ -5,7 +5,7 @@ import "./global.css";
 import whiteSettingsIcon from "@/assets/SettingsWhite.svg";
 import blackSettingsIcon from "@/assets/SettingsBlack.svg";
 
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 import Swal from "sweetalert2";
 import {useLenis} from "lenis/react";
 

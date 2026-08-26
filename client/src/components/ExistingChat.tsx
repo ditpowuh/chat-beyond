@@ -1,7 +1,7 @@
 import styles from "./ExistingChat.module.css";
 import {Fragment, useState, useEffect, useLayoutEffect, useRef} from "react";
 
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 import hljs from "highlight.js";
 
 import {v4 as uuidv4} from "uuid";

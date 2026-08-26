@@ -1,7 +1,7 @@
 import styles from "./NewChat.module.css";
 import {useState} from "react";
 
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 
 import {socket} from "@/lib/socket";
 

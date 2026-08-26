@@ -4,7 +4,7 @@ import {useState, useEffect, useCallback} from "react";
 import whiteArrow from "@/assets/DownArrowWhite.svg";
 import blackArrow from "@/assets/DownArrowBlack.svg";
 
-import {AnimatePresence, motion} from "framer-motion";
+import {AnimatePresence, motion} from "motion/react";
 import {useLenis} from "lenis/react";
 
 import {getImageFromTheme} from "@/lib/utility";
