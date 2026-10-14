@@ -5,9 +5,9 @@ import {spawn} from "child_process";
 
 import {v4 as uuidv4} from "uuid";
 
-import utility from "../lib/utility.js";
+import utility from "@/lib/utility.js";
 
-import * as storage from "../storage/index.js";
+import * as storage from "@/storage/index.js";
 
 export function isUnsupportedFile(name: string): boolean {
   if (utility.videoTypes.some(ending => name.endsWith(`.${ending}`))) {

@@ -6,10 +6,10 @@ import http from "http";
 import chalk from "chalk";
 import {Server} from "socket.io";
 
-import * as controllers from "./controllers/index.js";
-import * as storage from "./storage/index.js";
+import * as controllers from "@/controllers/index.js";
+import * as storage from "@/storage/index.js";
 
-import type {AppConfig} from "./types/settings.js";
+import type {AppConfig} from "@/types/settings.js";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 

@@ -1,8 +1,8 @@
-import modelData from "../models.js";
+import modelData from "@/models.js";
 
-import * as storage from "../storage/index.js";
+import * as storage from "@/storage/index.js";
 
-import type {AppConfig, SettingsView} from "../types/settings.js";
+import type {AppConfig, SettingsView} from "@/types/settings.js";
 
 export function getSettingsView(config: AppConfig): SettingsView {
   const settingsData = storage.getSettings();

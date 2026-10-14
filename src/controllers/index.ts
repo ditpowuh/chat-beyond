@@ -1,9 +1,9 @@
 import express, {type Express} from "express";
 
-import * as services from "../services/index.js";
+import * as services from "@/services/index.js";
 
 import type {Server} from "socket.io";
-import type {AppConfig} from "../types/settings.js";
+import type {AppConfig} from "@/types/settings.js";
 
 export function register(app: Express, io: Server, config: AppConfig): void {
   app.use(express.static("public", {

@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-import type {Chat, ChatOrderItem} from "../types/chat.js";
-import type {SettingsData} from "../types/settings.js";
+import type {Chat, ChatOrderItem} from "@/types/chat.js";
+import type {SettingsData} from "@/types/settings.js";
 
 const dataDirectory = path.join(process.cwd(), "data");
 const filesDirectory = path.join(dataDirectory, "files");

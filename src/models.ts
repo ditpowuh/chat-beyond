@@ -1,4 +1,4 @@
-import type {ModelData} from "./types/models.js";
+import type {ModelData} from "@/types/models.js";
 
 const models: Record<string, ModelData> = {
   "gpt-4o-mini": {

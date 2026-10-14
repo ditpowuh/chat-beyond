@@ -10,13 +10,13 @@ import {marked} from "marked";
 
 import {v4 as uuidv4, validate as uuidValidate} from "uuid";
 
-import utility from "../lib/utility.js";
-import modelData from "../models.js";
+import utility from "@/lib/utility.js";
+import modelData from "@/models.js";
 
-import * as storage from "../storage/index.js";
+import * as storage from "@/storage/index.js";
 
-import type {Message, Chat, ChatOrderItem, StreamHandlers} from "../types/chat.js";
-import type {AppConfig} from "../types/settings.js";
+import type {Message, Chat, ChatOrderItem, StreamHandlers} from "@/types/chat.js";
+import type {AppConfig} from "@/types/settings.js";
 
 marked.use({breaks: true}, markedKatex({
   nonStandard: true
