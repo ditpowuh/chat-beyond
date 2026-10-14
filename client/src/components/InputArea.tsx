@@ -57,12 +57,14 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
   const fileAreaRef = useRef<HTMLDivElement | null>(null);
 
   const hiddenAnimationState = {
-    transform: "translateX(-50%) translateY(125%)",
+    x: "-50%",
+    y: "125%",
     opacity: 0
   };
 
   const visibleAnimationState = {
-    transform: "translateX(-50%)",
+    x: "-50%",
+    y: "0%",
     opacity: 1
   };
 
