@@ -2,8 +2,11 @@ import fs from "fs";
 
 import probe from "probe-image-size";
 
-export function calculateImageCostByPatch(path: string, multiplier: number, maxPatches: number, mode: "pessimistic" | "optimistic"): number {
+export function calculateImageCostByPatch(path: string, multiplier: number, maxPatches: number, mode: "pessimistic" | "optimistic"): number | null {
   const fileDimensions = probe.sync(fs.readFileSync(path));
+  if (fileDimensions === null) {
+    return null;
+  }
   if (mode === "optimistic") {
     fileDimensions.width = 512;
     fileDimensions.height = 512;
@@ -18,11 +21,14 @@ export function calculateImageCostByPatch(path: string, multiplier: number, maxP
   return Math.ceil(rescaleFactor * fileDimensions.width / 32) * Math.ceil(rescaleFactor * fileDimensions.height / 32) * (multiplier ?? 1);
 }
 
-export function calculateImageCostByTile(path: string, base: number, tile: number, mode: "pessimistic" | "optimistic"): number {
+export function calculateImageCostByTile(path: string, base: number, tile: number, mode: "pessimistic" | "optimistic"): number | null {
   if (mode === "optimistic") {
     return base;
   }
   const fileDimensions = probe.sync(fs.readFileSync(path));
+  if (fileDimensions === null) {
+    return null;
+  }
   if (fileDimensions.width > 2048 || fileDimensions.height > 2048) {
     if (fileDimensions.width > fileDimensions.height) {
       fileDimensions.height = fileDimensions.height * (2048 / fileDimensions.width);
