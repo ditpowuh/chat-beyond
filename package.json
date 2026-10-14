@@ -14,7 +14,7 @@
     "client:build": "vite build",
     "client:dev": "vite",
     "node:start": "node dist/index.js",
-    "node:compile": "tsc -p tsconfig.node.json",
+    "node:compile": "tsc -p tsconfig.node.json && tsc-alias -p tsconfig.node.json",
     "postinstall": "patch-package"
   },
   "author": "Ditpowuh",
@@ -30,6 +30,7 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "concurrently": "^10.0.6",
     "patch-package": "^8.0.1",
+    "tsc-alias": "^1.9.7",
     "typescript": "^5.9.3",
     "vite": "^8.3.4",
     "vite-plugin-checker": "^0.14.5"
