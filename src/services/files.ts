@@ -37,7 +37,7 @@ export function isUnsupportedFile(name: string): boolean {
   return false;
 }
 
-export function saveUpload(file: {name: string, type: string, data: ArrayBuffer}): {name: string, error: string | null} {
+export async function saveUpload(file: {name: string, type: string, data: ArrayBuffer}): Promise<{name: string, error: string | null}> {
   const buffer = Buffer.from(file.data);
   const extension = path.extname(file.name);
 
@@ -45,7 +45,7 @@ export function saveUpload(file: {name: string, type: string, data: ArrayBuffer}
 
   let error: string | null = null;
   try {
-    storage.writeBlob(uuidFile + extension, buffer);
+    await storage.writeBlob(uuidFile + extension, buffer);
   }
   catch (caughtError) {
     if (caughtError instanceof Error) {
@@ -78,14 +78,14 @@ export function showInExplorer(file: string): void {
   }
 }
 
-export function clearUnusedFiles(): void {
-  let uuidFiles = storage.listBlobs();
-  const data = storage.listChatFiles();
+export async function clearUnusedFiles(): Promise<void> {
+  let uuidFiles = await storage.listBlobs();
+  const data = await storage.listChatFiles();
   for (let i = 0; i < data.length; i++) {
     if (data[i] === "settings.json" || data[i] === "files") {
       continue;
     }
-    const chat = storage.readChat(path.basename(data[i], ".json"));
+    const chat = await storage.readChat(path.basename(data[i], ".json"));
     for (let j = 0; j < chat.messages.length; j++) {
       if ("files" in chat.messages[j]) {
         for (let k = 0; k < chat.messages[j].files!.length; k++) {
@@ -97,10 +97,10 @@ export function clearUnusedFiles(): void {
     }
   }
   for (let i = 0; i < uuidFiles.length; i++) {
-    storage.deleteBlob(uuidFiles[i]);
+    await storage.deleteBlob(uuidFiles[i]);
   }
 }
 
-export function clearAndDeleteAll(): void {
-  storage.wipeAll();
+export async function clearAndDeleteAll(): Promise<void> {
+  await storage.wipeAll();
 }

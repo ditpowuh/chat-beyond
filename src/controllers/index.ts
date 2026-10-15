@@ -22,39 +22,39 @@ export function register(app: Express, io: Server, config: AppConfig): void {
       socket.emit("LoadSettings", view.modelData, view.settings, view.disableInput, view.limit);
     });
 
-    socket.on("SaveModel", function(model: string) {
-      socket.emit("SaveModel", services.settings.saveModel(model));
+    socket.on("SaveModel", async function(model: string) {
+      socket.emit("SaveModel", await services.settings.saveModel(model));
     });
 
-    socket.on("SaveKey", function(key: string) {
-      services.settings.saveKey(key);
+    socket.on("SaveKey", async function(key: string) {
+      await services.settings.saveKey(key);
     });
 
-    socket.on("ChangeTheme", function(theme: string) {
-      const view = services.settings.changeTheme(theme, config);
+    socket.on("ChangeTheme", async function(theme: string) {
+      const view = await services.settings.changeTheme(theme, config);
       socket.emit("LoadSettings", view.modelData, view.settings, view.disableInput, view.limit);
     });
 
-    socket.on("ChangeCostCalculatorMode", function(mode: "pessimistic" | "optimistic") {
-      services.settings.changeCalculatorMode(mode);
+    socket.on("ChangeCostCalculatorMode", async function(mode: "pessimistic" | "optimistic") {
+      await services.settings.changeCalculatorMode(mode);
     });
 
-    socket.on("LoadChatData", function() {
-      socket.emit("LoadChatData", services.chat.getGroupedChats());
+    socket.on("LoadChatData", async function() {
+      socket.emit("LoadChatData", await services.chat.getGroupedChats());
     });
 
-    socket.on("DeleteChat", function(uuid: string) {
-      services.chat.deleteChat(uuid);
+    socket.on("DeleteChat", async function(uuid: string) {
+      await services.chat.deleteChat(uuid);
       socket.emit("ReloadChatData");
     });
 
-    socket.on("RenameChat", function(uuid: string, newName: string) {
-      services.chat.renameChat(uuid, newName);
+    socket.on("RenameChat", async function(uuid: string, newName: string) {
+      await services.chat.renameChat(uuid, newName);
       socket.emit("ChangeChatName", uuid, newName);
     });
 
-    socket.on("LoadMessages", function(uuid: string) {
-      const result = services.chat.loadMessages(uuid);
+    socket.on("LoadMessages", async function(uuid: string) {
+      const result = await services.chat.loadMessages(uuid);
       socket.emit("LoadMessages", result.messages, result.imageTypes);
     });
 
@@ -83,12 +83,12 @@ export function register(app: Express, io: Server, config: AppConfig): void {
       socket.emit("TokenCost", result.tokenCount, result.cost);
     });
 
-    socket.on("FileUpload", function(file: {name: string, type: string, data: ArrayBuffer}, index: number) {
+    socket.on("FileUpload", async function(file: {name: string, type: string, data: ArrayBuffer}, index: number) {
       if (services.files.isUnsupportedFile(file.name)) {
         socket.emit("UnsupportedType", index);
         return;
       }
-      const result = services.files.saveUpload(file);
+      const result = await services.files.saveUpload(file);
       if (result.error !== null) {
         socket.emit("NotificationAlert", "A problem occured", result.error, true, true);
       }
@@ -99,13 +99,13 @@ export function register(app: Express, io: Server, config: AppConfig): void {
       services.files.showInExplorer(file);
     });
 
-    socket.on("ClearUnusedFiles", function() {
-      services.files.clearUnusedFiles();
+    socket.on("ClearUnusedFiles", async function() {
+      await services.files.clearUnusedFiles();
       socket.emit("NotificationAlert", "Unused Files Deleted", "All unused files were deleted.", false, false);
     });
 
-    socket.on("ClearAndDeleteAll", function() {
-      services.files.clearAndDeleteAll();
+    socket.on("ClearAndDeleteAll", async function() {
+      await services.files.clearAndDeleteAll();
       socket.emit("NotificationAlert", "Unused Files Deleted", "All chats and uploaded files were delete.", false, true);
       socket.emit("ReloadChatData");
     });

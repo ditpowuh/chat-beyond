@@ -22,7 +22,7 @@ marked.use({breaks: true}, markedKatex({
   nonStandard: true
 }));
 
-export function getGroupedChats(): Record<string, ChatOrderItem[]> {
+export async function getGroupedChats(): Promise<Record<string, ChatOrderItem[]>> {
   const chatOrder = storage.getChatOrder();
   const now = new Date();
 
@@ -33,7 +33,7 @@ export function getGroupedChats(): Record<string, ChatOrderItem[]> {
     "Past 30 Days": []
   };
   for (const chat of chatOrder) {
-    chat["title"] = storage.readChat(chat.uuid).title;
+    chat["title"] = (await storage.readChat(chat.uuid)).title;
 
     const chatTime = new Date(chat.time);
     if (date.isToday(chatTime)) {
@@ -66,18 +66,18 @@ export function getGroupedChats(): Record<string, ChatOrderItem[]> {
   return grouped;
 }
 
-export function deleteChat(uuid: string): void {
-  storage.deleteChatFile(uuid);
+export async function deleteChat(uuid: string): Promise<void> {
+  await storage.deleteChatFile(uuid);
 }
 
-export function renameChat(uuid: string, newName: string): void {
-  const chat = storage.readChat(uuid);
+export async function renameChat(uuid: string, newName: string): Promise<void> {
+  const chat = await storage.readChat(uuid);
   chat.title = newName;
-  storage.writeChat(uuid, chat);
+  await storage.writeChat(uuid, chat);
 }
 
-export function loadMessages(uuid: string): {messages: Message[], imageTypes: string[]} {
-  const chat = storage.readChat(uuid);
+export async function loadMessages(uuid: string): Promise<{messages: Message[], imageTypes: string[]}> {
+  const chat = await storage.readChat(uuid);
 
   const messages = chat.messages.map((message: Message) => ({
     ...message,
@@ -110,7 +110,7 @@ export async function sendMessage(message: string, identifier: string, files: st
     uuid = uuidv4();
   }
   else {
-    chat = storage.readChat(identifier);
+    chat = await storage.readChat(identifier);
     uuid = identifier;
   }
   if (files.length === 0) {
@@ -161,7 +161,7 @@ export async function sendMessage(message: string, identifier: string, files: st
               });
             }
             else if (utility.textTypes.some(ending => files[j].endsWith(`.${ending}`))) {
-              const text = storage.readBlobText(files[j]);
+              const text = await storage.readBlobText(files[j]);
               messages[i].content[0].text += `\nContents of file given:\n${text}`;
             }
             else if (files[j].endsWith(".docx") || files[j].endsWith(".doc")) {
@@ -229,7 +229,7 @@ export async function sendMessage(message: string, identifier: string, files: st
           "role": "assistant",
           "content": response
         });
-        storage.writeChat(uuid, chat);
+        await storage.writeChat(uuid, chat);
 
         handlers.finish(marked.parse(utility.formatMessage(response)) as string);
       }
@@ -261,7 +261,7 @@ export async function calculateCost(uuid: string, message: string, files: string
   const settingsData = storage.getSettings();
   let messages: Message[] = [];
   if (uuidValidate(uuid)) {
-    messages = storage.readChat(uuid).messages;
+    messages = (await storage.readChat(uuid)).messages;
   }
   messages.push({
     "role": "user",
@@ -297,7 +297,7 @@ export async function calculateCost(uuid: string, message: string, files: string
       }
     }
     else if (utility.textTypes.some(ending => files[i].endsWith(`.${ending}`))) {
-      const text = storage.readBlobText(files[i]);
+      const text = await storage.readBlobText(files[i]);
       tokenCount += encoder.encode(text).length;
     }
     else if (files[i].endsWith(".docx") || files[i].endsWith(".doc")) {
@@ -307,7 +307,7 @@ export async function calculateCost(uuid: string, message: string, files: string
       tokenCount += encoder.encode(result.value).length;
     }
     else if (files[i].endsWith(".pdf")) {
-      const pdfBuffer = storage.readBlobBuffer(files[i]);
+      const pdfBuffer = await storage.readBlobBuffer(files[i]);
       const pdf = await unpdf.getDocumentProxy(new Uint8Array(pdfBuffer));
       const result = await unpdf.extractText(pdf, {mergePages: true});
       tokenCount += encoder.encode(result.text).length;

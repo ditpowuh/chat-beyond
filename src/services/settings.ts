@@ -18,28 +18,28 @@ export function getSettingsView(config: AppConfig): SettingsView {
   };
 }
 
-export function saveModel(model: string) {
-  storage.updateSettings({
+export async function saveModel(model: string) {
+  await storage.updateSettings({
     model: model
   });
   return modelData[model];
 }
 
-export function saveKey(key: string): void {
-  storage.updateSettings({
+export async function saveKey(key: string): Promise<void> {
+  await storage.updateSettings({
     apikey: key
   });
 }
 
-export function changeTheme(theme: string, config: AppConfig): SettingsView {
-  storage.updateSettings({
+export async function changeTheme(theme: string, config: AppConfig): Promise<SettingsView> {
+  await storage.updateSettings({
     theme: theme.toLowerCase()
   });
   return getSettingsView(config);
 }
 
-export function changeCalculatorMode(mode: "pessimistic" | "optimistic"): void {
-  storage.updateSettings({
+export async function changeCalculatorMode(mode: "pessimistic" | "optimistic"): Promise<void> {
+  await storage.updateSettings({
     calculatormode: mode
   });
 }

@@ -23,6 +23,10 @@ process.on("uncaughtException", function(exception) {
   console.log(exception);
 });
 
+process.on("unhandledRejection", function(reason) {
+  console.log(reason);
+});
+
 const app = express();
 
 const server = http.createServer(app);
@@ -30,7 +34,7 @@ const io = new Server(server, {
   maxHttpBufferSize: config.fileSizeLimit
 });
 
-storage.setup();
+await storage.setup();
 
 controllers.register(app, io, config);
 
