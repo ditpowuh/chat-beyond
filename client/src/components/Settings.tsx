@@ -13,28 +13,26 @@ import type {SavedSettings, ModelData} from "@/types/settings";
 interface SettingsProps {
   settings: SavedSettings;
   setSettings: React.Dispatch<React.SetStateAction<SavedSettings>>;
-  processing: React.RefObject<boolean>;
+  processingRef: React.RefObject<boolean>;
 }
 
-export default function Settings({settings, setSettings, processing}: SettingsProps) {
+export default function Settings({settings, setSettings, processingRef}: SettingsProps) {
   const lenis = useLenis();
 
   const [models, setModels] = useState<Record<string, ModelData>>({});
   const [showKey, setShowKey] = useState<boolean>(false);
   const [disabledInput, setDisabledInput] = useState<boolean>(false);
 
-  const sectionRefs = {
-    apikey: useRef<HTMLHeadingElement>(null),
-    cleanup: useRef<HTMLHeadingElement>(null),
-    theme: useRef<HTMLHeadingElement>(null),
-    calculatormode: useRef<HTMLHeadingElement>(null),
-    model: useRef<HTMLHeadingElement>(null)
-  };
+  const apikeyRef = useRef<HTMLHeadingElement>(null);
+  const cleanupRef = useRef<HTMLHeadingElement>(null);
+  const themeRef = useRef<HTMLHeadingElement>(null);
+  const calculatormodeRef = useRef<HTMLHeadingElement>(null);
+  const modelRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     socket.emit("LoadSettings");
 
-    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, disableInput: boolean, limit: number) => {
+    const loadSettings = (models: Record<string, ModelData>, settings: SavedSettings, disableInput: boolean, _: number) => {
       setSettings(settings);
       setModels(models);
       setDisabledInput(disableInput);
@@ -47,7 +45,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
   }, []);
 
   const clearUnusedFiles = () => {
-    processing.current = true;
+    processingRef.current = true;
     socket.emit("ClearUnusedFiles");
   }
 
@@ -63,7 +61,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
       cancelButtonText: "Cancel"
     }).then((result) => {
       if (result.isConfirmed) {
-        processing.current = true;
+        processingRef.current = true;
         socket.emit("ClearAndDeleteAll");
       }
     });
@@ -112,51 +110,51 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
         <ul>
           <li className={styles.heading}>Settings Index</li>
           <li>
-            <a onClick={(e) => scrollToSection(sectionRefs.apikey)}>API Key</a>
+            <a onClick={() => scrollToSection(apikeyRef)}>API Key</a>
             <br/>
             <span>Set your API key here.</span>
           </li>
           <li>
-            <a onClick={(e) => scrollToSection(sectionRefs.cleanup)}>Clean-up</a>
+            <a onClick={() => scrollToSection(cleanupRef)}>Clean-up</a>
             <br/>
             <span>Remove unnessessary files here.</span>
           </li>
           <li>
-            <a onClick={(e) => scrollToSection(sectionRefs.theme)}>Theme</a>
+            <a onClick={() => scrollToSection(themeRef)}>Theme</a>
             <br/>
             <span>Change your theme.</span>
           </li>
           <li>
-            <a onClick={(e) => scrollToSection(sectionRefs.calculatormode)}>Input Cost Calculator Mode</a>
+            <a onClick={() => scrollToSection(calculatormodeRef)}>Input Cost Calculator Mode</a>
             <br/>
             <span>Change how the input cost calculator behaves.</span>
           </li>
           <li>
-            <a onClick={(e) => scrollToSection(sectionRefs.model)}>Model</a>
+            <a onClick={() => scrollToSection(modelRef)}>Model</a>
             <br/>
             <span>Change what model you're using.</span>
           </li>
         </ul>
       </div>
-      <h2 ref={sectionRefs.apikey}>API Key</h2>
+      <h2 ref={apikeyRef}>API Key</h2>
       <p>This is required to use OpenAI's API. Make sure to keep it private!</p>
       <input className={!showKey ? `${styles.apikey} ${styles.hideapi}` : styles.apikey} type="text" placeholder={disabledInput ? "API key has been detected in .env - Using that instead." : "OpenAI API Key"} value={settings.apikey} onChange={(e) => applySetting("apikey", e.target.value)} disabled={disabledInput}/>
-      <button className={styles.revealapikey} onClick={(e) => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
+      <button className={styles.revealapikey} onClick={() => setShowKey(previous => !previous)}>{showKey ? "Hide" : "Show"}</button>
       <br/><br/>
-      <h2 ref={sectionRefs.cleanup}>Clean-up</h2>
+      <h2 ref={cleanupRef}>Clean-up</h2>
       <p>This is to remove any unnecessary files or to reset everything.</p>
       <button id="cleanfiles" className={styles.settingbutton} onClick={clearUnusedFiles}>Remove any unused uploaded files</button>
       <br/>
       <button id="deleteall" className={styles.settingbutton} onClick={deleteAllFiles}>Delete all files and chats</button>
       <br/><br/>
-      <h2 ref={sectionRefs.theme}>Theme</h2>
+      <h2 ref={themeRef}>Theme</h2>
       <p>Change between themes.</p>
       <select className={styles.selection} name="Theme" defaultValue={settings.theme} onChange={(e) => applySetting("theme", e.target.value)}>
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
       <br/><br/>
-      <h2 ref={sectionRefs.calculatormode}>Input Cost Calculator Mode</h2>
+      <h2 ref={calculatormodeRef}>Input Cost Calculator Mode</h2>
       <p>
         <span>
           This application allows for the model to decide the detail level for image vision.
@@ -177,7 +175,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
         <option value="optimistic">Optimistic</option>
       </select>
       <br/><br/>
-      <h2 ref={sectionRefs.model}>Model</h2>
+      <h2 ref={modelRef}>Model</h2>
       <p>
         <span>Choose one of the different models. Note that 100 tokens is around 75 words.</span>
         <br/>
@@ -186,7 +184,7 @@ export default function Settings({settings, setSettings, processing}: SettingsPr
       <div className={styles.models}>
         {
           Object.keys(models).map((key) => (
-            <div key={key} className={key === settings.model ? styles.selected : ""} onClick={(e) => applySetting("model", key)}>
+            <div key={key} className={key === settings.model ? styles.selected : ""} onClick={() => applySetting("model", key)}>
               <h3>{key}</h3>
               <p><b>Description</b><br/><span className={styles.description}>{models[key].description}</span></p>
               <p><b>Costs</b><br/>${formatToMoney(models[key].cost.input)} per 1,000,000 tokens for Input<br/>${formatToMoney(models[key].cost.output)} per 1,000,000 tokens for Output</p>

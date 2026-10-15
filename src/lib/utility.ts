@@ -206,7 +206,9 @@ export function getEncoder(model: string): Tiktoken {
       if (fallbackError instanceof Error) {
         console.error("Fallback encoding failed.");
       }
-      throw new Error("Could not initialize fallback encoding.");
+      throw new Error("Could not initialize fallback encoding.", {
+        cause: fallbackError
+      });
     }
   }
 }

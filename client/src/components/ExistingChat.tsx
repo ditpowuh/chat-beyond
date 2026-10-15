@@ -7,7 +7,6 @@ import hljs from "highlight.js";
 import {v4 as uuidv4} from "uuid";
 import {useLenis} from "lenis/react";
 
-import {goToBottom} from "@/lib/utility";
 import {socket} from "@/lib/socket";
 
 import type {Message} from "@/types/chat";
@@ -16,26 +15,33 @@ interface ExistingChatProps {
   bottomPadding: number;
   processingChatInProgress: boolean;
   setProcessingChatInProgress: React.Dispatch<React.SetStateAction<boolean>>;
-  processing: React.RefObject<boolean>;
+  processingRef: React.RefObject<boolean>;
   chatUUID: string;
 }
 
-export default function ExistingChat({bottomPadding, processingChatInProgress, setProcessingChatInProgress, processing, chatUUID}: ExistingChatProps) {
+export default function ExistingChat({bottomPadding, processingChatInProgress, setProcessingChatInProgress, processingRef, chatUUID}: ExistingChatProps) {
   const lenis = useLenis();
 
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
   const [storedImageTypes, setStoredImageTypes] = useState<string[]>([]);
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(chatUUID === "");
+  const [previousChatUUID, setPreviousChatUUID] = useState<string>(chatUUID);
 
   const chatRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const requestMessages: boolean = chatUUID !== "" && !processing.current;
-
-    if (requestMessages) {
+  if (previousChatUUID !== chatUUID) {
+    setPreviousChatUUID(chatUUID);
+    if (previousChatUUID !== "") {
       setCurrentMessages([]);
       setIsVisible(false);
+    }
+  }
+
+  useEffect(() => {
+    const requestMessages: boolean = chatUUID !== "" && !processingRef.current;
+
+    if (requestMessages) {
       lenis!.scrollTo(0, {immediate: true});
     }
 
@@ -60,9 +66,6 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
 
     if (requestMessages) {
       socket.emit("LoadMessages", chatUUID);
-    }
-    else {
-      setIsVisible(true);
     }
 
     const startNewMessage = (originalMessage: string, uuidReceiving: string, title: string, files: string[], imageTypes: string[]) => {
@@ -116,7 +119,7 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
       });
 
       socket.emit("LoadChatData");
-      processing.current = false;
+      processingRef.current = false;
 
       lenis!.scrollTo(document.body.scrollHeight);
     }
@@ -171,15 +174,15 @@ export default function ExistingChat({bottomPadding, processingChatInProgress, s
                       if (storedImageTypes.some(imageType => file.endsWith(imageType))) {
                         return (
                           <div className={`${styles.message} ${styles.user} ${styles.file}`}>
-                            <img src={`/files/${file}`} onClick={(e) => triggerShowFile(file)}/>
-                            <span className={`${styles.subtext} ${styles.image}`}>{file}</span>
+                            <img src={`/files/${file}`} onClick={() => triggerShowFile(file)}/>
+                            <span className={styles.subtext}>{file}</span>
                           </div>
                         );
                       }
                       else {
                         return (
                           <div className={`${styles.message} ${styles.user} ${styles.file}`}>
-                            <span className={styles.fileicon} onClick={(e) => triggerShowFile(file)}>
+                            <span className={styles.fileicon} onClick={() => triggerShowFile(file)}>
                               <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
                                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                                 <path d="M14 2v6h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>

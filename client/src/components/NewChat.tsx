@@ -3,8 +3,6 @@ import {useState} from "react";
 
 import {AnimatePresence, motion} from "motion/react";
 
-import {socket} from "@/lib/socket";
-
 interface NewChatProps {
   chatNameRef: React.RefObject<HTMLInputElement | null>;
 }

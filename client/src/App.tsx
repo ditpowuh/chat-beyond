@@ -19,6 +19,8 @@ import InputArea from "@/components/InputArea";
 import {socket} from "@/lib/socket";
 import {getImageFromTheme} from "@/lib/utility";
 
+import {DEFAULT_PAGE_PADDING} from "@/lib/constants";
+
 import type {SavedSettings, ModelData} from "@/types/settings";
 
 export type PageType = "Home" | "ExistingChat" | "Settings";
@@ -37,13 +39,13 @@ export default function App() {
     calculatormode: "pessimistic"
   });
   const [processingChatInProgress, setProcessingChatInProgress] = useState<boolean>(false);
-  const [pagePadding, setPagePadding] = useState<number>(240);
+  const [pagePadding, setPagePadding] = useState<number>(DEFAULT_PAGE_PADDING);
   const chatNameRef = useRef<HTMLInputElement>(null);
 
-  const processing = useRef<boolean>(false);
+  const processingRef = useRef<boolean>(false);
 
   const openSettings = () => {
-    if (processing.current === true) {
+    if (processingRef.current === true) {
       return;
     }
     if (page === "Settings") {
@@ -85,7 +87,7 @@ export default function App() {
         confirmButtonColor: "#666666",
         confirmButtonText: "Okay"
       });
-      processing.current = false;
+      processingRef.current = false;
     }
     socket.on("NotificationAlert", notificationAlert);
 
@@ -105,7 +107,7 @@ export default function App() {
     }
     socket.on("ChatInProgress", chatInProgress);
 
-    const startNewMessage = (originalMessage: string, uuidReceiving: string, title: string, files: string[], imageTypes: string[]) => {
+    const startNewMessage = (originalMessage: string, uuidReceiving: string, title: string, _: string[], __: string[]) => {
       setProcessingChatInProgress(false);
       setChatUUID(uuidReceiving);
       document.title = `ChatBeyond: ${title}`;
@@ -123,9 +125,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (page !== "ExistingChat") {
-      setChatUUID("");
-    }
     if (page === "Home") {
       document.title = "ChatBeyond";
     }
@@ -139,9 +138,22 @@ export default function App() {
     (document.getElementById("theme") as HTMLLinkElement)!.href = `/CSS/${settings.theme}.css`;
   }, [settings]);
 
+  const [previousPage, setPreviousPage] = useState<PageType>(page);
+  const [previousChatUUID, setPreviousChatUUID] = useState<string>(chatUUID);
+
+  if (previousPage !== page || previousChatUUID !== chatUUID) {
+    setPreviousPage(page);
+    setPreviousChatUUID(chatUUID);
+    setPagePadding(DEFAULT_PAGE_PADDING);
+  }
+
+  if (page !== "ExistingChat" && chatUUID !== "") {
+    setChatUUID("");
+  }
+
   return (
     <>
-      <Sidebar page={page} setPage={setPage} processing={processing} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
+      <Sidebar page={page} setPage={setPage} processingRef={processingRef} chatUUID={chatUUID} setChatUUID={setChatUUID} theme={settings.theme}/>
       <div className={`${styles.topbar} undraggable`}>
         <div className={styles.name}>ChatBeyond</div>
         <Version/>
@@ -154,14 +166,14 @@ export default function App() {
             <NewChat chatNameRef={chatNameRef}/>
           )}
           {page === "Settings" && (
-            <Settings settings={settings} setSettings={setSettings} processing={processing}/>
+            <Settings settings={settings} setSettings={setSettings} processingRef={processingRef}/>
           )}
           {page === "ExistingChat" && (
-            <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processing={processing} chatUUID={chatUUID}/>
+            <ExistingChat bottomPadding={pagePadding} processingChatInProgress={processingChatInProgress} setProcessingChatInProgress={setProcessingChatInProgress} processingRef={processingRef} chatUUID={chatUUID}/>
           )}
         </motion.div>
       </AnimatePresence>
-      <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processing={processing} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding} pagePadding={pagePadding}/>
+      <InputArea fileSizeLimit={fileSizeLimit} reasoningEnabled={reasoningEnabled} chatUUID={chatUUID} chatNameRef={chatNameRef} processingRef={processingRef} currentPage={page} theme={settings.theme} setPagePadding={setPagePadding} pagePadding={pagePadding}/>
       <link rel="stylesheet" href={`https://unpkg.com/@highlightjs/cdn-assets@11.11.1/styles/atom-one-${settings.theme}.min.css`}/>
     </>
   );

@@ -14,8 +14,8 @@ export function calculateImageCostByPatch(path: string, multiplier: number, maxP
   let rescaleFactor = 1;
   if (Math.ceil(fileDimensions.width / 32) * Math.ceil(fileDimensions.height / 32) > maxPatches) {
     rescaleFactor = Math.sqrt(32 ** 2 * 1536 / (fileDimensions.width * fileDimensions.height));
-    let widthFactor = Math.floor(fileDimensions.width * rescaleFactor / 32) / (fileDimensions.width * rescaleFactor / 32);
-    let heightFactor = Math.floor(fileDimensions.height * rescaleFactor / 32) / (fileDimensions.height * rescaleFactor / 32);
+    const widthFactor = Math.floor(fileDimensions.width * rescaleFactor / 32) / (fileDimensions.width * rescaleFactor / 32);
+    const heightFactor = Math.floor(fileDimensions.height * rescaleFactor / 32) / (fileDimensions.height * rescaleFactor / 32);
     rescaleFactor = rescaleFactor * Math.min(widthFactor, heightFactor);
   }
   return Math.ceil(rescaleFactor * fileDimensions.width / 32) * Math.ceil(rescaleFactor * fileDimensions.height / 32) * (multiplier ?? 1);

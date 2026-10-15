@@ -17,7 +17,7 @@ export type UploadedFile = {
   uploadedData: File;
   uuidName: string;
   preview: string | null;
-}
+};
 
 export type ChatOrderItem = {
   time: string;

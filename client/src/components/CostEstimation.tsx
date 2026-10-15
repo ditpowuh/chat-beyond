@@ -8,10 +8,10 @@ import {formatToMoney} from "@/lib/utility";
 
 interface CostEstimationProps {
   calculating: boolean;
-  processing: React.RefObject<boolean>;
+  processingRef: React.RefObject<boolean>;
 }
 
-export default function CostEstimation({calculating, processing}: CostEstimationProps) {
+export default function CostEstimation({calculating, processingRef}: CostEstimationProps) {
   const [estimatedCost, setEstimatedCost] = useState<string>("Uncalculated");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function CostEstimation({calculating, processing}: CostEstimation
           y: 1
         }
       });
-      processing.current = false;
+      processingRef.current = false;
     }
     socket.on("TokenCost", tokenCost);
 

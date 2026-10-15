@@ -36,25 +36,28 @@ interface InputAreaProps {
   reasoningEnabled: boolean;
   chatUUID: string;
   chatNameRef: React.RefObject<HTMLInputElement | null>;
-  processing: React.RefObject<boolean>;
+  processingRef: React.RefObject<boolean>;
   currentPage: PageType;
   theme: string;
   setPagePadding: React.Dispatch<React.SetStateAction<number>>;
   pagePadding: number;
 }
 
-export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, chatNameRef, processing, currentPage, theme, setPagePadding, pagePadding}: InputAreaProps) {
+export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, chatNameRef, processingRef, currentPage, theme, setPagePadding, pagePadding}: InputAreaProps) {
   const lenis = useLenis();
 
   const [isCalculatingCost, setIsCalculatingCost] = useState<boolean>(false);
   const [reasoningLevel, setReasoningLevel] = useState<number>(0);
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
-  const [inputHeight, setInputHeight] = useState<number>(48);
+  const [previousPage, setPreviousPage] = useState<PageType>(currentPage);
+  const [previousChatUUID, setPreviousChatUUID] = useState<string>(chatUUID);
 
   const textInputRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const fileAreaRef = useRef<HTMLDivElement | null>(null);
+
+  const previewURLsRef = useRef<string[]>([]);
 
   const hiddenAnimationState = {
     x: "-50%",
@@ -68,8 +71,48 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     opacity: 1
   };
 
+  const uploadFile = (file: File) => {
+    if (file.size > fileSizeLimit) {
+      Swal.fire({
+        icon: "error",
+        title: "File size exceeded limit",
+        text: "That file is too big!",
+        confirmButtonColor: "#666666",
+        confirmButtonText: "Okay"
+      });
+      return;
+    }
+
+    const newFile = {
+      uploadedData: file,
+      uuidName: "",
+      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
+    };
+
+    if (newFile.preview !== null) {
+      previewURLsRef.current.push(newFile.preview);
+    }
+
+    setFiles((previous) => {
+      const index = previous.length;
+      const updated = [...previous, newFile];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        socket.emit("FileUpload", {
+          name: file.name,
+          type: file.type,
+          data: reader.result
+        }, index);
+      };
+      reader.readAsArrayBuffer(file);
+
+      return updated;
+    });
+  }
+
   useEffect(() => {
-    const tokenCost = (tokenCount: number, cost: number) => {
+    const tokenCost = (_: number, __: number) => {
       setIsCalculatingCost(false);
     }
     socket.on("TokenCost", tokenCost);
@@ -105,19 +148,20 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
   }, []);
 
+  if (previousPage !== currentPage || previousChatUUID !== chatUUID) {
+    setPreviousPage(currentPage);
+    setPreviousChatUUID(chatUUID);
+    setFiles([]);
+  }
+
   useEffect(() => {
     if (textInputRef.current !== null) {
       textInputRef.current.value = "";
     }
-    setFiles((previous) => {
-      previous.forEach((file) => {
-        if (file.preview !== null) {
-          URL.revokeObjectURL(file.preview);
-        }
-      });
-      return [];
+    previewURLsRef.current.forEach((preview) => {
+      URL.revokeObjectURL(preview);
     });
-    changeInputHeight();
+    previewURLsRef.current = [];
   }, [currentPage, chatUUID]);
 
   const openFileDialog = () => {
@@ -126,52 +170,17 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
   }
 
-  const uploadFile = (file: File) => {
-    if (file.size > fileSizeLimit) {
-      Swal.fire({
-        icon: "error",
-        title: "File size exceeded limit",
-        text: "That file is too big!",
-        confirmButtonColor: "#666666",
-        confirmButtonText: "Okay"
-      });
-      return;
-    }
-
-    const newFile = {
-      uploadedData: file,
-      uuidName: "",
-      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-    };
-
-    setFiles((previous) => {
-      const index = previous.length;
-      const updated = [...previous, newFile];
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        socket.emit("FileUpload", {
-          name: file.name,
-          type: file.type,
-          data: reader.result
-        }, index);
-      };
-      reader.readAsArrayBuffer(file);
-
-      return updated;
-    });
-  }
-
   const removeFile = (file: UploadedFile) => {
     if (file.preview) {
       URL.revokeObjectURL(file.preview);
+      previewURLsRef.current = previewURLsRef.current.filter((preview) => preview !== file.preview);
     }
 
     setFiles((previous) => previous.filter((currentFile) => currentFile.uploadedData.name !== file.uploadedData.name));
   }
 
   const calculateCost = () => {
-    if (processing.current === true) {
+    if (processingRef.current === true) {
       return;
     }
     if (textInputRef.current) {
@@ -185,7 +194,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
         });
         return;
       }
-      processing.current = true;
+      processingRef.current = true;
       setIsCalculatingCost(true);
 
       socket.emit("CalculateCost", chatUUID, textInputRef.current.value.trim(), files.map(data => data.uuidName));
@@ -259,7 +268,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
         });
         return;
       }
-      processing.current = true;
+      processingRef.current = true;
       socket.emit("SendMessage", textInputRef.current.value.trim(), chatUUID !== "" ? chatUUID : chatNameRef!.current!.value.trim(), files.map(data => data.uuidName), reasoningLevel);
       textInputRef.current.value = "";
       setFiles([]);
@@ -273,7 +282,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
       <AnimatePresence mode="wait">
         {currentPage !== "Settings" && (
           <motion.div className={`${styles.bottomarea} wrapper`} initial={hiddenAnimationState} animate={visibleAnimationState} exit={hiddenAnimationState} transition={{duration: 0.25}}>
-            <button onClick={(e) => calculateCost()}>Estimate Cost</button>
+            <button onClick={() => calculateCost()}>Estimate Cost</button>
             <div className={styles.inputarea} onDrop={handleDrop}>
               <div ref={fileAreaRef} className={styles.filearea}>
                 {
@@ -294,14 +303,14 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
                         <div className={styles.name} title={file.uploadedData.name}>{file.uploadedData.name}</div>
                         <div className={styles.size} title={formatToFileSize(file.uploadedData.size)}>{formatToFileSize(file.uploadedData.size)}</div>
                       </div>
-                      <button className={styles.removebutton} onClick={(e) => removeFile(file)}><img src={crossIcon}/></button>
+                      <button className={styles.removebutton} onClick={() => removeFile(file)}><img src={crossIcon}/></button>
                     </div>
                   ))
                 }
               </div>
               <input ref={fileInputRef} type="file" style={{display: "none"}} onChange={(e) => uploadFile(e.target!.files![0])}/>
               <div className={styles.textarea}>
-                <TextareaAutosize ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={(e) => changeInputHeight()} minRows={2}></TextareaAutosize>
+                <TextareaAutosize ref={textInputRef} className={styles.textinput} maxLength={40960} placeholder="Type your message here" onKeyDown={handleKeyDown} onChange={() => changeInputHeight()} minRows={2}></TextareaAutosize>
                 <button title="Add File" onClick={openFileDialog}>
                   <img src={getImageFromTheme(theme, {dark: whiteFileIcon, light: blackFileIcon})} width={16} height={16}/>
                 </button>
@@ -317,7 +326,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
           </motion.div>
         )}
       </AnimatePresence>
-      <CostEstimation calculating={isCalculatingCost} processing={processing}/>
+      <CostEstimation calculating={isCalculatingCost} processingRef={processingRef}/>
       <DownButton theme={theme} page={currentPage} chatUUID={chatUUID} padding={pagePadding}/>
     </>
   );

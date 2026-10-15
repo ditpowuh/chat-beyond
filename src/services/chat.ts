@@ -291,7 +291,7 @@ export async function calculateCost(uuid: string, message: string, files: string
 
   for (let i = 0; i < files.length; i++) {
     if (utility.imageTypes.some(ending => files[i].endsWith(`.${ending}`))) {
-      let imageTokenCost: number | null = utility.imageToken.calculateImageCost(settingsData.model, storage.getBlobPath(files[i]), settingsData.calculatormode);
+      const imageTokenCost: number | null = utility.imageToken.calculateImageCost(settingsData.model, storage.getBlobPath(files[i]), settingsData.calculatormode);
       if (imageTokenCost !== null) {
         tokenCount += imageTokenCost;
       }

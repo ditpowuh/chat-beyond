@@ -19,14 +19,16 @@ import type {ChatOrderItem} from "@/types/chat";
 interface SidebarProps {
   page: PageType;
   setPage: React.Dispatch<React.SetStateAction<PageType>>;
-  processing: React.RefObject<boolean>;
+  processingRef: React.RefObject<boolean>;
   chatUUID: string;
   setChatUUID: React.Dispatch<React.SetStateAction<string>>;
   theme: string;
 }
 
-export default function Sidebar({page, setPage, processing, chatUUID, setChatUUID, theme}: SidebarProps) {
+export default function Sidebar({page, setPage, processingRef, chatUUID, setChatUUID, theme}: SidebarProps) {
   const lenis = useLenis();
+
+  const [openedTitle, setOpenedTitle] = useState<string>("");
 
   const [chats, setChats] = useState<Record<string, ChatOrderItem[]>>({});
 
@@ -43,9 +45,9 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
     }
     socket.on("ReloadChatData", reloadChatData);
 
-    const changeChatName = (uuid: string, name: string) => {
+    const changeChatName = (_: string, __: string) => {
       socket.emit("LoadChatData");
-      processing.current = false;
+      processingRef.current = false;
       Swal.fire({
         icon: "success",
         title: "Chat renamed",
@@ -76,22 +78,28 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
     }
   }
 
+  useEffect(() => {
+    if (page === "ExistingChat" && openedTitle !== "") {
+      document.title = `ChatBeyond: ${openedTitle}`;
+    }
+  }, [page, openedTitle]);
+
   const openChat = (uuid: string, title: string) => {
     if (chatUUID === uuid) {
       lenis!.scrollTo(document.body.scrollHeight);
       return;
     }
-    if (processing.current === true) {
+    if (processingRef.current === true) {
       return;
     }
-    document.title = `ChatBeyond: ${title}`;
+    setOpenedTitle(title);
     setPage("ExistingChat");
     setChatUUID(uuid);
   }
 
   const modifyChat = (event: React.MouseEvent<HTMLButtonElement>, title: string, uuid: string, currentUUID: string) => {
     event.stopPropagation();
-    if (processing.current === true) {
+    if (processingRef.current === true) {
       return;
     }
     Swal.fire({
@@ -145,7 +153,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
               });
             }
             else {
-              processing.current = true;
+              processingRef.current = true;
               if (currentUUID === uuid) {
                 document.title = `ChatBeyond: ${result.value.trim()}`;
               }
@@ -158,7 +166,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
   }
 
   const goHome = () => {
-    if (processing.current === true || page === "Home") {
+    if (processingRef.current === true || page === "Home") {
       return;
     }
     setPage("Home");
@@ -167,9 +175,9 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
   return (
     <div className={styles.sidebar} onWheel={handleWheel}>
       <div className={styles.top}>
-        <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} onClick={(e) => goHome()}/>
+        <img className={`${styles.logo} undraggable`} src={getImageFromTheme(theme, {dark: whiteLogo, light: blackLogo})} onClick={() => goHome()}/>
         <ul className={styles.list}>
-          <li onClick={(e) => goHome()}>New chat</li>
+          <li onClick={() => goHome()}>New chat</li>
         </ul>
       </div>
       <br/>
@@ -181,7 +189,7 @@ export default function Sidebar({page, setPage, processing, chatUUID, setChatUUI
               <ul className={styles.list}>
                 {
                   chats[category].map((chat) => (
-                    <li key={chat.uuid} className={chat.uuid === chatUUID ? styles.selected : ""} onClick={(e) => openChat(chat.uuid, chat.title)}>
+                    <li key={chat.uuid} className={chat.uuid === chatUUID ? styles.selected : ""} onClick={() => openChat(chat.uuid, chat.title)}>
                       <span>{chat.title}</span>
                       <button onClick={(e) => modifyChat(e, chat.title, chat.uuid, chatUUID)}>
                         <img src={getImageFromTheme(theme, {dark: whiteSettingsIcon, light: blackSettingsIcon})}/>
