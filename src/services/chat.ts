@@ -33,7 +33,9 @@ export async function getGroupedChats(): Promise<Record<string, ChatOrderItem[]>
     "Past 30 Days": []
   };
   for (const chat of chatOrder) {
-    chat["title"] = (await storage.readChat(chat.uuid)).title;
+    if (chat.title === undefined) {
+      chat.title = (await storage.readChat(chat.uuid)).title;
+    }
 
     const chatTime = new Date(chat.time);
     if (date.isToday(chatTime)) {

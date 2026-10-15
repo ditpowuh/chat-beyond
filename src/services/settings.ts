@@ -3,6 +3,7 @@ import modelData from "@/models.js";
 import * as storage from "@/storage/index.js";
 
 import type {AppConfig, SettingsView} from "@/types/settings.js";
+import type {ModelData} from "@/types/models.js";
 
 export function getSettingsView(config: AppConfig): SettingsView {
   const settingsData = storage.getSettings();
@@ -18,7 +19,10 @@ export function getSettingsView(config: AppConfig): SettingsView {
   };
 }
 
-export async function saveModel(model: string) {
+export async function saveModel(model: string): Promise<ModelData | null> {
+  if (modelData[model] === undefined) {
+    return null;
+  }
   await storage.updateSettings({
     model: model
   });

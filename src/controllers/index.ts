@@ -23,7 +23,12 @@ export function register(app: Express, io: Server, config: AppConfig): void {
     });
 
     socket.on("SaveModel", async function(model: string) {
-      socket.emit("SaveModel", await services.settings.saveModel(model));
+      const modelInfo = await services.settings.saveModel(model);
+      if (modelInfo === null) {
+        socket.emit("NotificationAlert", "Unknown model", "That model is not available.", true, false);
+        return;
+      }
+      socket.emit("SaveModel", modelInfo);
     });
 
     socket.on("SaveKey", async function(key: string) {
