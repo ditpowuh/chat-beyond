@@ -52,18 +52,19 @@ export async function readChat(uuid: string): Promise<Chat> {
   return JSON.parse(await fs.readFile(getChatFile(uuid), "utf8"));
 }
 
-export async function reindexChat(uuid: string): Promise<void> {
+export async function reindexChat(uuid: string, title?: string): Promise<void> {
   chatOrder = chatOrder.filter(chat => chat.uuid !== uuid);
   chatOrder.push({
     uuid: uuid,
-    time: (await fs.stat(getChatFile(uuid))).mtime
+    time: (await fs.stat(getChatFile(uuid))).mtime,
+    title: title
   });
   chatOrder.sort((a, b) => b.time.getTime() - a.time.getTime());
 }
 
 export async function writeChat(uuid: string, chat: Chat): Promise<void> {
   await fs.writeFile(getChatFile(uuid), JSON.stringify(chat, null, 2));
-  await reindexChat(uuid);
+  await reindexChat(uuid, chat.title);
 }
 
 export async function deleteChatFile(uuid: string): Promise<void> {
