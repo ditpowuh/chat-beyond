@@ -106,7 +106,7 @@ export function register(app: Express, io: Server, config: AppConfig): void {
 
     socket.on("ClearAndDeleteAll", async function() {
       await services.files.clearAndDeleteAll();
-      socket.emit("NotificationAlert", "Unused Files Deleted", "All chats and uploaded files were delete.", false, true);
+      socket.emit("NotificationAlert", "All Data Deleted", "All chats and uploaded files were deleted.", false, true);
       socket.emit("ReloadChatData");
     });
 
