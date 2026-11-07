@@ -9,7 +9,7 @@ export function formatToFileSize(bytes: number): string {
   const format = (value: number, unit: string) => {
     const rounded = Math.round(value * 10) / 10;
     return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded} ${unit}`;
-  };
+  }
 
   if (bytes < 1024) {
     result = `${bytes} B`;
