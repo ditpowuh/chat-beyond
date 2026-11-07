@@ -44,7 +44,7 @@ export default defineConfig([
         "varsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^_"
       }],
-      "custom-semi/semi": ["warn", "always"]
+      "custom-semi/semi": ["warn", "strict"]
     }
   },
   {
