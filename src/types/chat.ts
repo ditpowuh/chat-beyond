@@ -21,4 +21,5 @@ export interface StreamHandlers {
   processing: (html: string) => void;
   finish: (html: string) => void;
   alert: (title: string, message: string, error: boolean, clean: boolean) => void;
+  stopped: (originalMessage: string) => void;
 }

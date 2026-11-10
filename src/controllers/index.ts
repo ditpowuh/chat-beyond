@@ -17,6 +17,12 @@ export function register(app: Express, io: Server, config: AppConfig): void {
   });
 
   io.on("connection", function(socket) {
+    let abortController: AbortController | null = null;
+
+    socket.on("disconnect", function() {
+      abortController?.abort();
+    });
+
     socket.on("LoadSettings", function() {
       const view = services.settings.getSettingsView(config);
       socket.emit("LoadSettings", view.modelData, view.settings, view.disableInput, view.limit);
@@ -64,23 +70,40 @@ export function register(app: Express, io: Server, config: AppConfig): void {
     });
 
     socket.on("SendMessage", async function(message: string, identifier: string, files: string[] = [], reasoningStrength: number) {
-      await services.chat.sendMessage(message, identifier, files, reasoningStrength, config, {
-        chatInProgress: function() {
-          socket.emit("ChatInProgress");
-        },
-        start: function(text: string, uuid: string, title: string | undefined, files: string[], imageTypes: string[]) {
-          socket.emit("StartNewMessage", text, uuid, title, files, imageTypes);
-        },
-        processing: function(html: string) {
-          socket.emit("ProcessingNewMessage", html);
-        },
-        finish: function(html: string) {
-          socket.emit("FinishNewMessage", html);
-        },
-        alert: function(title: string, message: string, error: boolean, clean: boolean) {
-          socket.emit("NotificationAlert", title, message, error, clean);
-        }
-      });
+      if (abortController !== null) {
+        return;
+      }
+      const controller = new AbortController();
+      abortController = controller;
+      try {
+        await services.chat.sendMessage(message, identifier, files, reasoningStrength, config, controller.signal, {
+          chatInProgress: function() {
+            socket.emit("ChatInProgress");
+          },
+          start: function(text: string, uuid: string, title: string | undefined, files: string[], imageTypes: string[]) {
+            socket.emit("StartNewMessage", text, uuid, title, files, imageTypes);
+          },
+          processing: function(html: string) {
+            socket.emit("ProcessingNewMessage", html);
+          },
+          finish: function(html: string) {
+            socket.emit("FinishNewMessage", html);
+          },
+          alert: function(title: string, message: string, error: boolean, clean: boolean) {
+            socket.emit("NotificationAlert", title, message, error, clean);
+          },
+          stopped: function(originalMessage: string) {
+            socket.emit("GenerationStopped", originalMessage);
+          }
+        });
+      }
+      finally {
+        abortController = null;
+      }
+    });
+
+    socket.on("StopGeneration", function() {
+      abortController?.abort();
     });
 
     socket.on("CalculateCost", async function(uuid: string, message: string, files: string[] = []) {

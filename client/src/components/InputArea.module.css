@@ -33,6 +33,14 @@
   background-color: var(--button-hover);
 }
 
+.bottomarea .stopbutton {
+  background-color: #c24848;
+}
+
+.bottomarea .stopbutton:hover {
+  background-color: #a33b3b;
+}
+
 .inputarea {
   width: 800px;
   margin: 0 auto;

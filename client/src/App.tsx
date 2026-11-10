@@ -125,6 +125,21 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const generationStopped = (_: string) => {
+      setProcessingChatInProgress(false);
+      processingRef.current = false;
+      if (chatUUID === "") {
+        setPage("Home");
+      }
+    }
+    socket.on("GenerationStopped", generationStopped);
+
+    return () => {
+      socket.off("GenerationStopped", generationStopped);
+    }
+  }, [chatUUID]);
+
+  useEffect(() => {
     if (page === "Home") {
       document.title = "ChatBeyond";
     }

@@ -92,7 +92,7 @@ export async function loadMessages(uuid: string): Promise<{messages: Message[], 
   };
 }
 
-export async function sendMessage(message: string, identifier: string, files: string[] = [], reasoningStrength: number, config: AppConfig, handlers: StreamHandlers): Promise<void> {
+export async function sendMessage(message: string, identifier: string, files: string[] = [], reasoningStrength: number, config: AppConfig, abortSignal: AbortSignal, handlers: StreamHandlers): Promise<void> {
   const settingsData = storage.getSettings();
   if (settingsData.apikey === "") {
     handlers.alert("No API key", "Please go to settings and put it in.", true, false);
@@ -213,28 +213,28 @@ export async function sendMessage(message: string, identifier: string, files: st
         break;
     }
   }
-  await client.responses.create(responseSettings).then(async (stream) => {
-    let response: string =  "";
-    let started: boolean = false;
+  let response: string = "";
+  let started: boolean = false;
+  let completed: boolean = false;
+  let abortHandled: boolean = false;
 
-    for await (const event of stream) {
-      if (event.type === "response.output_text.delta") {
-        if (!started) {
-          handlers.start(message, uuid, chat.title, files, utility.imageTypes);
-          started = true;
-        }
-        response += event.delta;
-        handlers.processing(marked.parse(utility.formatMessage(response)) as string);
-      }
-      else if (event.type === "response.completed") {
-        chat.messages.push({
-          "role": "assistant",
-          "content": response
-        });
-        await storage.writeChat(uuid, chat);
+  const handleAbort = async (): Promise<void> => {
+    if (abortHandled) {
+      return;
+    }
+    abortHandled = true;
 
-        handlers.finish(marked.parse(utility.formatMessage(response)) as string);
-      }
+    if (started && !completed) {
+      chat.messages.push({
+        "role": "assistant",
+        "content": response
+      });
+      await storage.writeChat(uuid, chat);
+
+      handlers.finish(marked.parse(utility.formatMessage(response)) as string);
+    }
+    else if (!started) {
+      handlers.stopped(message);
     }
 
     for (const message of messages) {
@@ -247,7 +247,50 @@ export async function sendMessage(message: string, identifier: string, files: st
         }
       }
     }
-  }).catch((error) => {
+  }
+
+  await client.responses.create(responseSettings, {signal: abortSignal}).then(async (stream) => {
+    for await (const event of stream) {
+      if (event.type === "response.output_text.delta") {
+        if (!started) {
+          handlers.start(message, uuid, chat.title, files, utility.imageTypes);
+          started = true;
+        }
+        response += event.delta;
+        handlers.processing(marked.parse(utility.formatMessage(response)) as string);
+      }
+      else if (event.type === "response.completed") {
+        completed = true;
+        chat.messages.push({
+          "role": "assistant",
+          "content": response
+        });
+        await storage.writeChat(uuid, chat);
+
+        handlers.finish(marked.parse(utility.formatMessage(response)) as string);
+      }
+    }
+
+    if (abortSignal.aborted) {
+      await handleAbort();
+      return;
+    }
+
+    for (const message of messages) {
+      if (typeof message.content === "string") {
+        continue;
+      }
+      for (const content of message.content) {
+        if (content.type === "input_image" || content.type === "input_file") {
+          await client.files.delete(content.file_id);
+        }
+      }
+    }
+  }).catch(async (error) => {
+    if (abortSignal.aborted) {
+      await handleAbort();
+      return;
+    }
     if (error.status === 401) {
       handlers.alert("Incorrect API key", "Please go to settings and fix your API key.", true, true);
       return;

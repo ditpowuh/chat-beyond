@@ -49,6 +49,9 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
   const [isCalculatingCost, setIsCalculatingCost] = useState<boolean>(false);
   const [reasoningLevel, setReasoningLevel] = useState<number>(0);
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [isStopping, setIsStopping] = useState<boolean>(false);
+  const [restoredText, setRestoredText] = useState<string | null>(null);
 
   const [previousPage, setPreviousPage] = useState<PageType>(currentPage);
   const [previousChatUUID, setPreviousChatUUID] = useState<string>(chatUUID);
@@ -131,6 +134,25 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
     socket.on("UploadComplete", uploadComplete);
 
+    const finishNewMessage = () => {
+      setIsGenerating(false);
+      setIsStopping(false);
+    }
+    socket.on("FinishNewMessage", finishNewMessage);
+
+    const notificationAlert = () => {
+      setIsGenerating(false);
+      setIsStopping(false);
+    }
+    socket.on("NotificationAlert", notificationAlert);
+
+    const generationStopped = (originalMessage: string) => {
+      setIsGenerating(false);
+      setIsStopping(false);
+      setRestoredText(originalMessage);
+    }
+    socket.on("GenerationStopped", generationStopped);
+
     const handlePaste = (event: ClipboardEvent) => {
       const files = event.clipboardData?.files;
       if (files && files.length > 0) {
@@ -143,6 +165,9 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     return () => {
       socket.off("TokenCost", tokenCost);
       socket.off("UploadComplete", uploadComplete);
+      socket.off("FinishNewMessage", finishNewMessage);
+      socket.off("NotificationAlert", notificationAlert);
+      socket.off("GenerationStopped", generationStopped);
 
       window.removeEventListener("paste", handlePaste);
     }
@@ -163,6 +188,16 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     });
     previewURLsRef.current = [];
   }, [currentPage, chatUUID]);
+
+  useEffect(() => {
+    if (restoredText !== null && textInputRef.current !== null) {
+      textInputRef.current.value = restoredText;
+      textInputRef.current.dispatchEvent(new Event("input", {
+        bubbles: true
+      }));
+      setRestoredText(null);
+    }
+  }, [restoredText]);
 
   const openFileDialog = () => {
     if (fileInputRef.current) {
@@ -246,7 +281,18 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     }
   }
 
+  const stopGeneration = () => {
+    if (isStopping) {
+      return;
+    }
+    setIsStopping(true);
+    socket.emit("StopGeneration");
+  }
+
   const sendMessage = () => {
+    if (processingRef.current === true) {
+      return;
+    }
     if (chatNameRef.current?.value.trim() === "" && currentPage === "Home") {
       Swal.fire({
         icon: "error",
@@ -269,6 +315,7 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
         return;
       }
       processingRef.current = true;
+      setIsGenerating(true);
       socket.emit("SendMessage", textInputRef.current.value.trim(), chatUUID !== "" ? chatUUID : chatNameRef!.current!.value.trim(), files.map(data => data.uuidName), reasoningLevel);
       textInputRef.current.value = "";
       setFiles([]);
@@ -321,7 +368,12 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
                 )}
               </div>
             </div>
-            <button onClick={sendMessage}>Send</button>
+            {isGenerating && (
+              <button className={styles.stopbutton} onClick={stopGeneration} disabled={isStopping}>{isStopping ? "Stopping..." : "Stop"}</button>
+            )}
+            {!isGenerating && (
+              <button onClick={sendMessage}>Send</button>
+            )}
             <div className={styles.notice}>As always, AI can make mistakes. Make sure you check important info provided.</div>
           </motion.div>
         )}
