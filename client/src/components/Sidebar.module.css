@@ -6,7 +6,7 @@
   left: 0;
   bottom: 0;
   display: block;
-  width: 275px;
+  width: 17.25rem;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -15,23 +15,23 @@
 .sidebar .top {
   background-color: var(--sidebar);
   top: 0;
-  width: 275px;
+  width: 17.25rem;
   position: sticky;
-  padding-bottom: 20px;
-  border-bottom: 2.5px solid var(--background);
+  padding-bottom: 1.25rem;
+  border-bottom: 0.125rem solid var(--background);
 }
 
 .sidebar .top .list li {
-  width: 250px;
+  width: 15.75rem;
 }
 
 .sidebar .logo {
-  width: 48px;
-  margin-top: 12px;
-  margin-left: 12px;
-  padding: 6px;
+  width: 3rem;
+  margin-top: 0.75rem;
+  margin-left: 0.75rem;
+  padding: 0.5rem;
   transition: 0.25s all;
-  border-radius: 10px;
+  border-radius: 0.75rem;
   cursor: pointer;
 }
 
@@ -40,13 +40,13 @@
 }
 
 .sidebar div.category {
-  margin: 10px 20px;
+  margin: 0.75rem 1.25rem;
   color: var(--subtext);
 }
 
 .sidebar ul {
   list-style-type: none;
-  margin: 0 10px;
+  margin: 0 0.75rem;
   padding: 0;
   overflow: hidden;
 }
@@ -55,9 +55,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
-  padding: 10px;
-  border-radius: 10px;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: 0.25s all;
 }
@@ -84,9 +84,9 @@
   visibility: hidden;
   border: none;
   color: var(--subtext);
-  font-size: 10px;
-  width: 20px;
-  height: 20px;
+  font-size: 0.625rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 25%;
   opacity: 0;
   cursor: pointer;
@@ -94,7 +94,7 @@
 }
 
 .sidebar ul li span {
-  height: 20px;
+  height: 1.25rem;
   width: 90%;
   white-space: nowrap;
   overflow: hidden;
@@ -111,5 +111,5 @@
 }
 
 .pastchats {
-  padding-bottom: 25px;
+  padding-bottom: 1.5rem;
 }

@@ -1,20 +1,20 @@
 .chat {
   line-height: 1.8;
-  padding-bottom: 200px;
+  padding-bottom: 12.5rem;
 }
 
 .chat .message {
   text-align: left;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .chat .message.user {
   background-color: var(--user);
   margin-left: auto;
-  padding: 20px;
-  width: 540px;
-  border-radius: 25px;
+  padding: 1.25rem;
+  width: 33.75rem;
+  border-radius: 1.5rem;
   white-space: pre-line;
   overflow-wrap: break-word;
 }
@@ -33,11 +33,11 @@
 }
 
 .chat .message pre code {
-  border-radius: 15px;
+  border-radius: 1rem;
 }
 
 .chat .message img {
-  border-radius: 15px;
+  border-radius: 1rem;
   width: 100%;
 }
 
@@ -59,9 +59,9 @@
 
 @keyframes textglow {
   0% {
-    text-shadow: 0 0 8px rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0);
   }
   50% {
-    text-shadow: 0 0 8px var(--text);
+    text-shadow: 0 0 0.5rem var(--text);
   }
 }

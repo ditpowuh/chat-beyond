@@ -1,20 +1,20 @@
 .newchatarea {
-  padding-top: 100px;
+  padding-top: 6.25rem;
 }
 
 .newchatarea h1 {
   font-weight: normal;
-  font-size: 36px;
+  font-size: 2.25rem;
 }
 
 .newchatarea .chatname {
   font-family: ui-sans-serif, system-ui, Segoe UI, Helvetica, Apple Color Emoji, Arial, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
   background-color: var(--user);
   color: var(--text);
-  width: 500px;
-  padding: 20px;
+  width: 31.25rem;
+  padding: 1em;
   border: none;
-  border-radius: 25px;
-  font-size: 20px;
+  border-radius: 1.5rem;
+  font-size: 1.25rem;
   text-align: center;
 }

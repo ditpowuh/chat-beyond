@@ -1,6 +1,6 @@
 .version {
   font-family: monospace;
   color: var(--subtext);
-  font-size: 12px;
-  margin: 10px;
+  font-size: 0.75rem;
+  margin: 0.75rem;
 }

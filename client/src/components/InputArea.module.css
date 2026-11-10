@@ -5,25 +5,25 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  padding-left: 275px;
-  width: 1475px;
+  padding-left: 17.25rem;
+  width: 92.25rem;
   transition: 0.25s opacity;
 }
 
 .bottomarea .notice {
-  padding: 15px 0;
-  font-size: 12px;
+  padding: 1rem 0;
+  font-size: 0.75rem;
 }
 
 .bottomarea button {
   background-color: var(--button);
   color: var(--text);
   font-weight: bold;
-  padding: 15px;
-  width: 160px;
+  padding: 1em;
+  width: 10rem;
   border: none;
-  border-radius: 15px;
-  margin: 0 10px;
+  border-radius: 1rem;
+  margin: 0 0.75rem;
   cursor: pointer;
   transform: translateY(20%);
   transition: 0.2s background-color;
@@ -42,7 +42,7 @@
 }
 
 .inputarea {
-  width: 800px;
+  width: 50rem;
   margin: 0 auto;
   display: inline-block;
   position: relative;
@@ -50,25 +50,25 @@
 
 .textarea {
   position: relative;
-  border-radius: 25px;
+  border-radius: 1.5rem;
   background-color: var(--user);
   color: var(--text);
   display: flex;
   align-items: center;
-  padding-top: 20px;
-  padding-bottom: 64px;
+  padding-top: 1.25rem;
+  padding-bottom: 4rem;
 }
 
 .textarea button {
   position: absolute;
-  bottom: 16px;
+  bottom: 1rem;
   background-color: var(--background);
-  border: 2.5px solid var(--background);
+  border: 0.125rem solid var(--background);
   padding: 0;
   margin: 0;
-  border-radius: 12px;
-  width: 32px;
-  height: 32px;
+  border-radius: 0.75rem;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,19 +79,19 @@
 }
 
 .textarea button:hover {
-  border: 2.5px solid var(--button-hover);
+  border: 0.125rem solid var(--button-hover);
 }
 
 .textarea button:nth-of-type(1) {
-  left: 16px;
+  left: 1rem;
 }
 
 .textarea button:nth-of-type(2) {
-  left: 56px;
+  left: 3.5rem;
 }
 
 .textarea button:nth-of-type(3) {
-  left: 96px;
+  left: 6rem;
 }
 
 .textinput {
@@ -99,25 +99,25 @@
   background-color: var(--user);
   color: var(--text);
   width: 100%;
-  padding: 0 20px;
-  font-size: 16px;
+  padding: 0 1.25em;
+  font-size: 1rem;
   line-height: 1.5;
-  border-radius: 25px;
+  border-radius: 1.5rem;
   border: none;
   overflow-y: auto;
   resize: none;
   outline: none;
-  max-height: 300px;
+  max-height: 18.75rem;
 }
 
 .filearea {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-  max-height: 120px;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  max-height: 7.5rem;
   overflow-y: auto;
-  padding: 5px;
+  padding: 0.25rem;
 }
 
 .filearea:empty {
@@ -126,28 +126,28 @@
 
 .filearea:not(:empty) {
   background-color: var(--user);
-  border-radius: 25px;
-  padding: 15px;
+  border-radius: 1.5rem;
+  padding: 1rem;
 }
 
 .filearea .fileitem {
   position: relative;
   background-color: var(--background);
-  border: 2.5px solid var(--text);
-  border-radius: 15px;
-  padding: 10px 15px;
+  border: 0.125rem solid var(--text);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
-  gap: 10px;
-  max-width: 200px;
+  gap: 0.75rem;
+  max-width: 12.5rem;
   animation: slidein 0.2s ease-out;
 }
 
 .filearea .fileitem div img {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0.75rem;
 }
 
 .filearea .fileitem .fileinfo {
@@ -156,7 +156,7 @@
 }
 
 .filearea .fileitem .fileinfo .name {
-  font-size: 12px;
+  font-size: 0.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-align: left;
@@ -164,20 +164,20 @@
 }
 
 .filearea .fileitem .fileinfo .size {
-  font-size: 10px;
+  font-size: 0.625rem;
   text-align: left;
 }
 
 .filearea .fileitem .removebutton {
   background-color: #ff4444;
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -0.25rem;
+  right: -0.25rem;
   color: #ffffff;
-  border: 2.5px solid var(--text);
+  border: 0.125rem solid var(--text);
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;

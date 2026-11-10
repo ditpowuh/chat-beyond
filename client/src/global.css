@@ -32,12 +32,12 @@ a:hover {
 }
 
 .content {
-  font-size: 16px;
-  padding-left: 275px;
-  margin: 150px auto 0 auto;
-  max-width: 1075px;
+  font-size: 1rem;
+  padding-left: 17.25rem;
+  margin: 9.5rem auto 0 auto;
+  max-width: 67rem;
   text-align: left;
-  padding-bottom: 175px;
+  padding-bottom: 11rem;
 }
 
 .undraggable {
@@ -54,10 +54,10 @@ a:hover {
 }
 
 ::-webkit-scrollbar {
-  height: 5px;
-  width: 5px;
+  height: 0.25rem;
+  width: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 0.75rem;
 }

@@ -244,17 +244,17 @@ export default function InputArea({fileSizeLimit, reasoningEnabled, chatUUID, ch
     switch (level) {
       case 1: {
         return {
-          border: "2.5px solid var(--low-strength)"
+          border: "0.125rem solid var(--low-strength)"
         };
       }
       case 2: {
         return {
-          border: "2.5px solid var(--medium-strength)"
+          border: "0.125rem solid var(--medium-strength)"
         };
       }
       case 3: {
         return {
-          border: "2.5px solid var(--high-strength)"
+          border: "0.125rem solid var(--high-strength)"
         };
       }
       default: {

@@ -14,10 +14,10 @@
 }
 
 .bottombar > :first-child {
-  margin-left: 300px;
+  margin-left: 18.75rem;
 }
 
 .cost {
-  font-size: 14px;
+  font-size: 0.875rem;
   padding-right: 2em;
 }
