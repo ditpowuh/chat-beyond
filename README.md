@@ -7,9 +7,11 @@ This web application serves to be an alternative to ChatGPT, creating a familiar
 
 The app is built with ease of use in mind, keeping everything very simple. Everything can be found within the directory of which the app is stored in.
 <br/>
-Updating to the latest version of the application is highly recommended for bug fixes and to get new models.
+Updating to the latest version of the application is highly recommended for bug fixes and features, and to also get new models.
 
-This project is made with the runtime [Bun](https://bun.com/) in mind (with Node.JS support), and is written in `TypeScript`.
+**This project is made with the [Bun](https://bun.com/) runtime in mind.** There is however, Node.JS support.
+
+This project is written in TypeScript, and uses React for its frontend.
 
 > Note that this app does NOT cover the cost of using the models for you.
 
@@ -19,6 +21,7 @@ Overview/Features:
 - Estimates input cost by calculating the number of tokens and applying the model's pricing
 - Made to be lightweight as possible, whilst keeping it robust and maintaining ease of use and configurability
 - User interface built from the ground up, with support for showing images and code
+- Responses can be stopped at any time while they are being generated
 
 This app is recommended if you:
 1. use ChatGPT, but not on both a daily and frequent basis
@@ -97,30 +100,40 @@ The recommended way of updating is to delete all files and folders except for `d
 ### Build
 #### Client/Frontend
 The user interface can be built via the following command.
+##### Node.JS
+```
+npm run client:build
+```
 ##### Bun
 ```
 bun run client:build
 ```
-##### NPM
-```
-npm run client:build
-```
 
 #### Server/Executable
-The executables can be generated via the following commands using `Bun`.
+##### Node.JS
+To run the server using Node.JS, use the commands that prepended with `node`:
+
+For example, compile TS to JS...
+```
+npm run node:compile
+```
+...And then run the compiled JS output.
+```
+npm run node:start
+```
+
+##### Bun
+As Bun can run TS natively, use the following:
+```
+bun run server:dev
+```
+
+For the executables, they can be generated via the following commands using `Bun`.
 ##### Windows
 ```
 bun run build:windows
 ```
-or
-```
-bun build index.ts --compile --target=bun-windows-x64 --outfile output/ChatBeyond-windows-x64
-```
 ##### MacOS
 ```
 bun run build:mac
-```
-or
-```
-bun build index.ts --compile --target=bun-darwin-arm64 --outfile output/ChatBeyond-macos-arm64
 ```
